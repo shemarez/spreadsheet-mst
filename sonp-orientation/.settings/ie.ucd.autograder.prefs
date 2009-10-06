@@ -1,0 +1,26 @@
+#Wed Sep 16 14:26:39 PDT 2009
+eclipse.preferences.version=1
+ie.ucd.autograder.collectors.bonc.enabled=false
+ie.ucd.autograder.collectors.checkstyle.markerids=net.sf.eclipsecs.core.CheckstyleMarker
+ie.ucd.autograder.collectors.escjava2.enabled=false
+ie.ucd.autograder.collectors.metrics.methodcc.lookup=D,4;C,3;B,2.5;A-,2;A,0.5;A+,0
+ie.ucd.autograder.collectors.metrics.methodloc.lookup=D,24;C,16;B,8;A,0.5;B,0
+ie.ucd.autograder.gradeboundaries.A.value=93.0
+ie.ucd.autograder.gradeboundaries.A_MINUS.value=90.0
+ie.ucd.autograder.gradeboundaries.A_PLUS.value=98.0
+ie.ucd.autograder.gradeboundaries.B.value=83.0
+ie.ucd.autograder.gradeboundaries.B_MINUS.value=80.0
+ie.ucd.autograder.gradeboundaries.B_PLUS.value=88.0
+ie.ucd.autograder.gradeboundaries.C.value=73.0
+ie.ucd.autograder.gradeboundaries.C_MINUS.value=70.0
+ie.ucd.autograder.gradeboundaries.C_PLUS.value=78.0
+ie.ucd.autograder.gradeboundaries.D.value=63.0
+ie.ucd.autograder.gradeboundaries.D_MINUS.value=60.0
+ie.ucd.autograder.gradeboundaries.D_PLUS.value=68.0
+ie.ucd.autograder.gradeboundaries.E.enabled=false
+ie.ucd.autograder.gradeboundaries.E_MINUS.enabled=false
+ie.ucd.autograder.gradeboundaries.E_PLUS.enabled=false
+ie.ucd.autograder.gradeboundaries.F.value=0.03
+ie.ucd.autograder.gradeboundaries.F_MINUS.enabled=false
+ie.ucd.autograder.gradeboundaries.F_PLUS.enabled=false
+ie.ucd.autograder.gradeboundaries.G.enabled=false
