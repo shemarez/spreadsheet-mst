@@ -11,30 +11,30 @@ public class Item
   //Instance fields
   
   /**
-   * The name of the item
+   * The name of the item.
    */
   private final String my_name;
   
   /**
-   * The price of a single item
+   * The price of a single item.
    */
   private final double my_price;
   
   /**
-   * The price for a bulk of item
+   * The price for a bulk of item.
    */
   private final double my_bulk_price;
   
   /**
-   * The quantity of a bulk of item
+   * The quantity of a bulk of item.
    */
   private final int my_bulk_quantity;
   
   //Constructors
   
   /**
-   * Constructs an item with specified name and price. Unspecified bulk quantity and price will be
-   * set to 0.
+   * Constructs an item with specified name and price. Unspecified bulk quantity and 
+   * price will be set to 0.
    * @param the_name The name of the item
    * @param the_price The price of a single item
    */
@@ -68,31 +68,39 @@ public class Item
    */
   public double priceFor(final int the_quantity) 
   {
-    final int the_bulk_quantity = the_quantity / my_bulk_quantity;
-    final int the_item_quantity = the_quantity % my_bulk_quantity;
-    
-    return (double) (the_bulk_quantity * my_bulk_price + the_item_quantity * my_price);
+    if (my_bulk_quantity != 0)
+    {
+      final int the_bulk_quantity = the_quantity / my_bulk_quantity;
+      final int the_item_quantity = the_quantity % my_bulk_quantity;
+      
+      return (double) (the_bulk_quantity * my_bulk_price + the_item_quantity * my_price);
+    }
+    else
+    {
+      return (double) (the_quantity * my_price);
+    }
   }
 
   // methods overridden from java.lang.Object
 
   /**
-   * @return The string representation of the item. It will output the name, price, bulk_quantity
-   * and bulk_price of the item.
+   * @return The string representation of the item. It will output the name, price, 
+   * bulk_quantity and bulk_price of the item.
    */
   public String toString() 
   {
-    NumberFormat the_nf = NumberFormat.getCurrencyInstance();
-    String my_format_price = the_nf.format(my_price);
-    String my_format_bulk_price = the_nf.format(my_bulk_price);
+    final NumberFormat the_nf = NumberFormat.getCurrencyInstance();
+    final String format_price = the_nf.format(my_price);
+    final String format_bulk_price = the_nf.format(my_bulk_price);
     
     if (my_bulk_quantity == 0) 
     {
-      return my_name + ", " + my_format_price;
+      return my_name + ", " + format_price;
     }
     else 
     {
-      return my_name + ", " + my_format_price + "(" + my_bulk_quantity + " for " + my_format_bulk_price + ")";
+      return my_name + ", " + format_price + "(" + my_bulk_quantity + 
+        " for " + format_bulk_price + ")";
     }
   }
   
@@ -108,7 +116,7 @@ public class Item
     if (the_other != null && the_other.getClass() == getClass())
     {
       final Item other_item = (Item) the_other;
-      boolean result = (my_name == other_item.my_name) && (my_price == other_item.my_price)
+      final boolean result = (my_name == other_item.my_name) && (my_price == other_item.my_price)
                        && (my_bulk_quantity == other_item.my_bulk_quantity) 
                        && (my_bulk_price == other_item.my_bulk_price);
       return result;

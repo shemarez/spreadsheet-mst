@@ -29,7 +29,9 @@ public final class ShoppingMain
                 new Item("Rubik's Cube", 9.10),
                 new Item("Computer Science Barbie", 9.99),
                 new Item("'Java Rules!' button", 0.99, 10, 5.0),
-                new Item("'Java Rules!' bumper sticker", 0.99, 20, 8.95)};
+                new Item("'Java Rules!' bumper sticker", 0.99, 20, 8.95),
+                new Item("Not Duplicate", 1.00, 5, 2.50),
+                new Item("Not Duplicate", 2.00, 5, 3.00)};
 
   /**
    * A private constructor, to prevent instances from being constructed.

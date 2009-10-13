@@ -9,12 +9,12 @@ public class ItemOrder
   //Instance fields
   
   /**
-   * The item of this order
+   * The item of this order.
    */
   private final Item my_item;
   
   /**
-   * The quantity of this order
+   * The quantity of this order.
    */
   private final int my_quantity;
   
