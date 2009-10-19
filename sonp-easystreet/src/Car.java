@@ -1,13 +1,39 @@
+/*
+ * TCSS 305 - Fall 09
+ * Homework 2: Easy Street
+ * Author: Son Pham
+ */
+
 import java.util.Map;
 
-
+/**
+ * A Car class describes properties of a car and its movements.
+ * 
+ * @author Son
+ * @version Fall 09
+ */
 public class Car extends Vehicle
 {
   //Static fields
+  
+  /**
+   * Number of steps this object must skip if it's dead. 
+   */
   private static final int MY_DEATH_TIME = 10;
   
   //Constructor
-  public Car(final int the_x, final int the_y, final Direction the_direction, final Terrain the_terrain)
+  
+  /**
+   * Constructs a car object with specified x_coordinate, y_coordinate, direction
+   * and terrain.
+   * 
+   * @param the_x the x_coordinate
+   * @param the_y the y_coordinate
+   * @param the_direction the direction
+   * @param the_terrain the terrain
+   */
+  public Car(final int the_x, final int the_y, final Direction the_direction, 
+             final Terrain the_terrain)
   {
     super(the_x, the_y, the_direction, the_terrain, MY_DEATH_TIME);
   }

@@ -1,16 +1,42 @@
+/*
+ * TCSS 305 - Fall 09
+ * Homework 2: Easy Street
+ * Author: Son Pham
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-
+/**
+ * A Truck class describes properties of a truck and its movements.
+ * 
+ * @author Son
+ * @version Fall 09
+ */
 public class Truck extends Vehicle
 {
   //Static fields
+  
+  /**
+   * Number of steps this object must skip if it's dead. 
+   */
   private static final int MY_DEATH_TIME = 0;
   
   //Constructor
-  public Truck(int the_x, int the_y, Direction the_direction, Terrain the_terrain)
+  
+  /**
+   * Constructs a truck object with specified x_coordinate, y_coordinate, direction
+   * and terrain.
+   * 
+   * @param the_x the x_coordinate
+   * @param the_y the y_coordinate
+   * @param the_direction the direction
+   * @param the_terrain the terrain
+   */
+  public Truck(final int the_x, final int the_y, final Direction the_direction, 
+               final Terrain the_terrain)
   {
     super(the_x, the_y, the_direction, the_terrain, MY_DEATH_TIME);
   }
@@ -26,9 +52,10 @@ public class Truck extends Vehicle
    * @param the_light The light status.
    * @return the direction this truck would like to move.
    */
-  public Direction chooseDirection(final Map<Direction, Terrain> the_neighbors, final Light the_light)
+  public Direction chooseDirection(final Map<Direction, Terrain> the_neighbors, 
+                                   final Light the_light)
   {
-    Random rand = new Random();
+    final Random rand = new Random();
     Direction the_direction = getDirection();
     
     //Set a new random direction if the current direction is CENTER
@@ -39,26 +66,28 @@ public class Truck extends Vehicle
     
     //Direction the_new_direction = the_direction;
     
-    Direction[] the_direction_array = {the_direction, the_direction.left(), the_direction.right()};
-    List<Direction> the_possible_direction_array =  new ArrayList<Direction>();
+    final Direction[] the_direction_array = {the_direction, the_direction.left(), 
+                                            the_direction.right()};
+    final List<Direction> the_possible_direction_array =  new ArrayList<Direction>();
     
+    //Create the possible direction array for the truck
     for (int i = 0; i < the_direction_array.length; i++)
     {
-      Terrain the_new_terrain = the_neighbors.get(the_direction_array[i]);
+      final Terrain the_new_terrain = the_neighbors.get(the_direction_array[i]);
       if (the_new_terrain == Terrain.STREET || the_new_terrain == Terrain.LIGHT)
       {
         the_possible_direction_array.add(the_direction_array[i]);
       }
     }
     
-    if (the_possible_direction_array.size() > 0)
+    if (the_possible_direction_array.isEmpty())
     {
-      int the_random_index = rand.nextInt(the_possible_direction_array.size());
-      return the_possible_direction_array.get(the_random_index);
+      return the_direction.reverse();
     }
     else
     {
-      return the_direction.reverse();
+      final int the_random_index = rand.nextInt(the_possible_direction_array.size());
+      return the_possible_direction_array.get(the_random_index);
     }
     //return the_new_direction;
   }
@@ -72,15 +101,8 @@ public class Truck extends Vehicle
    * @return whether or not this truck may move onto the given type of terrain
    * when the street lights are the given color. 
    */
-  public boolean canPass(Terrain the_terrain, Light the_light)
+  public boolean canPass(final Terrain the_terrain, final Light the_light)
   {
-    if (the_terrain != Terrain.STREET && the_terrain != Terrain.LIGHT)
-    {      
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return the_terrain == Terrain.STREET || the_terrain == Terrain.LIGHT;
   }
 }

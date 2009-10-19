@@ -7,21 +7,34 @@
 import java.util.Map;
 
 /**
- * A Bicycle class
+ * A Bicycle class describes properties of a bicycle and its movements.
  * 
  * @author Son Pham
- * @version 1.0
+ * @version Fall 09
  *
  */
 public class Bicycle extends Vehicle
 {
   //Static fields
   
+  /**
+   * Number of steps this object must skip if it's dead. 
+   */
   private static final int MY_DEATH_TIME = 20;
   
   //Constructor
   
-  public Bicycle(int the_x, int the_y, Direction the_direction, Terrain the_terrain)
+  /**
+   * Constructs a bicycle object with specified x_coordinate, y_coordinate, direction
+   * and terrain.
+   * 
+   * @param the_x the x_coordinate
+   * @param the_y the y_coordinate
+   * @param the_direction the direction
+   * @param the_terrain the terrain
+   */
+  public Bicycle(final int the_x, final int the_y, final Direction the_direction, 
+                 final Terrain the_terrain)
   {
     super(the_x, the_y, the_direction, the_terrain, MY_DEATH_TIME);
   }
@@ -37,7 +50,8 @@ public class Bicycle extends Vehicle
    * @param the_light The light status.
    * @return the direction this bicycle would like to move.
    */
-  public Direction chooseDirection(final Map<Direction, Terrain> the_neighbors, final Light the_light)
+  public Direction chooseDirection(final Map<Direction, Terrain> the_neighbors, 
+                                   final Light the_light)
   {    
     Direction the_direction = getDirection();
     
@@ -48,10 +62,10 @@ public class Bicycle extends Vehicle
     }
     
     Direction the_new_direction = the_direction;
-    Terrain the_terrain_ahead = the_neighbors.get(the_direction);
-    Terrain the_terrain_left = the_neighbors.get(the_direction.left());
-    Terrain the_terrain_right = the_neighbors.get(the_direction.right());
-    Terrain the_terrain_reverse = the_neighbors.get(the_direction.reverse());
+    final Terrain the_terrain_ahead = the_neighbors.get(the_direction);
+    final Terrain the_terrain_left = the_neighbors.get(the_direction.left());
+    final Terrain the_terrain_right = the_neighbors.get(the_direction.right());
+    final Terrain the_terrain_reverse = the_neighbors.get(the_direction.reverse());
     
     switch(the_terrain_ahead)
     {
@@ -125,27 +139,31 @@ public class Bicycle extends Vehicle
    */
   public boolean canPass(final Terrain the_terrain, final Light the_light)
   {
+    final boolean result;
+    
     if (the_light == Light.GREEN)
     {
       if (the_terrain != Terrain.GRASS && the_terrain != Terrain.WALL)
       {
-        return true;
+        result = true;
       }
       else
       {
-        return false;
+        result = false;
       }
     }
     else
     {
-      if (the_terrain != Terrain.GRASS && the_terrain != Terrain.WALL && the_terrain != Terrain.LIGHT)
+      if (the_terrain != Terrain.GRASS && the_terrain != Terrain.WALL && 
+          the_terrain != Terrain.LIGHT)
       {
-        return true;
+        result = true;
       }
       else
       {
-        return false;
+        result = false;
       }
     }
+    return result;
   }
 }
