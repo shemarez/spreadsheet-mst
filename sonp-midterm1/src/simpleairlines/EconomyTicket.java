@@ -46,19 +46,4 @@ public class EconomyTicket extends Ticket
   {
     super(the_flight_number, the_flight_date, the_purchase_date, NORMAL_PRICE, LATE_PRICE);
   }
-  
-  // Instance Methods
-
-  /**
-   * {@inheritDoc}
-   */
-  public String toString()
-  {
-    final StringBuilder sb = new StringBuilder();
-    sb.append(getClass().getName());
-    sb.append(", flight ").append(flightNumber());
-    sb.append(", date/time ").append(flightDate()); 
-    sb.append(", price ").append(price());
-    return sb.toString();
-  }
 }
