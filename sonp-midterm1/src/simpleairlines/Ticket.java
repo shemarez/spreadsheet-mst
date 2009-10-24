@@ -12,7 +12,7 @@ public abstract class Ticket
 {
   // Static fields
   /**
-   * The tolerance for floating point errors to determine point equivalence,
+   * The tolerance for floating point errors to determine price equivalence,
    * in ulps.
    * 
    * @see Math.ulp(double)
