@@ -11,10 +11,10 @@ import java.util.Date;
  * A first class ticket on Simple Airlines.
  * 
  * @author Daniel M. Zimmerman
- * @author (Your Name Here)
+ * @author Son Pham
  * @version Autumn 2009
  */
-public class FirstClassTicket
+public class FirstClassTicket extends Ticket
 {
   // Static Field
   
@@ -23,23 +23,6 @@ public class FirstClassTicket
    */
   public static final double TICKET_PRICE = 400.00; 
 
-  // Instance Fields
-  
-  /**
-   * The flight number for which this ticket was purchased.
-   */
-  private final int my_flight_number;
-  
-  /**
-   * The flight date and time for which this ticket was purchased.
-   */
-  private final Date my_flight_date;
-  
-  /**
-   * The date and time at which this ticket was purchased.
-   */
-  private final Date my_purchase_date;
-  
   // Constructor
   
   /**
@@ -56,53 +39,11 @@ public class FirstClassTicket
                           final Date the_purchase_date)
     throws IllegalArgumentException
   {
-    if (the_flight_date == null || the_purchase_date == null)
-    {
-      throw new IllegalArgumentException("null date and time not allowed");
-    }
-    my_flight_number = the_flight_number;
-    
-    // Date objects are mutable, so we store clones
-    my_flight_date = (Date) the_flight_date.clone();
-    my_purchase_date = (Date) the_purchase_date.clone();
+    super(the_flight_number, the_flight_date, the_purchase_date, TICKET_PRICE, 0);
   }
   
   // Instance Methods
-  
-  /**
-   * @return What is your flight number?
-   */
-  public int flightNumber() 
-  { 
-    return my_flight_number; 
-  }
-  
-  /**
-   * @return What is your flight date and time?
-   */
-  public Date flightDate() 
-  { 
-    // Date objects are mutable, so we return a clone
-    return (Date) my_flight_date.clone(); 
-  }
-  
-  /**
-   * @return What is your purchase date and time?
-   */
-  public Date purchaseDate()
-  {
-    // Date objects are mutable, so we return a clone
-    return (Date) my_purchase_date.clone();
-  }
-  
-  /**
-   * @return What is your price?
-   */
-  public double price() 
-  { 
-    return TICKET_PRICE; 
-  }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -116,5 +57,3 @@ public class FirstClassTicket
     return sb.toString();
   }
 }
-
-
