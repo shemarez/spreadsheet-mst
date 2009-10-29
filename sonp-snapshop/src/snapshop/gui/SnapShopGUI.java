@@ -4,10 +4,12 @@ package snapshop.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -59,38 +61,52 @@ public class SnapShopGUI extends JFrame
     final JButton soften = new JButton("Soften");
     soften.setEnabled(false);
     
+    final JButton save_as = new JButton("Save as...");
+    save_as.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent the_event)
+      {
+        result = my_file_chooser.showSaveDialog(null);
+        
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+          try
+          {
+            image.save(my_file_chooser.getSelectedFile());
+          }
+          catch (IOException the_exception)
+          {
+            JOptionPane.showMessageDialog(null, "File could not be written!");
+          }
+        }
+      }
+    });
+    save_as.setEnabled(false);
+    
     final JButton open = new JButton("Open...");
     open.addActionListener(new ActionListener()
     {  
       public void actionPerformed(ActionEvent the_event)
       {
         result = my_file_chooser.showOpenDialog(my_master_panel);
+        
+        if (result == JFileChooser.APPROVE_OPTION)
+        {
+          try
+          {
+            image = PixelImage.load(my_file_chooser.getSelectedFile());
+          }
+          catch (IOException the_exception)
+          {
+            JOptionPane.showMessageDialog(null, "File did not contain a valid image: " +
+                                          my_file_chooser.getSelectedFile());
+          }
+          label.setIcon(new ImageIcon(image));
+          save_as.setEnabled(true);
+          pack();
+        }
       }
     });
-    
-    if (result == JFileChooser.APPROVE_OPTION)
-    {
-      try
-      {
-        image = PixelImage.load(my_file_chooser.getSelectedFile());
-      }
-      catch (IOException the_exception)
-      {
-        JOptionPane.showMessageDialog(my_master_panel, "File did not contain a valid image: " +
-                                      my_file_chooser.getSelectedFile());
-      }
-      label.setIcon(new ImageIcon(image));
-    }
-    
-    final JButton save_as = new JButton("Save as...");
-    /*save_as.addActionListener(new ActionListener()
-    {
-      public void actionPerformed(ActionEvent the_event)
-      {
-        result = my_file_chooser.showSaveDialog(null);
-      }
-    });*/
-    save_as.setEnabled(false);
     
     my_north_panel.add(edge_detect);
     my_north_panel.add(edge_highlight);
