@@ -3,13 +3,15 @@
 package snapshop.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -18,6 +20,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import snapshop.filters.EdgeDetectFilter;
+import snapshop.filters.EdgeHighlightFilter;
+import snapshop.filters.Filter;
+import snapshop.filters.FlipHorizontalFilter;
+import snapshop.filters.FlipVerticalFilter;
+import snapshop.filters.GrayscaleFilter;
+import snapshop.filters.SharpenFilter;
+import snapshop.filters.SoftenFilter;
 import snapshop.image.PixelImage;
 
 public class SnapShopGUI extends JFrame
@@ -30,6 +40,8 @@ public class SnapShopGUI extends JFrame
   private int result;
   private PixelImage image;
   private JLabel label =  new JLabel();
+  private Map<String, Filter> my_filter_hashmap = new HashMap<String, Filter>();
+  private JButton[] my_jbuttons;
   
   //Constructor
   
@@ -39,6 +51,22 @@ public class SnapShopGUI extends JFrame
     setupComponents();
   }
   
+  public JButton createButton(final FilterObject the_object)
+  {
+    final JButton button = new JButton(the_object.toString());
+    button.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(final ActionEvent the_event)
+      {
+        the_object.doFilter(image);
+        label.setIcon(new ImageIcon(image));
+        pack();
+      }
+    });
+    
+    return button;
+  }
+  
   private void setupComponents()
   {
     my_master_panel = new JPanel(new BorderLayout());
@@ -46,21 +74,25 @@ public class SnapShopGUI extends JFrame
     my_center_panel = new JPanel(new FlowLayout());
     my_south_panel = new JPanel(new FlowLayout());
     
-    final JButton edge_detect = new JButton("Edge Detect");
-    edge_detect.setEnabled(false);
-    final JButton edge_highlight = new JButton("Edge Highlight");
-    edge_highlight.setEnabled(false);
-    final JButton flip_horizontal = new JButton("Flip Horizontal");
-    flip_horizontal.setEnabled(false);
-    final JButton flip_vertical = new JButton("Flip Vertical");
-    flip_vertical.setEnabled(false);
-    final JButton grayscale = new JButton("Grayscale");
-    grayscale.setEnabled(false);
-    final JButton sharpen = new JButton("Sharpen");
-    sharpen.setEnabled(false);
-    final JButton soften = new JButton("Soften");
-    soften.setEnabled(false);
+    my_filter_hashmap.put("Edge Detect", new EdgeDetectFilter());
+    my_filter_hashmap.put("Edge Highlight", new EdgeHighlightFilter());
+    my_filter_hashmap.put("Flip Horizontal", new FlipHorizontalFilter());
+    my_filter_hashmap.put("Flip Vertical", new FlipVerticalFilter());
+    my_filter_hashmap.put("Grayscale", new GrayscaleFilter());
+    my_filter_hashmap.put("Sharpen", new SharpenFilter());
+    my_filter_hashmap.put("Soften", new SoftenFilter());
     
+    final Iterator<String> the_iterator = my_filter_hashmap.keySet().iterator();
+    
+    while (the_iterator.hasNext())
+    {
+      final String the_current_string = the_iterator.next();
+      JButton new_button = createButton(new FilterObject(the_current_string, 
+                                                         my_filter_hashmap.get(the_current_string)));
+      new_button.setEnabled(false);
+      my_north_panel.add(new_button);
+    }
+     
     final JButton save_as = new JButton("Save as...");
     save_as.addActionListener(new ActionListener()
     {
@@ -102,19 +134,18 @@ public class SnapShopGUI extends JFrame
                                           my_file_chooser.getSelectedFile());
           }
           label.setIcon(new ImageIcon(image));
+          Component[] component = my_north_panel.getComponents();
+          for (int i = 0; i < component.length; i++)
+          {
+            JButton button = (JButton) component[i];
+            button.setEnabled(true);
+          }
           save_as.setEnabled(true);
           pack();
         }
       }
     });
     
-    my_north_panel.add(edge_detect);
-    my_north_panel.add(edge_highlight);
-    my_north_panel.add(flip_horizontal);
-    my_north_panel.add(flip_vertical);
-    my_north_panel.add(grayscale);
-    my_north_panel.add(sharpen);
-    my_north_panel.add(soften);
     my_center_panel.add(label);
     my_south_panel.add(open);
     my_south_panel.add(save_as);

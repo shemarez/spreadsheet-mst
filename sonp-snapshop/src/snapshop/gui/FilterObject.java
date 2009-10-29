@@ -17,10 +17,12 @@ import snapshop.image.PixelImage;
 public class FilterObject
 {
   private String my_name;
+  private Filter my_filter;
   
-  public FilterObject(String the_name)
+  public FilterObject(String the_name, Filter the_filter)
   {
     my_name = the_name;
+    my_filter = the_filter;
   }
   
   public String toString()
@@ -28,8 +30,8 @@ public class FilterObject
     return my_name;
   }
   
-  public void doFilter(Filter the_filter, PixelImage the_image)
+  public void doFilter(PixelImage the_image)
   {
-    the_filter.filter(the_image);
+    my_filter.filter(the_image);
   }
 }
