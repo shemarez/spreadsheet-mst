@@ -1,4 +1,8 @@
-// finish (and comment) me!
+/*
+ * Homework 3 - SnapShopGUI
+ * Autumn 2009 TCSS 305
+ */
+
 
 package snapshop.gui;
 
@@ -8,9 +12,9 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,36 +34,89 @@ import snapshop.filters.SharpenFilter;
 import snapshop.filters.SoftenFilter;
 import snapshop.image.PixelImage;
 
+/**
+ * A class that create a window panel for opening, filtering and saving image.
+ * 
+ * @author Son
+ * @version 1.0
+ */
 public class SnapShopGUI extends JFrame
 {
+  //Instance fields
+  
+  /**
+   * The master panel.
+   */
   private JPanel my_master_panel;
+  
+  /**
+   * The north panel.
+   */
   private JPanel my_north_panel;
+  
+  /**
+   * The center panel.
+   */
   private JPanel my_center_panel;
+  
+  /**
+   * The south panel.
+   */
   private JPanel my_south_panel;
-  private JFileChooser my_file_chooser = new JFileChooser();
-  private int result;
-  private PixelImage image;
-  private JLabel label =  new JLabel();
-  private Map<String, Filter> my_filter_hashmap = new HashMap<String, Filter>();
-  private JButton[] my_jbuttons;
+  
+  /**
+   * The file choose object.
+   */
+  private final  JFileChooser my_file_chooser = new JFileChooser();
+  
+  /**
+   * The result of opening a showOpenDialog or showSaveDialog.
+   */
+  private int my_result;
+  
+  /**
+   * The loaded image.
+   */
+  private PixelImage my_image;
+  
+  /**
+   * The label object.
+   */
+  private final JLabel my_label =  new JLabel();
+  
+  /**
+   * The map of filter names and objects.
+   */
+  private final  Map<String, Filter> my_filter_treemap = new TreeMap<String, Filter>();
   
   //Constructor
   
+  /**
+   * Construct a SnapShopGUI object.
+   */
   public SnapShopGUI()
   {
     super("TCSS 305 SnapShot");
     setupComponents();
   }
   
-  public JButton createButton(final FilterObject the_object)
+  //Instance methods
+  
+  /**
+   * Create a button that calls a specified filter on the image.
+   * 
+   * @param the_object The FilterObject needed to create a button.
+   * @return the button.
+   */
+  private JButton createButton(final FilterObject the_object)
   {
     final JButton button = new JButton(the_object.toString());
     button.addActionListener(new ActionListener()
     {
       public void actionPerformed(final ActionEvent the_event)
       {
-        the_object.doFilter(image);
-        label.setIcon(new ImageIcon(image));
+        the_object.doFilter(my_image);
+        my_label.setIcon(new ImageIcon(my_image));
         pack();
       }
     });
@@ -67,6 +124,9 @@ public class SnapShopGUI extends JFrame
     return button;
   }
   
+  /**
+   * Setup the components for the SnapShopGUI object.
+   */
   private void setupComponents()
   {
     my_master_panel = new JPanel(new BorderLayout());
@@ -74,21 +134,21 @@ public class SnapShopGUI extends JFrame
     my_center_panel = new JPanel(new FlowLayout());
     my_south_panel = new JPanel(new FlowLayout());
     
-    my_filter_hashmap.put("Edge Detect", new EdgeDetectFilter());
-    my_filter_hashmap.put("Edge Highlight", new EdgeHighlightFilter());
-    my_filter_hashmap.put("Flip Horizontal", new FlipHorizontalFilter());
-    my_filter_hashmap.put("Flip Vertical", new FlipVerticalFilter());
-    my_filter_hashmap.put("Grayscale", new GrayscaleFilter());
-    my_filter_hashmap.put("Sharpen", new SharpenFilter());
-    my_filter_hashmap.put("Soften", new SoftenFilter());
+    my_filter_treemap.put("Edge Detect", new EdgeDetectFilter());
+    my_filter_treemap.put("Edge Highlight", new EdgeHighlightFilter());
+    my_filter_treemap.put("Flip Horizontal", new FlipHorizontalFilter());
+    my_filter_treemap.put("Flip Vertical", new FlipVerticalFilter());
+    my_filter_treemap.put("Grayscale", new GrayscaleFilter());
+    my_filter_treemap.put("Sharpen", new SharpenFilter());
+    my_filter_treemap.put("Soften", new SoftenFilter());
     
-    final Iterator<String> the_iterator = my_filter_hashmap.keySet().iterator();
+    final Iterator<String> the_iterator = my_filter_treemap.keySet().iterator();
     
     while (the_iterator.hasNext())
     {
       final String the_current_string = the_iterator.next();
-      JButton new_button = createButton(new FilterObject(the_current_string, 
-                                                         my_filter_hashmap.get(the_current_string)));
+      final JButton new_button = createButton(new FilterObject(the_current_string, 
+                                              my_filter_treemap.get(the_current_string)));
       new_button.setEnabled(false);
       my_north_panel.add(new_button);
     }
@@ -96,17 +156,17 @@ public class SnapShopGUI extends JFrame
     final JButton save_as = new JButton("Save as...");
     save_as.addActionListener(new ActionListener()
     {
-      public void actionPerformed(ActionEvent the_event)
+      public void actionPerformed(final ActionEvent the_event)
       {
-        result = my_file_chooser.showSaveDialog(null);
+        my_result = my_file_chooser.showSaveDialog(null);
         
-        if (result == JFileChooser.APPROVE_OPTION)
+        if (my_result == JFileChooser.APPROVE_OPTION)
         {
           try
           {
-            image.save(my_file_chooser.getSelectedFile());
+            my_image.save(my_file_chooser.getSelectedFile());
           }
-          catch (IOException the_exception)
+          catch (final IOException the_exception)
           {
             JOptionPane.showMessageDialog(null, "File could not be written!");
           }
@@ -118,26 +178,26 @@ public class SnapShopGUI extends JFrame
     final JButton open = new JButton("Open...");
     open.addActionListener(new ActionListener()
     {  
-      public void actionPerformed(ActionEvent the_event)
+      public void actionPerformed(final ActionEvent the_event)
       {
-        result = my_file_chooser.showOpenDialog(my_master_panel);
+        my_result = my_file_chooser.showOpenDialog(my_master_panel);
         
-        if (result == JFileChooser.APPROVE_OPTION)
+        if (my_result == JFileChooser.APPROVE_OPTION)
         {
           try
           {
-            image = PixelImage.load(my_file_chooser.getSelectedFile());
+            my_image = PixelImage.load(my_file_chooser.getSelectedFile());
           }
-          catch (IOException the_exception)
+          catch (final IOException the_exception)
           {
             JOptionPane.showMessageDialog(null, "File did not contain a valid image: " +
                                           my_file_chooser.getSelectedFile());
           }
-          label.setIcon(new ImageIcon(image));
-          Component[] component = my_north_panel.getComponents();
+          my_label.setIcon(new ImageIcon(my_image));
+          final Component[] component = my_north_panel.getComponents();
           for (int i = 0; i < component.length; i++)
           {
-            JButton button = (JButton) component[i];
+            final JButton button = (JButton) component[i];
             button.setEnabled(true);
           }
           save_as.setEnabled(true);
@@ -146,7 +206,7 @@ public class SnapShopGUI extends JFrame
       }
     });
     
-    my_center_panel.add(label);
+    my_center_panel.add(my_label);
     my_south_panel.add(open);
     my_south_panel.add(save_as);
     
@@ -158,10 +218,12 @@ public class SnapShopGUI extends JFrame
     pack();
   }
   
+  /**
+   * Create and show the GUI on the screen.
+   */
   public void start()
   {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setVisible(true);
-    //javax.swing.JOptionPane.showMessageDialog(null, "SnapShop placeholder");
   }
 }
