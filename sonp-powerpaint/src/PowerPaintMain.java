@@ -1,34 +1,19 @@
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
+import java.awt.BorderLayout;
 
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+
+import powerpaint.gui.PaintPanel;
 import powerpaint.gui.PowerPaintGUI;
 
 
-public class PowerPaintMain
+public class PowerPaintMain extends JFrame
 {
-  public static void main(String... args)
+  public static void main(String... agrs)
   {
-    PowerPaintGUI paintPanel = new PowerPaintGUI();
-    //final JFrame frame = new JFrame("PowerPaint");
-    paintPanel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    //frame.add(paintPanel);
-    //frame.pack();
-    //frame.setJMenuBar(setMenuBar());
-    paintPanel.setVisible(true);
-  }
-  
-  private static JMenuBar setMenuBar()
-  {
-    JMenu file = new JMenu("File");
-    JMenu options = new JMenu("Options");
-    JMenu tools = new JMenu("Tools");
-    JMenu helps = new JMenu("Helps");
-    JMenuBar menuBar = new JMenuBar();
-    menuBar.add(file);
-    menuBar.add(options);
-    menuBar.add(tools);
-    menuBar.add(helps);
-    return menuBar;
+    PowerPaintGUI powerPaint = new PowerPaintGUI();
+    powerPaint.setupComponents();
   }
 }

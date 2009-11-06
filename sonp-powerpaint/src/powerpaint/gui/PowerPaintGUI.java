@@ -27,18 +27,23 @@ public class PowerPaintGUI extends JFrame
     JToolBar toolBar = new JToolBar();
     
     JButton button = new JButton("Color...");
+    button.setMnemonic('C');
     button.setBackground(Color.black);
     toolBar.add(button);
     button = new JButton("Pencil");
+    button.setMnemonic('P');
     button.setIcon(new ImageIcon("src/powerpaint/gui/pencil_bw.gif"));
     toolBar.add(button);
     button = new JButton("Line");
+    button.setMnemonic('L');
     button.setIcon(new ImageIcon("src/powerpaint/gui/line_bw.gif"));
     toolBar.add(button);
     button = new JButton("Rectangle");
+    button.setMnemonic('R');
     button.setIcon(new ImageIcon("src/powerpaint/gui/rectangle_bw.gif"));
     toolBar.add(button);
     button = new JButton("Ellipse");
+    button.setMnemonic('E');
     button.setIcon(new ImageIcon("src/powerpaint/gui/ellipse_bw.gif"));
     toolBar.add(button);
     
@@ -74,20 +79,20 @@ public class PowerPaintGUI extends JFrame
     menu.setMnemonic('O');
     menuBar.add(menu);
     
-    menuItem = new JMenuItem("Grid", new ImageIcon("src/powerpaint/gui/rectangle_bw.gif"));
-    menuItem.setMnemonic('G');
-    menu.add(menuItem);
+    cbMenuItem = new JCheckBoxMenuItem("Grid");
+    cbMenuItem.setMnemonic('G');
+    menu.add(cbMenuItem);
     
     subMenu = new JMenu("Thickness");
     subMenu.setMnemonic('T');
     ButtonGroup group = new ButtonGroup();
     rbMenuItem = new JRadioButtonMenuItem("1");
-    rbMenuItem.setMnemonic('1');
-    rbMenuItem.setSelected(true);
+    rbMenuItem.setMnemonic('1');    
     group.add(rbMenuItem);
     subMenu.add(rbMenuItem);
     rbMenuItem = new JRadioButtonMenuItem("2");
     rbMenuItem.setMnemonic('2');
+    rbMenuItem.setSelected(true);
     group.add(rbMenuItem);
     subMenu.add(rbMenuItem);
     rbMenuItem = new JRadioButtonMenuItem("4");
@@ -140,7 +145,7 @@ public class PowerPaintGUI extends JFrame
     return menuBar;
   }
   
-  public static void main(String... agrs)
+  public void setupComponents()
   {
     PowerPaintGUI powerPaint = new PowerPaintGUI();
     JPanel panel = new JPanel(new BorderLayout());
