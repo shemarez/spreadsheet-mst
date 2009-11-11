@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -70,6 +71,7 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
   
   public void drawCurrentShape(Graphics2D the_graphic)
   {
+    the_graphic.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     the_graphic.setColor(my_color);
     
     the_graphic.drawLine(my_start_point.x, my_start_point.y, my_end_point.x, my_end_point.y);
