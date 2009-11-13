@@ -2,7 +2,10 @@ package powerpaint.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,23 +16,87 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+
+import drawingtool.DrawingTool;
+import drawingtool.Ellipse;
+import drawingtool.Line;
+import drawingtool.Pencil;
+import drawingtool.Rectangle;
 
 public class PowerPaintGUI extends JFrame
 {
+  private PaintPanel my_panel;
+  private JToolBar my_tool_bar;
+  private JMenuBar my_menu_bar;
+  private DrawingTool my_current_tool;
+  private List<DrawingToolAction> my_drawing_tool_actions;
+  private List<ThicknessAction> my_thickness_actions;
+  private final ButtonGroup my_drawing_tool_group = new ButtonGroup();
+  private final ButtonGroup my_thickness_group = new ButtonGroup();
+    
   public PowerPaintGUI()
   {
     super("PowerPaint");
+    my_panel = new PaintPanel();
+    
+    setupDrawingActions();
+    setupThicknessActions();
+    
+    setJMenuBar(createMenuBar());
+    //add(my_menu_bar, BorderLayout.NORTH);
+    add(my_panel, BorderLayout.CENTER);
+    pack();
+    my_tool_bar = createToolBar();
+    add(my_tool_bar, BorderLayout.SOUTH); 
+    my_drawing_tool_actions.get(0).actionPerformed(null);
+    //my_thickness_actions.get(1).actionPerformed(null);
   }
   
-  private static JToolBar createToolBar()
+  private void setupDrawingActions()
+  {
+    DrawingTool the_tool;
+    my_drawing_tool_actions = new ArrayList<DrawingToolAction>();
+     
+    the_tool = new Pencil();
+    my_drawing_tool_actions.add(new DrawingToolAction("Pencil", new ImageIcon("src/powerpaint/gui/pencil_bw.gif"),
+                                                      the_tool, my_panel));
+    the_tool = new Line();
+    my_drawing_tool_actions.add(new DrawingToolAction("Line", new ImageIcon("src/powerpaint/gui/line_bw.gif"),
+                                                      the_tool, my_panel));
+    the_tool = new Rectangle();
+    my_drawing_tool_actions.add(new DrawingToolAction("Rectangle", new ImageIcon("src/powerpaint/gui/rectangle_bw.gif"),
+                                                      the_tool, my_panel));
+    the_tool = new Ellipse();
+    my_drawing_tool_actions.add(new DrawingToolAction("Ellipse", new ImageIcon("src/powerpaint/gui/ellipse_bw.gif"),
+                                                      the_tool, my_panel));
+  }
+  
+  private void setupThicknessActions()
+  {
+    my_thickness_actions = new ArrayList<ThicknessAction>();
+    my_thickness_actions.add(new ThicknessAction("1", 1, my_current_tool));
+    my_thickness_actions.add(new ThicknessAction("2", 2, my_current_tool));
+    my_thickness_actions.add(new ThicknessAction("4", 4, my_current_tool));
+  }
+  
+  private JToolBar createToolBar()
   {
     JToolBar toolBar = new JToolBar();
     
     JButton button = new JButton("Color...");
     button.setMnemonic('C');
-    button.setBackground(Color.black);
+    button.setBackground(Color.BLACK);
     toolBar.add(button);
+    
+    for (DrawingToolAction a : my_drawing_tool_actions)
+    {
+      final JToggleButton tButton = new JToggleButton(a);
+      toolBar.add(tButton);
+      my_drawing_tool_group.add(tButton);
+    }
+    /*toolBar.add(button);
     button = new JButton("Pencil");
     button.setMnemonic('P');
     button.setIcon(new ImageIcon("src/powerpaint/gui/pencil_bw.gif"));
@@ -45,12 +112,12 @@ public class PowerPaintGUI extends JFrame
     button = new JButton("Ellipse");
     button.setMnemonic('E');
     button.setIcon(new ImageIcon("src/powerpaint/gui/ellipse_bw.gif"));
-    toolBar.add(button);
+    toolBar.add(button);*/
     
     return toolBar;
   }
   
-  private static JMenuBar createMenuBar()
+  private JMenuBar createMenuBar()
   {
     JMenuBar menuBar;
     JMenu menu, subMenu;
@@ -85,6 +152,23 @@ public class PowerPaintGUI extends JFrame
     
     subMenu = new JMenu("Thickness");
     subMenu.setMnemonic('T');
+    
+    int tempCount = 0;  //Use to choose a specific action to set selected as default
+    for (ThicknessAction a : my_thickness_actions)
+    {
+      rbMenuItem = new JRadioButtonMenuItem(a);
+      final String buttonName = (String) a.getValue(Action.NAME);
+      rbMenuItem.setMnemonic(buttonName.charAt(0));
+      if (tempCount == 1)
+      {
+        rbMenuItem.setSelected(true);
+      }
+      my_thickness_group.add(rbMenuItem);
+      subMenu.add(rbMenuItem);
+      tempCount++;
+    }
+    
+    /*
     ButtonGroup group = new ButtonGroup();
     rbMenuItem = new JRadioButtonMenuItem("1");
     rbMenuItem.setMnemonic('1');    
@@ -98,7 +182,7 @@ public class PowerPaintGUI extends JFrame
     rbMenuItem = new JRadioButtonMenuItem("4");
     rbMenuItem.setMnemonic('4');
     group.add(rbMenuItem);
-    subMenu.add(rbMenuItem);
+    subMenu.add(rbMenuItem); */
     menu.add(subMenu);
     
     //Create tools menu
@@ -109,9 +193,16 @@ public class PowerPaintGUI extends JFrame
     
     menuItem = new JMenuItem("Color...", 'C');
     menu.add(menuItem);
-    menu.addSeparator();
-    group = new ButtonGroup();    
+    menu.addSeparator();  
     
+    for (DrawingToolAction a : my_drawing_tool_actions)
+    {
+      rbMenuItem = new JRadioButtonMenuItem(a);
+      final String buttonName = (String) a.getValue(Action.NAME);
+      rbMenuItem.setMnemonic(buttonName.charAt(0));
+      menu.add(rbMenuItem);
+    }
+    /*
     rbMenuItem = new JRadioButtonMenuItem("Pencil", new ImageIcon("src/powerpaint/gui/pencil_bw.gif"));
     rbMenuItem.setMnemonic('P');
     rbMenuItem.setSelected(true);
@@ -131,7 +222,7 @@ public class PowerPaintGUI extends JFrame
     rbMenuItem = new JRadioButtonMenuItem("Ellipse", new ImageIcon("src/powerpaint/gui/ellipse_bw.gif"));
     rbMenuItem.setMnemonic('E');
     group.add(rbMenuItem);
-    menu.add(rbMenuItem);
+    menu.add(rbMenuItem);  */
     
     //Create help menu
     

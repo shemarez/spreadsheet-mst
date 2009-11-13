@@ -10,8 +10,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
+
+import drawingtool.DrawingTool;
+import drawingtool.Pencil;
 
 public class PaintPanel extends JPanel implements MouseListener, MouseMotionListener
 {
@@ -19,11 +24,13 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
   private static final int HEIGHT = 300;
   private static final Color my_bg_color = Color.white;
   private State my_state = State.IDLE;
+  private DrawingTool my_tool;
   private Shape my_shape = Shape.LINE;
   private Color my_color = Color.BLACK;
   private enum State {IDLE, DRAGGING};
   private Point my_start_point = null;
   private Point my_end_point = null;
+  private List<DrawingShape> my_shape_collection;
   private BufferedImage my_buff_images = null;
 
   
@@ -33,6 +40,8 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     setPreferredSize(new Dimension(WIDTH, HEIGHT));
     setBackground(my_bg_color);
     
+    my_shape_collection = new ArrayList<DrawingShape>();
+    my_tool = new Pencil();
     this.addMouseListener(this);
     this.addMouseMotionListener(this);
   }
@@ -47,8 +56,14 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     my_color = the_color;
   }
   
+  public void setTool(DrawingTool the_tool)
+  {
+    my_tool = the_tool;
+  }
+  
   public void paintComponent(Graphics the_graphic)
   {
+    super.paintComponent(the_graphic);
     Graphics2D graphic_2d = (Graphics2D) the_graphic;
     
     if (my_buff_images == null)
@@ -65,10 +80,12 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     
     if (my_state == State.DRAGGING)
     {
-      drawCurrentShape(graphic_2d);
+      my_tool.drawShape(graphic_2d, my_start_point, my_end_point);
+      //drawCurrentShape(graphic_2d);
     }
   }
   
+  /*
   public void drawCurrentShape(Graphics2D the_graphic)
   {
     the_graphic.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -78,8 +95,8 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     /*switch(my_shape)
     {
       case: 
-    }*/
-  }
+    }
+  }*/
   
   public void mousePressed(MouseEvent the_event)
   {
@@ -105,7 +122,8 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     {
       my_state = State.IDLE;
       
-      drawCurrentShape(my_buff_images.createGraphics());
+      my_tool.drawShape(my_buff_images.createGraphics(), my_start_point, my_end_point);
+      //drawCurrentShape(my_buff_images.createGraphics());
       
       repaint();
     }    

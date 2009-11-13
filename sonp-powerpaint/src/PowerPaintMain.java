@@ -14,6 +14,7 @@ public class PowerPaintMain extends JFrame
   public static void main(String... agrs)
   {
     PowerPaintGUI powerPaint = new PowerPaintGUI();
-    powerPaint.setupComponents();
+    powerPaint.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    powerPaint.setVisible(true);
   }
 }
