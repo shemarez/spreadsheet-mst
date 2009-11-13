@@ -3,7 +3,7 @@ package drawingtool;
 import java.awt.Graphics;
 import java.awt.Point;
 
-public class Rectangular extends DrawingTool
+public abstract class Rectangular extends DrawingTool
 {
   private double my_x;
   private double my_y;

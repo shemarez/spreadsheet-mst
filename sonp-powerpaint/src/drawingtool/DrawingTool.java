@@ -5,8 +5,8 @@
 package drawingtool;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Shape;
 
 /**
  * A drawing tool.
@@ -18,11 +18,12 @@ public abstract class DrawingTool
 {
   private Color my_color;
   private int my_stroke;
+  private Point my_start_point;
+  private Point my_end_point;
   
   public DrawingTool()
   {
     my_color = Color.BLACK;
-    my_stroke = 2;
   }
   
   public void setColor(Color the_color)
@@ -35,6 +36,16 @@ public abstract class DrawingTool
     my_stroke = the_stroke;
   }
   
+  public void setStartPoint(Point the_point)
+  {
+    my_start_point = the_point;
+  }
+  
+  public void setEndPoint(Point the_point)
+  {
+    my_end_point = the_point;
+  }
+  
   public Color getColor()
   {
     return my_color;
@@ -45,6 +56,15 @@ public abstract class DrawingTool
     return my_stroke;
   }
   
-  public void drawShape(Graphics the_graphics, Point the_start_point,
-                        Point the_end_point){}; 
+  public Point getStartPoint()
+  {
+    return my_start_point;
+  }
+  
+  public Point getEndPoint()
+  {
+    return my_end_point;
+  }
+  
+  public abstract Shape drawShape();
 }

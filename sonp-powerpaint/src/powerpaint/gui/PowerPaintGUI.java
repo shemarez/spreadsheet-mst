@@ -2,9 +2,11 @@ package powerpaint.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -29,10 +31,11 @@ public class PowerPaintGUI extends JFrame
 {
   private PaintPanel my_panel;
   private JToolBar my_tool_bar;
-  private JMenuBar my_menu_bar;
+  //private JMenuBar my_menu_bar;
   private DrawingTool my_current_tool;
   private List<DrawingToolAction> my_drawing_tool_actions;
   private List<ThicknessAction> my_thickness_actions;
+  private List<Action> my_file_actions;
   private final ButtonGroup my_drawing_tool_group = new ButtonGroup();
   private final ButtonGroup my_thickness_group = new ButtonGroup();
     
@@ -51,7 +54,98 @@ public class PowerPaintGUI extends JFrame
     my_tool_bar = createToolBar();
     add(my_tool_bar, BorderLayout.SOUTH); 
     my_drawing_tool_actions.get(0).actionPerformed(null);
-    //my_thickness_actions.get(1).actionPerformed(null);
+    my_thickness_actions.get(1).actionPerformed(null);
+  }
+  
+  private class ThicknessAction extends AbstractAction
+  {
+    private int my_inner_stroke;
+    
+    public ThicknessAction(final String the_name, final int the_stroke)
+    {
+      super(the_name);
+      my_inner_stroke = the_stroke;
+    }
+    
+    public void actionPerformed(final ActionEvent the_event)
+    {
+      my_panel.setStroke(my_inner_stroke);
+    }
+    
+    public int getThickness()
+    {
+      return my_inner_stroke;
+    }
+  }
+  
+  private JMenu createFileMenu()
+  {
+    JMenu menu = new JMenu("File");
+    menu.setMnemonic('F');
+    JMenuItem menu_item;
+    
+    Action quit_action = 
+      new AbstractAction("Quit")
+      {
+        public void actionPerformed(final ActionEvent the_event)
+        {
+          dispose();
+        }
+      };
+    quit_action.putValue(Action.SHORT_DESCRIPTION, "Quit PowerPaint");
+    menu_item = new JMenuItem(quit_action);
+    menu_item.setMnemonic('Q');
+    menu.add(menu_item);
+    
+    Action clear_action =
+      new AbstractAction("Clear")
+      {
+        public void actionPerformed(final ActionEvent the_event)
+        {
+          my_panel.clearBufferedImage();
+          my_panel.repaint();
+        }      
+      };
+    clear_action.putValue(Action.SHORT_DESCRIPTION, "Clear the drawing canvas");
+    menu_item = new JMenuItem(clear_action);
+    menu.addSeparator();
+    menu.add(menu_item);
+    
+    return menu;
+  }
+  
+  private JMenu createOptionMenu()
+  {
+    JMenu menu = new JMenu("Options");
+    menu.setMnemonic('Q');
+    JCheckBoxMenuItem cbMenuItem;
+    JRadioButtonMenuItem rbMenuItem;
+    
+    cbMenuItem = new JCheckBoxMenuItem("Grid");
+    cbMenuItem.setMnemonic('G');
+    menu.add(cbMenuItem);
+    
+    JMenu subMenu = new JMenu("Thickness");
+    subMenu.setMnemonic('T');
+    
+    int tempCount = 0;  //Use to choose a specific action to set selected as default
+    for (ThicknessAction a : my_thickness_actions)
+    {
+      rbMenuItem = new JRadioButtonMenuItem(a);
+      final String buttonName = (String) a.getValue(Action.NAME);
+      rbMenuItem.setMnemonic(buttonName.charAt(0));
+      if (tempCount == 1)
+      {
+        rbMenuItem.setSelected(true);
+      }
+      my_thickness_group.add(rbMenuItem);
+      subMenu.add(rbMenuItem);
+      tempCount++;
+    }
+    
+    menu.add(subMenu);
+    
+    return menu;
   }
   
   private void setupDrawingActions()
@@ -76,9 +170,9 @@ public class PowerPaintGUI extends JFrame
   private void setupThicknessActions()
   {
     my_thickness_actions = new ArrayList<ThicknessAction>();
-    my_thickness_actions.add(new ThicknessAction("1", 1, my_current_tool));
-    my_thickness_actions.add(new ThicknessAction("2", 2, my_current_tool));
-    my_thickness_actions.add(new ThicknessAction("4", 4, my_current_tool));
+    my_thickness_actions.add(new ThicknessAction("1", 1));
+    my_thickness_actions.add(new ThicknessAction("2", 2));
+    my_thickness_actions.add(new ThicknessAction("4", 4));
   }
   
   private JToolBar createToolBar()
@@ -119,26 +213,28 @@ public class PowerPaintGUI extends JFrame
   
   private JMenuBar createMenuBar()
   {
-    JMenuBar menuBar;
+    JMenuBar menuBar = new JMenuBar();
     JMenu menu, subMenu;
     JMenuItem menuItem;
     JRadioButtonMenuItem rbMenuItem;
     JCheckBoxMenuItem cbMenuItem;
     
-    //Create the menu bar
-    menuBar = new JMenuBar();
+    menu = createFileMenu();
+    menuBar.add(menu);
     
+    /*
+        
     //Create file menu
     
     menu = new JMenu("File");
     menu.setMnemonic('F');
-    menuBar.add(menu);
+    menuBar.add(menu);    
     
     menuItem = new JMenuItem("Clear", 'C');
     menu.add(menuItem);
     menu.addSeparator();
     menuItem = new JMenuItem("Quit", 'Q');
-    menu.add(menuItem);
+    menu.add(menuItem); */
     
     //Create options menu
     

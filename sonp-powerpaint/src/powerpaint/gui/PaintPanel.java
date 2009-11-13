@@ -1,17 +1,17 @@
 package powerpaint.gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -23,14 +23,13 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
   private static final int WIDTH = 400;
   private static final int HEIGHT = 300;
   private static final Color my_bg_color = Color.white;
+  private int my_current_stroke;
   private State my_state = State.IDLE;
   private DrawingTool my_tool;
-  private Shape my_shape = Shape.LINE;
   private Color my_color = Color.BLACK;
   private enum State {IDLE, DRAGGING};
   private Point my_start_point = null;
   private Point my_end_point = null;
-  private List<DrawingShape> my_shape_collection;
   private BufferedImage my_buff_images = null;
 
   
@@ -40,15 +39,10 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     setPreferredSize(new Dimension(WIDTH, HEIGHT));
     setBackground(my_bg_color);
     
-    my_shape_collection = new ArrayList<DrawingShape>();
+    //my_shape_collection = new ArrayList<DrawingShape>();
     my_tool = new Pencil();
     this.addMouseListener(this);
     this.addMouseMotionListener(this);
-  }
-  
-  public void setShape(Shape the_shape)
-  {
-    my_shape = the_shape;
   }
   
   public void setColor(Color the_color)
@@ -59,6 +53,22 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
   public void setTool(DrawingTool the_tool)
   {
     my_tool = the_tool;
+  }
+  
+  public void setStroke(int the_stroke)
+  {
+    my_current_stroke = the_stroke;
+    my_tool.setStroke(my_current_stroke);
+  }
+  
+  public int getStroke()
+  {
+    return my_current_stroke;
+  }
+  
+  public void clearBufferedImage()
+  {
+    my_buff_images = null;
   }
   
   public void paintComponent(Graphics the_graphic)
@@ -80,23 +90,20 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     
     if (my_state == State.DRAGGING)
     {
-      my_tool.drawShape(graphic_2d, my_start_point, my_end_point);
-      //drawCurrentShape(graphic_2d);
+      //my_tool.drawShape(graphic_2d, my_start_point, my_end_point);
+      drawCurrentShape(graphic_2d);
     }
   }
   
-  /*
+  
   public void drawCurrentShape(Graphics2D the_graphic)
   {
     the_graphic.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     the_graphic.setColor(my_color);
+    the_graphic.setStroke(new BasicStroke(my_tool.getStroke()));
     
-    the_graphic.drawLine(my_start_point.x, my_start_point.y, my_end_point.x, my_end_point.y);
-    /*switch(my_shape)
-    {
-      case: 
-    }
-  }*/
+    the_graphic.draw(my_tool.drawShape());
+  }
   
   public void mousePressed(MouseEvent the_event)
   {
@@ -104,6 +111,7 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     
     my_start_point = the_event.getPoint();
     my_end_point = my_start_point;
+    my_tool.setStartPoint(my_start_point);
   }
   
   public void mouseDragged(MouseEvent the_event)
@@ -111,7 +119,8 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     my_state = State.DRAGGING;
     
     my_end_point = the_event.getPoint();
-    repaint();
+    my_tool.setEndPoint(my_end_point);
+    repaint();  
   }
   
   public void mouseReleased(MouseEvent the_event)
@@ -122,16 +131,23 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     {
       my_state = State.IDLE;
       
-      my_tool.drawShape(my_buff_images.createGraphics(), my_start_point, my_end_point);
-      //drawCurrentShape(my_buff_images.createGraphics());
+      //my_tool.drawShape(my_buff_images.createGraphics(), my_start_point, my_end_point);
+      drawCurrentShape(my_buff_images.createGraphics());
       
       repaint();
     }    
   }
-  
-  public void mouseMoved(MouseEvent the_event){};
-  public void mouseEntered(MouseEvent the_event){};
-  public void mouseExited(MouseEvent the_event){};
-  public void mouseClicked(MouseEvent the_event){};
+
+  @Override
+  public void mouseClicked(MouseEvent the_event){}
+
+  @Override
+  public void mouseEntered(MouseEvent the_event){}
+
+  @Override
+  public void mouseExited(MouseEvent the_event){}
+
+  @Override
+  public void mouseMoved(MouseEvent the_event){}
 }
 

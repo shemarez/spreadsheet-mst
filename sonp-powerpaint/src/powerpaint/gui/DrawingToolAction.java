@@ -26,6 +26,7 @@ public class DrawingToolAction extends AbstractAction
   public void actionPerformed(final ActionEvent the_event)
   {
     my_panel.setTool(my_tool);
+    my_tool.setStroke(my_panel.getStroke());
     my_panel.repaint();
   }
   

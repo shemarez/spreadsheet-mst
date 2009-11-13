@@ -1,10 +1,7 @@
 package drawingtool;
 
-import java.awt.BasicStroke;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
 public class Pencil extends DrawingTool
@@ -18,19 +15,16 @@ public class Pencil extends DrawingTool
     my_path.setWindingRule(GeneralPath.WIND_EVEN_ODD);
   }
   
-  public void setPath(GeneralPath the_path)
+  public void setStartPoint(Point the_start_point)
   {
-    my_path = the_path;
+    my_path = new GeneralPath();
+    my_path.moveTo(the_start_point.x, the_start_point.y);
   }
   
-  public void drawShape(Graphics the_graphic, Point the_start_point,
-                             Point the_end_point)
+  public Shape drawShape()
   {
-    final Graphics2D g2d = (Graphics2D) the_graphic;
-    
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    g2d.setPaint(getColor());
-    g2d.setStroke(new BasicStroke(getStroke()));
-    g2d.draw(my_path);
+    Point next_point = getEndPoint();
+    my_path.lineTo(next_point.x, next_point.y);
+    return my_path;
   }
 }
