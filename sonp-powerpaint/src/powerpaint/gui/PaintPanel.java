@@ -160,7 +160,7 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
   }
   
   /**
-   * Return the stroke size.   *  
+   * Return the stroke size. 
    * @return The stroke size.
    */
   public int getStroke()
@@ -177,7 +177,7 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
   }
   
   /**
-   * Paints the buffered image (and the grid).   * 
+   * Paints the buffered image (and the grid). 
    * @param the_graphics The graphics context to use for painting.
    */
   public void paintComponent(Graphics the_graphic)
@@ -257,7 +257,7 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
    * 
    * @param the_event The event, ignored.
    */
-  public void mousePressed(MouseEvent the_event)
+  public void mousePressed(final MouseEvent the_event)
   {
     my_state = State.DRAGGING;
     
@@ -273,7 +273,7 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
    * 
    * @param the_event The event, ignored.
    */
-  public void mouseDragged(MouseEvent the_event)
+  public void mouseDragged(final MouseEvent the_event)
   {
     my_state = State.DRAGGING;
     
@@ -288,11 +288,11 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
    * 
    * @param the_event The event, ignored.
    */
-  public void mouseReleased(MouseEvent the_event)
+  public void mouseReleased(final MouseEvent the_event)
   {
     my_end_point = the_event.getPoint();
     
-    if(my_state == State.DRAGGING)
+    if (my_state == State.DRAGGING)
     {
       my_state = State.IDLE;      
       drawCurrentShape(my_buff_images.createGraphics());      
