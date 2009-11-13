@@ -12,10 +12,12 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToggleButton;
@@ -32,6 +34,8 @@ public class PowerPaintGUI extends JFrame
   private PaintPanel my_panel;
   private JToolBar my_tool_bar;
   //private JMenuBar my_menu_bar;
+  private Action my_color_action;
+  private JButton my_color_button;
   private DrawingTool my_current_tool;
   private List<DrawingToolAction> my_drawing_tool_actions;
   private List<ThicknessAction> my_thickness_actions;
@@ -148,13 +152,70 @@ public class PowerPaintGUI extends JFrame
     return menu;
   }
   
+  private JMenu createToolMenu()
+  {
+    JMenu menu = new JMenu("Tools");
+    menu.setMnemonic('T');
+    JRadioButtonMenuItem rbMenuItem;
+    
+    my_color_action = 
+      new AbstractAction("Color...")
+      {
+        public void actionPerformed(final ActionEvent the_event)
+        {
+          final Color color =
+            JColorChooser.showDialog(null, "Select the drawing color", 
+                                     my_current_tool.getColor());
+          if (color != null)
+          {
+            my_current_tool.setColor(color);
+            my_color_button.setBackground(color);
+          }
+        }
+      };
+    JMenuItem menu_item = new JMenuItem(my_color_action);
+    menu_item.setMnemonic('C');
+    menu.add(menu_item);
+    menu.addSeparator();
+    
+    for (DrawingToolAction a : my_drawing_tool_actions)
+    {
+      rbMenuItem = new JRadioButtonMenuItem(a);
+      final String buttonName = (String) a.getValue(Action.NAME);
+      rbMenuItem.setMnemonic(buttonName.charAt(0));
+      menu.add(rbMenuItem);
+    }
+    
+    return menu;
+  }
+  
+  private JMenu createHelpMenu()
+  {
+    JMenu menu = new JMenu("Help");
+    menu.setMnemonic('H');
+    
+    Action about = 
+      new AbstractAction("About...")
+      {
+        public void actionPerformed(final ActionEvent the_event)
+        {
+          JOptionPane.showMessageDialog(null, "TCSS 305 PowerPaint, v1.0", "PowerPaint", 
+                                        JOptionPane.INFORMATION_MESSAGE);
+        }
+      };
+    JMenuItem menu_item = new JMenuItem(about);
+    menu.add(menu_item);
+    return menu;
+  }
+  
   private void setupDrawingActions()
   {
     DrawingTool the_tool;
     my_drawing_tool_actions = new ArrayList<DrawingToolAction>();
      
     the_tool = new Pencil();
-    my_drawing_tool_actions.add(new DrawingToolAction("Pencil", new ImageIcon("src/powerpaint/gui/pencil_bw.gif"),
+    my_drawing_tool_actions.add(new DrawingToolAction("Pencil", 
+                                                      new ImageIcon("src/powerpaint/gui/pencil_bw.gif"),
                                                       the_tool, my_panel));
     the_tool = new Line();
     my_drawing_tool_actions.add(new DrawingToolAction("Line", new ImageIcon("src/powerpaint/gui/line_bw.gif"),
@@ -179,7 +240,7 @@ public class PowerPaintGUI extends JFrame
   {
     JToolBar toolBar = new JToolBar();
     
-    JButton button = new JButton("Color...");
+    JButton button = new JButton(my_color_action);
     button.setMnemonic('C');
     button.setBackground(Color.BLACK);
     toolBar.add(button);
@@ -190,144 +251,34 @@ public class PowerPaintGUI extends JFrame
       toolBar.add(tButton);
       my_drawing_tool_group.add(tButton);
     }
-    /*toolBar.add(button);
-    button = new JButton("Pencil");
-    button.setMnemonic('P');
-    button.setIcon(new ImageIcon("src/powerpaint/gui/pencil_bw.gif"));
-    toolBar.add(button);
-    button = new JButton("Line");
-    button.setMnemonic('L');
-    button.setIcon(new ImageIcon("src/powerpaint/gui/line_bw.gif"));
-    toolBar.add(button);
-    button = new JButton("Rectangle");
-    button.setMnemonic('R');
-    button.setIcon(new ImageIcon("src/powerpaint/gui/rectangle_bw.gif"));
-    toolBar.add(button);
-    button = new JButton("Ellipse");
-    button.setMnemonic('E');
-    button.setIcon(new ImageIcon("src/powerpaint/gui/ellipse_bw.gif"));
-    toolBar.add(button);*/
-    
+        
     return toolBar;
   }
   
   private JMenuBar createMenuBar()
   {
     JMenuBar menuBar = new JMenuBar();
-    JMenu menu, subMenu;
-    JMenuItem menuItem;
-    JRadioButtonMenuItem rbMenuItem;
-    JCheckBoxMenuItem cbMenuItem;
+    JMenu menu;
+    
+    //Create file menu
     
     menu = createFileMenu();
     menuBar.add(menu);
     
-    /*
-        
-    //Create file menu
-    
-    menu = new JMenu("File");
-    menu.setMnemonic('F');
-    menuBar.add(menu);    
-    
-    menuItem = new JMenuItem("Clear", 'C');
-    menu.add(menuItem);
-    menu.addSeparator();
-    menuItem = new JMenuItem("Quit", 'Q');
-    menu.add(menuItem); */
-    
     //Create options menu
     
-    menu = new JMenu("Options");
-    menu.setMnemonic('O');
+    menu = createOptionMenu();
     menuBar.add(menu);
-    
-    cbMenuItem = new JCheckBoxMenuItem("Grid");
-    cbMenuItem.setMnemonic('G');
-    menu.add(cbMenuItem);
-    
-    subMenu = new JMenu("Thickness");
-    subMenu.setMnemonic('T');
-    
-    int tempCount = 0;  //Use to choose a specific action to set selected as default
-    for (ThicknessAction a : my_thickness_actions)
-    {
-      rbMenuItem = new JRadioButtonMenuItem(a);
-      final String buttonName = (String) a.getValue(Action.NAME);
-      rbMenuItem.setMnemonic(buttonName.charAt(0));
-      if (tempCount == 1)
-      {
-        rbMenuItem.setSelected(true);
-      }
-      my_thickness_group.add(rbMenuItem);
-      subMenu.add(rbMenuItem);
-      tempCount++;
-    }
-    
-    /*
-    ButtonGroup group = new ButtonGroup();
-    rbMenuItem = new JRadioButtonMenuItem("1");
-    rbMenuItem.setMnemonic('1');    
-    group.add(rbMenuItem);
-    subMenu.add(rbMenuItem);
-    rbMenuItem = new JRadioButtonMenuItem("2");
-    rbMenuItem.setMnemonic('2');
-    rbMenuItem.setSelected(true);
-    group.add(rbMenuItem);
-    subMenu.add(rbMenuItem);
-    rbMenuItem = new JRadioButtonMenuItem("4");
-    rbMenuItem.setMnemonic('4');
-    group.add(rbMenuItem);
-    subMenu.add(rbMenuItem); */
-    menu.add(subMenu);
-    
+        
     //Create tools menu
     
-    menu = new JMenu("Tools");
-    menu.setMnemonic('T');
+    menu = createToolMenu();
     menuBar.add(menu);
-    
-    menuItem = new JMenuItem("Color...", 'C');
-    menu.add(menuItem);
-    menu.addSeparator();  
-    
-    for (DrawingToolAction a : my_drawing_tool_actions)
-    {
-      rbMenuItem = new JRadioButtonMenuItem(a);
-      final String buttonName = (String) a.getValue(Action.NAME);
-      rbMenuItem.setMnemonic(buttonName.charAt(0));
-      menu.add(rbMenuItem);
-    }
-    /*
-    rbMenuItem = new JRadioButtonMenuItem("Pencil", new ImageIcon("src/powerpaint/gui/pencil_bw.gif"));
-    rbMenuItem.setMnemonic('P');
-    rbMenuItem.setSelected(true);
-    group.add(rbMenuItem);
-    menu.add(rbMenuItem);
-    
-    rbMenuItem = new JRadioButtonMenuItem("Line", new ImageIcon("src/powerpaint/gui/line_bw.gif"));
-    rbMenuItem.setMnemonic('L');
-    group.add(rbMenuItem);
-    menu.add(rbMenuItem);
-    
-    rbMenuItem = new JRadioButtonMenuItem("Rectangle", new ImageIcon("src/powerpaint/gui/rectangle_bw.gif"));
-    rbMenuItem.setMnemonic('R');
-    group.add(rbMenuItem);
-    menu.add(rbMenuItem);
-    
-    rbMenuItem = new JRadioButtonMenuItem("Ellipse", new ImageIcon("src/powerpaint/gui/ellipse_bw.gif"));
-    rbMenuItem.setMnemonic('E');
-    group.add(rbMenuItem);
-    menu.add(rbMenuItem);  */
-    
+         
     //Create help menu
     
-    menu = new JMenu("Help");
-    menu.setMnemonic('H');
+    menu = createHelpMenu();
     menuBar.add(menu);
-    
-    menuItem = new JMenuItem("About...", 'A');
-    menu.add(menuItem);
     
     return menuBar;
   }
