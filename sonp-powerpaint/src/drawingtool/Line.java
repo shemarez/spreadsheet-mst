@@ -1,22 +1,25 @@
+/*
+ * Line.
+ * Fall 09
+ */
 package drawingtool;
 
-import java.awt.BasicStroke;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Line2D;
 
+/**
+ * Line class.
+ * @author Son
+ * @version 1.0
+ */
 public class Line extends DrawingTool
 {
-  public Line()
-  {
-    super();
-  }
-  
+  /**
+   * Return the shape drawn by this line.
+   * @return The shape drawn by this line.
+   */
   public Shape drawShape()
   {
-    Line2D.Double line = new Line2D.Double(getStartPoint(), getEndPoint());
-    return line;
+    return new Line2D.Double(getStartPoint(), getEndPoint());
   }
 }

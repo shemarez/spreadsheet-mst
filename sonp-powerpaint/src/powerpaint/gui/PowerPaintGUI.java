@@ -1,3 +1,7 @@
+/*
+ * PowerPaintGUI
+ * Fall 09
+ */
 package powerpaint.gui;
 
 import java.awt.BorderLayout;
@@ -30,20 +34,70 @@ import drawingtool.Line;
 import drawingtool.Pencil;
 import drawingtool.Rectangle;
 
+/**
+ * PowerPaintGUI.
+ * @author Son
+ * @version 1.0
+ */
 public class PowerPaintGUI extends JFrame
 {
+  //Instance fields
+  
+  /**
+   * My panel.
+   */
   private PaintPanel my_panel;
+  
+  /**
+   * My tool bar.
+   */
   private JToolBar my_tool_bar;
-  //private JMenuBar my_menu_bar;
+  
+  /**
+   * My color action.
+   */
   private Action my_color_action;
+  
+  /**
+   * My color button.
+   */
   private JButton my_color_button;
+  
+  /**
+   * My current tool.
+   */
   private DrawingTool my_current_tool;
+  
+  /**
+   * My drawing tool actions list.
+   */
   private List<DrawingToolAction> my_drawing_tool_actions;
+  
+  /**
+   * My thickness actions list.
+   */
   private List<ThicknessAction> my_thickness_actions;
+  
+  /**
+   * My file actions list.
+   */
   private List<Action> my_file_actions;
+  
+  /**
+   * My drawing tool button group.
+   */
   private final ButtonGroup my_drawing_tool_group = new ButtonGroup();
+  
+  /**
+   * My thickness button group.
+   */
   private final ButtonGroup my_thickness_group = new ButtonGroup();
     
+  //Constructor
+  
+  /**
+   * Construct a powerpaintgui object.
+   */
   public PowerPaintGUI()
   {
     super("PowerPaint");
@@ -62,27 +116,58 @@ public class PowerPaintGUI extends JFrame
     my_thickness_actions.get(1).actionPerformed(null);
   }
   
+  /**
+   * ThicknessAction.
+   * @author Son
+   * @version 1.0
+   */
   private class ThicknessAction extends AbstractAction
   {
+    //Instance fields
+    
+    /**
+     * The stroke size.
+     */
     private int my_inner_stroke;
     
+    //Constructor
+    
+    /**
+     * Construct a ThicknessAction object
+     * @param the_name The name of the object.
+     *        the_stroke The stroke size.
+     * 
+     */
     public ThicknessAction(final String the_name, final int the_stroke)
     {
       super(the_name);
       my_inner_stroke = the_stroke;
     }
     
+    //Instance fields
+    
+    /**
+     * Set the stroke of my_panel.
+     */
     public void actionPerformed(final ActionEvent the_event)
     {
       my_panel.setStroke(my_inner_stroke);
     }
     
+    /**
+     * Return the thickness of this object.
+     * @return The thickness of this object.
+     */
     public int getThickness()
     {
       return my_inner_stroke;
     }
   }
   
+  /**
+   * Create a file menu of the menu bar.
+   * @return A file menu of the menu bar.
+   */
   private JMenu createFileMenu()
   {
     JMenu menu = new JMenu("File");
@@ -119,6 +204,10 @@ public class PowerPaintGUI extends JFrame
     return menu;
   }
   
+  /**
+   * Return an option menu in the menu bar.
+   * @return An option menu in the menu bar.
+   */
   private JMenu createOptionMenu()
   {
     JMenu menu = new JMenu("Options");
@@ -172,6 +261,10 @@ public class PowerPaintGUI extends JFrame
     return menu;
   }
   
+  /**
+   * Return a tool menu in the menu bar.
+   * @return A tool menu in the menu bar.
+   */
   private JMenu createToolMenu()
   {
     JMenu menu = new JMenu("Tools");
@@ -209,6 +302,10 @@ public class PowerPaintGUI extends JFrame
     return menu;
   }
   
+  /**
+   * Return a help menu in the menu bar.
+   * @return A help menu in the menu bar.
+   */
   private JMenu createHelpMenu()
   {
     JMenu menu = new JMenu("Help");
@@ -228,6 +325,9 @@ public class PowerPaintGUI extends JFrame
     return menu;
   }
   
+  /**
+   * Setup the drawing actions.
+   */
   private void setupDrawingActions()
   {
     DrawingTool the_tool;
@@ -248,6 +348,9 @@ public class PowerPaintGUI extends JFrame
                                                       the_tool, my_panel));
   }
   
+  /**
+   * Setup the thickness actions.
+   */
   private void setupThicknessActions()
   {
     my_thickness_actions = new ArrayList<ThicknessAction>();
@@ -256,6 +359,10 @@ public class PowerPaintGUI extends JFrame
     my_thickness_actions.add(new ThicknessAction("4", 4));
   }
   
+  /**
+   * Return a tool bar.
+   * @return A tool bar.
+   */
   private JToolBar createToolBar()
   {
     JToolBar toolBar = new JToolBar();
@@ -275,6 +382,10 @@ public class PowerPaintGUI extends JFrame
     return toolBar;
   }
   
+  /**
+   * Return a menu bar for the panel.
+   * @return
+   */
   private JMenuBar createMenuBar()
   {
     JMenuBar menuBar = new JMenuBar();
@@ -301,22 +412,5 @@ public class PowerPaintGUI extends JFrame
     menuBar.add(menu);
     
     return menuBar;
-  }
-  
-  public void setupComponents()
-  {
-    PowerPaintGUI powerPaint = new PowerPaintGUI();
-    JPanel panel = new JPanel(new BorderLayout());
-    PaintPanel paintPanel = new PaintPanel();
-    JMenuBar menuBar = createMenuBar();
-    JToolBar toolBar = createToolBar();
-    
-    panel.add(menuBar, BorderLayout.NORTH);
-    panel.add(paintPanel, BorderLayout.CENTER);
-    panel.add(toolBar, BorderLayout.SOUTH);
-    powerPaint.add(panel);
-    powerPaint.pack();
-    powerPaint.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    powerPaint.setVisible(true);
   }
 }

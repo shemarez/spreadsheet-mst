@@ -52,8 +52,9 @@ public abstract class DrawingTool
   
   /**
    * Set the color of this drawing tool.
+   * @param the_color The input color.
    */
-  public void setColor(Color the_color)
+  public void setColor(final Color the_color)
   {
     my_color = the_color;
   }
@@ -62,7 +63,7 @@ public abstract class DrawingTool
    * Set the stroke size of this drawing tool.
    * @param the_stroke The new stroke.
    */
-  public void setStroke(int the_stroke)
+  public void setStroke(final int the_stroke)
   {
     my_stroke = the_stroke;
   }
@@ -71,7 +72,7 @@ public abstract class DrawingTool
    * Set the start point.
    * @param the_point The start point.
    */
-  public void setStartPoint(Point the_point)
+  public void setStartPoint(final Point the_point)
   {
     my_start_point = the_point;
   }
@@ -80,30 +81,50 @@ public abstract class DrawingTool
    * Set the end point.
    * @param the_point The end point.
    */
-  public void setEndPoint(Point the_point)
+  public void setEndPoint(final Point the_point)
   {
     my_end_point = the_point;
   }
   
+  /**
+   * Return the color of this drawing tool.
+   * @return The color of this drawing tool.
+   */
   public Color getColor()
   {
     return my_color;
   }
   
+  /**
+   * Return the stroke size of this drawing tool.
+   * @return The stroke size of this drawing tool.
+   */
   public int getStroke()
   {
     return my_stroke;
   }
   
+  /**
+   * Return the starting point of this drawing tool.
+   * @return The starting point of this drawing tool.
+   */
   public Point getStartPoint()
   {
     return my_start_point;
   }
   
+  /**
+   * Return the ending point of this drawing tool.
+   * @return The ending point of this drawing tool.
+   */
   public Point getEndPoint()
   {
     return my_end_point;
   }
   
+  /**
+   * Return the shape of this drawing tool.
+   * @return The shape of this drawing tool.
+   */
   public abstract Shape drawShape();
 }

@@ -1,19 +1,23 @@
+/*
+ * Ellipse class.
+ * Fall 09
+ */
 package drawingtool;
 
-import java.awt.BasicStroke;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
+/**
+ * An Ellipse class.
+ * @author Son
+ * @version 1.0
+ */
 public class Ellipse extends Rectangular
-{
-  public Ellipse()
-  {
-    super();
-  }
-  
+{  
+  /**
+   * Return the shape is drawn by this ellipse.
+   * @return  The shape is drawn by this ellipse.
+   */
   public Shape drawShape()
   {    
     setDimension(getStartPoint(), getEndPoint());
