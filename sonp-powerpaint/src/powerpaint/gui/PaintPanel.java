@@ -31,6 +31,7 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
   private Point my_start_point = null;
   private Point my_end_point = null;
   private BufferedImage my_buff_images = null;
+  private boolean my_grid_boolean = false;
 
   
   public PaintPanel()
@@ -61,6 +62,16 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     my_tool.setStroke(my_current_stroke);
   }
   
+  public void setMyGridBoolean(boolean enable)
+  {
+    my_grid_boolean = enable;
+  }
+  
+  public Color getColor()
+  {
+    return my_color;
+  }
+  
   public int getStroke()
   {
     return my_current_stroke;
@@ -76,6 +87,8 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     super.paintComponent(the_graphic);
     Graphics2D graphic_2d = (Graphics2D) the_graphic;
     
+    //Initialize my_buff_images the first time
+    
     if (my_buff_images == null)
     {
       int w = this.getWidth();
@@ -83,8 +96,10 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
       my_buff_images = (BufferedImage) this.createImage(w, h);
       Graphics2D gc = my_buff_images.createGraphics();
       gc.setColor(my_bg_color);
-      gc.fillRect(0, 0, w, h);      
+      gc.fillRect(0, 0, w, h);
     }
+    
+    //Display the buffered image.
     
     graphic_2d.drawImage(my_buff_images, null, 0, 0);
     
@@ -92,6 +107,11 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     {
       //my_tool.drawShape(graphic_2d, my_start_point, my_end_point);
       drawCurrentShape(graphic_2d);
+    }
+    
+    if (my_grid_boolean == true)
+    {
+      drawGrid(graphic_2d, 10);
     }
   }
   
@@ -103,6 +123,26 @@ public class PaintPanel extends JPanel implements MouseListener, MouseMotionList
     the_graphic.setStroke(new BasicStroke(my_tool.getStroke()));
     
     the_graphic.draw(my_tool.drawShape());
+  }
+  
+  public void drawGrid(Graphics2D the_graphic, int the_spacing)
+  {
+    the_graphic.setColor(Color.BLACK);
+    the_graphic.setStroke(new BasicStroke(1));
+    
+    for (int i = 1; i < (WIDTH / the_spacing); i++)
+    {
+      Point start = new Point(i * the_spacing, 0);
+      Point end = new Point(i * the_spacing, HEIGHT);
+      the_graphic.drawLine(start.x, start.y, end.x, end.y);
+    }
+    
+    for (int i = 1; i < (HEIGHT / the_spacing); i++)
+    {
+      Point start = new Point(0, i * the_spacing);
+      Point end = new Point(WIDTH, i * the_spacing);
+      the_graphic.drawLine(start.x, start.y, end.x, end.y);      
+    }
   }
   
   public void mousePressed(MouseEvent the_event)

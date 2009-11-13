@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -125,7 +126,26 @@ public class PowerPaintGUI extends JFrame
     JCheckBoxMenuItem cbMenuItem;
     JRadioButtonMenuItem rbMenuItem;
     
-    cbMenuItem = new JCheckBoxMenuItem("Grid");
+    Action grid =
+      new AbstractAction("Grid")
+      {
+        public void actionPerformed(final ActionEvent the_event)
+        {
+          AbstractButton grid_button = (AbstractButton) the_event.getSource();
+          boolean selected = grid_button.getModel().isSelected();
+          if (selected)
+          {
+            my_panel.setMyGridBoolean(true);
+            my_panel.repaint();
+          }
+          else
+          {
+            my_panel.setMyGridBoolean(false);
+            my_panel.repaint();
+          }
+        }
+      };
+    cbMenuItem = new JCheckBoxMenuItem(grid);
     cbMenuItem.setMnemonic('G');
     menu.add(cbMenuItem);
     
@@ -165,10 +185,10 @@ public class PowerPaintGUI extends JFrame
         {
           final Color color =
             JColorChooser.showDialog(null, "Select the drawing color", 
-                                     my_current_tool.getColor());
+                                     my_color_button.getBackground());
           if (color != null)
           {
-            my_current_tool.setColor(color);
+            my_panel.setColor(color);
             my_color_button.setBackground(color);
           }
         }
@@ -240,10 +260,10 @@ public class PowerPaintGUI extends JFrame
   {
     JToolBar toolBar = new JToolBar();
     
-    JButton button = new JButton(my_color_action);
-    button.setMnemonic('C');
-    button.setBackground(Color.BLACK);
-    toolBar.add(button);
+    my_color_button = new JButton(my_color_action);
+    my_color_button.setMnemonic('C');
+    my_color_button.setBackground(Color.BLACK);
+    toolBar.add(my_color_button);
     
     for (DrawingToolAction a : my_drawing_tool_actions)
     {
