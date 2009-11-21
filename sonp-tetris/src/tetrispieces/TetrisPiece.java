@@ -1,84 +1,183 @@
+/**
+ * Tetris pieces for Tetris game.
+ * Fall 09.
+ */
 package tetrispieces;
 
 import java.awt.Point;
 
+/**
+ * Tetris Piece class for Tetris game.
+ * @author Son Pham
+ * @version 1.0
+ */
 public class TetrisPiece
 {
+  //Constant field
+  
+  /**
+   * Number of blocks in a piece.
+   */
+  private static final int PIECE_BLOCKS = 4;
+  
+  //Instance fields
+
   /**
    * The start point of the local board.
    */
-  private Point my_start_point;
+  private Point my_local_start_point;
   
+  /**
+   * The start point of the piece's board in the game board.
+   */
+  private Point my_board_start_point;
   /**
    * The set of points represent the object in the local board.
    */
-  private Point[] my_local_position;
+  private Point[] my_local_point_array;
   
   /**
    * The set of points represent the object in the game board.
    */
-  private Point[] my_board_position;
+  private Point[] my_board_point_array;
   
-  public void setStartPoint(Point the_point)
+  //Constructor
+  
+  /**
+   * Constructs a TetrisPiece.
+   */
+  public TetrisPiece()
   {
-    my_start_point = the_point;
+    my_local_start_point = new Point(0, 0);
+    my_local_point_array = new Point[PIECE_BLOCKS];
+    my_board_point_array = new Point[PIECE_BLOCKS];
   }
   
-  public void setLocalPosition(Point[] the_position)
+  //Instance methods
+  
+  /**
+   * Return a clone of the input array.
+   * @param the_array The input array.
+   * @return A clone of the input array.
+   */
+  private Point[] clonePointArray(final Point[] the_array)
   {
-    my_local_position = the_position;
+    final Point[] result = new Point[the_array.length];
+    
+    for (int i = 0; i < the_array.length; i++)
+    {
+      result[i] = (Point) the_array[i].clone();
+    }
+    
+    return result;
   }
   
-  public void setX(int index, int the_x)
+  /**
+   * Set the start point of the local board.
+   * @param the_point The point.
+   */
+  public void setStartPoint(final Point the_point)
   {
-    Point indexPoint = my_local_position[index];
-    my_local_position[index].setLocation(the_x, indexPoint.y);
+    my_local_start_point = the_point;
   }
   
-  public void setY(int index, int the_y)
+  /**
+   * Set the point array for the local board.
+   * @param the_position The point array.
+   */
+  public void setLocalPointArray(final Point[] the_position)
   {
-    Point indexPoint = my_local_position[index];
-    my_local_position[index].setLocation(indexPoint.x, the_y);
+    final Point[] clone = clonePointArray(the_position);
+    my_local_point_array = clone;
   }
   
+  /**
+   * Set the x value of the point at the specific index
+   * of the point array.
+   * @param the_index The index.
+   * @param the_x The x.
+   */
+  public void setX(final int the_index, final int the_x)
+  {
+    final Point indexPoint = my_local_point_array[the_index];
+    my_local_point_array[the_index].setLocation(the_x, indexPoint.y);
+  }
+  
+  /**
+   * Set the y value of the point at the specific index
+   * of the point array.
+   * @param the_index The index.
+   * @param the_y The y.
+   */
+  public void setY(final int the_index, final int the_y)
+  {
+    final Point indexPoint = my_local_point_array[the_index];
+    my_local_point_array[the_index].setLocation(indexPoint.x, the_y);
+  }
+  
+  /**
+   * Get the start point of the local board.
+   * @return The start point of the local board.
+   */
   public Point getStartPoint()
   {
-    return my_start_point;
+    return my_local_start_point;
   }
   
-  /*
-  public Point[] getLocalPosition()
+  /**
+   * Get the start point of the local board at the game board.
+   * @return The start point of the local board at the game board.
+   */
+  public Point getBoardStartPoint()
   {
-    return my_local_position;
+    return my_board_start_point;
   }
   
-  public Point[] getBoardPosition()
+  /**
+   * Get the point array of the local board.
+   * @return The point array of the local board.
+   */
+  public Point[] getLocalPointArray()
   {
-    return my_board_position;
+    return clonePointArray(my_local_point_array);
   }
-  */
   
+  /**
+   * Get the point array of the local board at the game board.
+   * @return The point array of the local board at the game board.
+   */
+  public Point[] getBoardPointArray()
+  {
+    return clonePointArray(my_board_point_array);
+  }
+  
+  /**
+   * Rotate the piece clock-wise.
+   */
   public void rotateCW()
   {
-    TetrisPiece tempPiece = new TetrisPiece();
-    tempPiece.my_local_position = my_local_position;
+    final TetrisPiece tempPiece = new TetrisPiece();
+    tempPiece.my_local_point_array = clonePointArray(my_local_point_array);
     
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < PIECE_BLOCKS; i++)
     {
-      setX(i, tempPiece.my_local_position[i].y);
-      setY(i, - tempPiece.my_local_position[i].x);
+      setX(i, tempPiece.my_local_point_array[i].y);
+      setY(i, -tempPiece.my_local_point_array[i].x);
     }
   }
   
+  /**
+   * Rotate the piece counter clock_wise.
+   */
   public void rotateCounterCW()
   {
-    TetrisPiece tempPiece = new TetrisPiece();
-    tempPiece.my_local_position = my_local_position;
+    final TetrisPiece tempPiece = new TetrisPiece();
+    tempPiece.my_local_point_array = clonePointArray(my_local_point_array);
     
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < PIECE_BLOCKS; i++)
     {
-      setX(i, - tempPiece.my_local_position[i].y);
-      setY(i, tempPiece.my_local_position[i].x);
+      setX(i, -tempPiece.my_local_point_array[i].y);
+      setY(i, tempPiece.my_local_point_array[i].x);
     }
   }
   
@@ -89,13 +188,14 @@ public class TetrisPiece
    */
   public void moveInGameBoard(final Point the_start_point)
   {
-    for (int i = 0; i < 4; i++)
+    my_board_start_point = the_start_point;
+    for (int i = 0; i < PIECE_BLOCKS; i++)
     {
-      int dx = my_local_position[i].x - my_start_point.x;
-      int dy = my_local_position[i].y - my_start_point.y;
-      Point pointInGameBoard = new Point(the_start_point.x + dx,
-                                         the_start_point.y + dy);
-      my_board_position[i] = pointInGameBoard;      
+      final int dx = my_local_point_array[i].x - my_local_start_point.x;
+      final int dy = my_local_point_array[i].y - my_local_start_point.y;
+      final Point pointInGameBoard = new Point(my_board_start_point.x + dx,
+                                         my_board_start_point.y + dy);
+      my_board_point_array[i] = pointInGameBoard;      
     }
   }
 }
