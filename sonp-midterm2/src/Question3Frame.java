@@ -3,12 +3,19 @@
  * Question 3 - Layout Managers
  */
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
@@ -92,6 +99,46 @@ public class Question3Frame extends JFrame
     // to avoid magic numbers, consider using the List
     // of buttons in some way other than directly referencing
     // each element by number...
+    
+    final Question3Frame the_frame = new Question3Frame();
+    final JPanel master_panel = new JPanel(new BorderLayout());
+    final JPanel north_panel = new JPanel(new GridLayout(0, 1));
+    final JPanel inner_north_panel = new JPanel(new BorderLayout());
+    final JPanel center_panel = new JPanel(new GridLayout(0, 2));
+    final JPanel inner_panel_num_3 = new JPanel(new BorderLayout());
+    final JPanel inner_panel_num_4 = new JPanel(new BorderLayout());
+    final JPanel inner_panel_num_56 = new JPanel(new FlowLayout());
+    final JPanel inner_panel_num_7 = new JPanel(new BorderLayout());
+    final JPanel south_panel = new JPanel(new BorderLayout());
+    final Iterator<JButton> the_iter = my_buttons.iterator();
+    
+    inner_north_panel.add((Component) the_iter.next(), BorderLayout.WEST);
+    inner_north_panel.add(my_text_field, BorderLayout.CENTER);
+    north_panel.add((Component) the_iter.next());
+    north_panel.add(inner_north_panel);
+    north_panel.add((Component) the_iter.next());
+    
+    inner_panel_num_3.add((Component) the_iter.next(), BorderLayout.CENTER);
+    inner_panel_num_3.setPreferredSize(new Dimension(200, 100));
+    inner_panel_num_4.add((Component) the_iter.next(), BorderLayout.SOUTH);
+    inner_panel_num_56.add((Component) the_iter.next());
+    inner_panel_num_56.add((Component) the_iter.next());
+    inner_panel_num_7.add((Component) the_iter.next(), BorderLayout.CENTER);
+    inner_panel_num_7.setPreferredSize(new Dimension(200, 100));
+    center_panel.add(inner_panel_num_3);
+    center_panel.add(inner_panel_num_4);
+    center_panel.add(inner_panel_num_56);
+    center_panel.add(inner_panel_num_7);
+    
+    south_panel.add(my_label, BorderLayout.WEST);
+    
+    master_panel.add(north_panel, BorderLayout.NORTH);
+    master_panel.add(center_panel, BorderLayout.CENTER);
+    master_panel.add(south_panel, BorderLayout.SOUTH);
+    
+    the_frame.add(master_panel);
+    the_frame.pack();
+    the_frame.setVisible(true);
   }
   
   // Main Method

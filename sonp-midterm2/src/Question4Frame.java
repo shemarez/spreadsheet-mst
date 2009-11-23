@@ -3,9 +3,16 @@
  * Question 4 - Drawing with Java2D
  */
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -94,6 +101,23 @@ public class Question4Frame extends JFrame
    */
   private static class GraphicsPanel extends JPanel
   {
+    //Static fields
+    
+    /**
+     * The diameter of each circle.
+     */
+    private static final double DIAMETER = 50.0;
+    
+    /**
+     * The width of the rectangle.
+     */
+    private static final double THE_WIDTH = 300.0;
+    
+    /**
+     * The height of the rectangle.
+     */
+    private static final double THE_HEIGHT = 150.0;
+    
     /**
      * Constructs a new GraphicsPanel.  
      */
@@ -111,6 +135,35 @@ public class Question4Frame extends JFrame
     // magic number warnings if you're going for extra credit.
     // you should only need 3 constants to calculate all the 
     // necessary numbers.
+    
+    /**
+     * Paint the required figure.
+     * 
+     * @param the_graphics The graphics context to use for painting.
+     */
+    public void paintComponent(final Graphics the_graphics)
+    {
+      super.paintComponent(the_graphics);
+      final Graphics2D g2d = (Graphics2D) the_graphics;
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      
+      g2d.setStroke(new BasicStroke(1));
+      final Shape rect = new Rectangle2D.Double(0, 0, THE_WIDTH, THE_HEIGHT);
+      g2d.draw(rect);
+      g2d.drawLine(0, (int) THE_HEIGHT, (int) THE_WIDTH, 0);
+      
+      final Shape ellipse1 = new Ellipse2D.Double(0, 0, DIAMETER, DIAMETER);
+      final Shape ellipse2 = new Ellipse2D.Double(THE_WIDTH - DIAMETER, 0, DIAMETER, DIAMETER);
+      final Shape ellipse3 = new Ellipse2D.Double(THE_WIDTH - DIAMETER, THE_HEIGHT - DIAMETER, 
+                                                  DIAMETER, DIAMETER);
+      final Shape ellipse4 = new Ellipse2D.Double(0, THE_HEIGHT - DIAMETER, 
+                                                  DIAMETER, DIAMETER);
+      
+      g2d.fill(ellipse1);
+      g2d.draw(ellipse2);
+      g2d.fill(ellipse3);
+      g2d.draw(ellipse4);
+    }
   }
   
   // Main Method
