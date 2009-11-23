@@ -22,7 +22,7 @@ import javax.swing.JTextField;
  * The frame class for Question 3.
  * 
  * @author Daniel M. Zimmerman
- * @author (your name here)
+ * @author Son Pham
  * @version Autumn 2009
  */
 @SuppressWarnings("serial")

@@ -21,7 +21,7 @@ import javax.swing.JPanel;
  * The frame class for Question 4.
  * 
  * @author Daniel M. Zimmerman
- * @author (your name here)
+ * @author Son Pham
  * @version Autumn 2009
  */
 @SuppressWarnings("serial")
@@ -96,7 +96,7 @@ public class Question4Frame extends JFrame
    * The panel class that actually does the drawing.
    * 
    * @author Daniel M. Zimmerman
-   * @author (your name here)
+   * @author Son Pham
    * @version Winter 2009
    */
   private static class GraphicsPanel extends JPanel
