@@ -97,11 +97,12 @@ public class TetrisPiece
    * @param the_index The index.
    * @param the_x The x.
    */
+  /*
   public void setX(final int the_index, final int the_x)
   {
     final Point indexPoint = my_local_point_array[the_index];
     my_local_point_array[the_index].setLocation(the_x, indexPoint.y);
-  }
+  }*/
   
   /**
    * Set the y value of the point at the specific index
@@ -109,20 +110,22 @@ public class TetrisPiece
    * @param the_index The index.
    * @param the_y The y.
    */
+  /*
   public void setY(final int the_index, final int the_y)
   {
     final Point indexPoint = my_local_point_array[the_index];
     my_local_point_array[the_index].setLocation(indexPoint.x, the_y);
-  }
+  }*/
   
   /**
    * Get the start point of the local board.
    * @return The start point of the local board.
-   */
+   */  
   public Point getStartPoint()
   {
     return my_local_start_point;
   }
+  
   
   /**
    * Get the start point of the local board at the game board.
@@ -156,13 +159,11 @@ public class TetrisPiece
    */
   public void rotateCW()
   {
-    final TetrisPiece tempPiece = new TetrisPiece();
-    tempPiece.my_local_point_array = clonePointArray(my_local_point_array);
+    final Point[] tempPointArray = clonePointArray(my_local_point_array);
     
     for (int i = 0; i < PIECE_BLOCKS; i++)
     {
-      setX(i, tempPiece.my_local_point_array[i].y);
-      setY(i, -tempPiece.my_local_point_array[i].x);
+      my_local_point_array[i].setLocation(tempPointArray[i].y, -tempPointArray[i].x);
     }
   }
   
@@ -171,13 +172,11 @@ public class TetrisPiece
    */
   public void rotateCounterCW()
   {
-    final TetrisPiece tempPiece = new TetrisPiece();
-    tempPiece.my_local_point_array = clonePointArray(my_local_point_array);
+    final Point[] tempPointArray = clonePointArray(my_local_point_array);
     
     for (int i = 0; i < PIECE_BLOCKS; i++)
     {
-      setX(i, -tempPiece.my_local_point_array[i].y);
-      setY(i, tempPiece.my_local_point_array[i].x);
+      my_local_point_array[i].setLocation(-tempPointArray[i].y, tempPointArray[i].x);
     }
   }
   

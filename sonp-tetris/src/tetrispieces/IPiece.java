@@ -25,4 +25,9 @@ public class IPiece extends TetrisPiece
                                         new Point(0, 1), new Point(0, 2)};
     setLocalPointArray(iShape);
   }
+  
+  public String toString()
+  {
+    return "* * * *";
+  }
 }

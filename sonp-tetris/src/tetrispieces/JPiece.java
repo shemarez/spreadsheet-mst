@@ -26,4 +26,11 @@ public class JPiece extends TetrisPiece
                                         new Point(0, 0), new Point(1, 0)};
     setLocalPointArray(jShape);
   }
+  
+  public String toString()
+  {
+    String result = "*\n";
+    result       += "* * *";
+    return result;
+  }
 }

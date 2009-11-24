@@ -26,4 +26,11 @@ public class ZPiece extends TetrisPiece
                                         new Point(0, -1), new Point(1, -1)};
     setLocalPointArray(zShape);
   }
+  
+  public String toString()
+  {
+    String result = "* *\n";
+    result += "  * *";
+    return result;
+  }
 }

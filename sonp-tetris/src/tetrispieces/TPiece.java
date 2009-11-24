@@ -26,4 +26,11 @@ public class TPiece extends TetrisPiece
                                         new Point(0, 0), new Point(1, -1)};
     setLocalPointArray(tShape);
   }
+  
+  public String toString()
+  {
+    String result = "  *\n";
+    result += "* * *";
+    return result;
+  }
 }

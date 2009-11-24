@@ -26,4 +26,11 @@ public class LPiece extends TetrisPiece
                                         new Point(1, 0), new Point(1, 1)};
     setLocalPointArray(lShape);
   }
+  
+  public String toString()
+  {
+    String result = "    *\n";
+    result       += "* * *";
+    return result;
+  }
 }

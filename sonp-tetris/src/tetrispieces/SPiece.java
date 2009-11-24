@@ -26,4 +26,11 @@ public class SPiece extends TetrisPiece
                                         new Point(0, 0), new Point(1, 0)};
     setLocalPointArray(sShape);
   }
+  
+  public String toString()
+  {
+    String result = "  * *\n";
+    result += "* *";
+    return result;
+  }
 }

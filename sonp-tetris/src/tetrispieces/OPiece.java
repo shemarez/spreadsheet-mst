@@ -38,4 +38,11 @@ public class OPiece extends TetrisPiece
    * Rotate the O piece counter clock_wise.
    */
   public void rotateCounterCW(){};
+  
+  public String toString()
+  {
+    String result = "* *\n";
+    result += "* *";
+    return result;
+  }
 }
