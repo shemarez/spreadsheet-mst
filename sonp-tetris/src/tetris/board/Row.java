@@ -11,7 +11,7 @@ import tetris.entities.pieces.Piece;
  * @author Son Pham.
  * @version 1.0
  */
-public class Row
+public class Row implements Cloneable
 {
   //Instance fields
   
@@ -23,16 +23,20 @@ public class Row
   //Constructors
   
   /**
-   * Construct a row with the specific size for the block array.
+   * Construct an empty row with the specific size for the block array.
    * @param the_size The size.
    */
   public Row(final int the_size)
   {
     my_row_blocks = new Block[the_size];
+    for (int i = 0; i < the_size; i++)
+    {
+      my_row_blocks[i] = new Block();
+    }
   }
   
   /**
-   * Construct a row with specific block array.
+   * Construct a row with specified block array the_blocks.
    * @param the_blocks The blocks.
    */
   public Row(final Block[] the_blocks)
@@ -41,6 +45,14 @@ public class Row
   }
   
   //Instance methods
+  
+  /**
+   * @return The block array which forms this row.
+   */
+  public Block[] blocks()
+  {
+    return my_row_blocks.clone();
+  }
   
   /**
    * Set the value of the block that is at the_index.
@@ -70,7 +82,7 @@ public class Row
    * Return whether the block is filled or not.
    * @return True if the block is filled. False otherwise.
    */
-  public boolean isCompleteFilled()
+  public boolean isCompletelyFilled()
   {
     boolean result = true;
     for (int i = 0; i < my_row_blocks.length; i++)
@@ -102,5 +114,15 @@ public class Row
       }
     }
     return sb.toString();
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public Object clone() throws CloneNotSupportedException
+  {
+    final Row result = (Row) super.clone();
+    result.my_row_blocks = my_row_blocks.clone();
+    return result;
   }
 }

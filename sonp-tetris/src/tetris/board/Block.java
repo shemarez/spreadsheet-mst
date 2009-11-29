@@ -18,7 +18,7 @@ public class Block
   /**
    * Boolean value of whether this block is filled.
    */
-  private boolean my_boolean;
+  private boolean my_is_filled;
   
   /**
    * The color of this block.
@@ -32,7 +32,7 @@ public class Block
    */
   public Block()
   {
-    my_boolean = false;
+    my_is_filled = false;
     my_color = Color.WHITE;
   }
   
@@ -43,7 +43,7 @@ public class Block
    */
   public Block(final boolean the_boolean, final Color the_color)
   {
-    my_boolean = the_boolean;
+    my_is_filled = the_boolean;
     my_color = the_color;
   }
   
@@ -53,7 +53,7 @@ public class Block
    */
   public void setIsFilled(final boolean the_boolean)
   {
-    my_boolean = the_boolean;
+    my_is_filled = the_boolean;
   }
   
   /**
@@ -71,7 +71,7 @@ public class Block
    */
   public boolean isFilled()
   {
-    return my_boolean;
+    return my_is_filled;
   }
   
   /**
@@ -81,5 +81,28 @@ public class Block
   public Color color()
   {
     return my_color;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public boolean equals(final Object the_other)
+  {
+    boolean result = this == the_other;
+    if (!result && the_other != null && the_other.getClass() == getClass())
+    {
+      final Block other_block = (Block) the_other;
+      result = other_block.color().equals(color());
+      result = other_block.isFilled() == isFilled();
+    }
+    return result;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int hashCode()
+  {
+    return my_color.hashCode();
   }
 }

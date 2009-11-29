@@ -5,7 +5,6 @@
 package tetris.board;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Random;
@@ -72,7 +71,8 @@ public class GameBoard extends Observable
   //Constructor
   
   /**
-   * Construct a game board with the dimension of WIDTH x VISIBLE_HEIGHT.
+   * Construct an empty game board with the dimension of WIDTH x VISIBLE_HEIGHT. 
+   * And also pick randomly a new piece to be the current falling piece.
    */
   public GameBoard()
   {
@@ -80,9 +80,12 @@ public class GameBoard extends Observable
     my_rows = new ArrayList<Row>(TOTAL_HEIGHT);
     for (int i = 0; i < TOTAL_HEIGHT; i++)
     {
-      my_rows.set(i, new Row(WIDTH));
+      my_rows.add(i, new Row(WIDTH));
     }
+    startNewPiece(randomPiece());
   }
+  
+  //Private methods
   
   /**
    * Erase the_piece in the game board.
@@ -123,18 +126,26 @@ public class GameBoard extends Observable
   }
   
   /**
-   * Start the new piece above the visible board.
+   * Start a new piece above the visible board. And also set the my_falling_piece
+   * to be the new piece.
    * @param the_piece The piece.
    */
   private void startNewPiece(final Piece the_piece)
   {
-    final Point the_origin = new Point(MIDDLE, VISIBLE_HEIGHT + 1);
-    final Piece temp = the_piece.setOrigin(the_origin);
-    addPiece(temp);
+    final Point the_origin = new Point(MIDDLE, VISIBLE_HEIGHT);
+    try
+    {
+      my_falling_piece = ((Piece) the_piece.clone()).setOrigin(the_origin);
+    }
+    catch (final CloneNotSupportedException e)
+    {
+      // This should never happen.
+      assert false;
+    }
+    addPiece(my_falling_piece);
   }
   
   /**
-   * 
    * @param the_piece The piece.
    * @return True if the position of the_piece on the game board is
    *         legal. False otherwise.
@@ -173,7 +184,7 @@ public class GameBoard extends Observable
   {
     for (int i = 0; i < VISIBLE_HEIGHT; i++)
     {
-      if (my_rows.get(i).isCompleteFilled())
+      if (my_rows.get(i).isCompletelyFilled())
       {
         my_rows.remove(i);
         my_rows.add(new Row(WIDTH));
@@ -193,6 +204,8 @@ public class GameBoard extends Observable
     the_piece = BASIC_PIECES[i];
     return the_piece;
   }
+  
+  //Instance methods.
   
   /**
    * Move the current falling piece to the left by one column.
@@ -306,13 +319,13 @@ public class GameBoard extends Observable
   {
     final StringBuffer sb = new StringBuffer(150);
     sb.append("Below is a new piece in progress. It appears above the visible board.\n");
-    for (int i = TOTAL_HEIGHT - 1; i >= VISIBLE_HEIGHT; i++)
+    for (int i = TOTAL_HEIGHT - 1; i >= VISIBLE_HEIGHT; i--)
     {
       final Row temp_row = my_rows.get(i);
       sb.append(temp_row.toString());
     }
     sb.append("\nBelow is the visible tetris game board.\n");
-    for (int i = VISIBLE_HEIGHT - 1; i >= 0; i++)
+    for (int i = VISIBLE_HEIGHT - 1; i >= 0; i--)
     {
       final Row temp_row = my_rows.get(i);
       sb.append(temp_row.toString());
