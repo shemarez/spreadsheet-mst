@@ -143,4 +143,34 @@ public class Row implements Cloneable
     result.my_row_blocks = my_row_blocks.clone();
     return result;
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public boolean equals(final Object the_other)
+  {
+    boolean result = this == the_other;
+    if (!result && the_other != null && the_other.getClass() == getClass())
+    {
+      final Row other_row = (Row) the_other;
+      result = other_row.blocks().length == blocks().length;
+      for (int i = 0; i < blocks().length; i++)
+      {
+        result = result && blocks()[i].equals(other_row.blocks()[i]);
+        if (!result)
+        {
+          return result;
+        }
+      }
+    }
+    return result;
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  public int hashCode()
+  {
+    return blocks().length;
+  }
 }

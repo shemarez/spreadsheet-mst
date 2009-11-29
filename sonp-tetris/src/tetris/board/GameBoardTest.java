@@ -49,6 +49,6 @@ public class GameBoardTest
     the_rows.add(GameBoard.VISIBLE_HEIGHT + 2, ROW2);
     the_rows.add(GameBoard.VISIBLE_HEIGHT + 3, new Row(GameBoard.WIDTH));
     final List<Row> board_rows = board.rows();
-    assertEquals(board_rows, the_rows);
+    assertEquals("The list of rows of the game board", board_rows, the_rows);
   }
 }
