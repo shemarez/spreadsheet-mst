@@ -4,6 +4,8 @@
  */
 package tetris.board;
 
+import tetris.entities.pieces.Piece;
+
 /**
  * Row class for Tetris game board.
  * @author Son Pham.
@@ -80,5 +82,25 @@ public class Row
       }
     }
     return result;
+  }
+  
+  /**
+   * @return The printable representation of this Row object.
+   */
+  public String toString()
+  {
+    final StringBuffer sb = new StringBuffer();
+    for (int i = 0; i < my_row_blocks.length; i++)
+    {
+      if (getBlockIndex(i).isFilled())
+      {
+        sb.append(Piece.FULL_BLOCK_CHAR);
+      }
+      else
+      {
+        sb.append(Piece.EMPTY_BLOCK_CHAR);
+      }
+    }
+    return sb.toString();
   }
 }

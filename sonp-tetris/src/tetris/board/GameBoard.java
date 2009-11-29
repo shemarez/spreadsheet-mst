@@ -5,6 +5,7 @@
 package tetris.board;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Random;
@@ -296,5 +297,26 @@ public class GameBoard extends Observable
     }
     setChanged();
     notifyObservers(my_rows);
-  }  
+  }
+  
+  /**
+   * @return The printable representation of this GameBoard object.
+   */
+  public String toString()
+  {
+    final StringBuffer sb = new StringBuffer(150);
+    sb.append("Below is a new piece in progress. It appears above the visible board.\n");
+    for (int i = TOTAL_HEIGHT - 1; i >= VISIBLE_HEIGHT; i++)
+    {
+      final Row temp_row = my_rows.get(i);
+      sb.append(temp_row.toString());
+    }
+    sb.append("\nBelow is the visible tetris game board.\n");
+    for (int i = VISIBLE_HEIGHT - 1; i >= 0; i++)
+    {
+      final Row temp_row = my_rows.get(i);
+      sb.append(temp_row.toString());
+    }
+    return sb.toString();
+  }
 }
