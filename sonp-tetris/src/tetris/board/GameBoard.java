@@ -31,22 +31,27 @@ public class GameBoard extends Observable
   /**
    * The width of the board.
    */
-  private static final int WIDTH = 10;
+  public static final int WIDTH = 10;
   
   /**
    * The total height of the board.
    */
-  private static final int TOTAL_HEIGHT = 24;
+  public static final int TOTAL_HEIGHT = 24;
   
   /**
    * The middle of the board's width.
    */
-  private static final int MIDDLE = 4;
+  public static final int MIDDLE = 4;
   
   /**
    * The visible height of the board.
    */
-  private static final int VISIBLE_HEIGHT = 20;
+  public static final int VISIBLE_HEIGHT = 20;
+  
+  /**
+   * The border character of the game board.
+   */
+  public static final String BORDER = "|";
   
   /**
    * 7 basic pieces.
@@ -82,7 +87,8 @@ public class GameBoard extends Observable
     {
       my_rows.add(i, new Row(WIDTH));
     }
-    startNewPiece(randomPiece());
+    startNewPiece(BASIC_PIECES[1]);
+    //startNewPiece(randomPiece());
   }
   
   //Private methods
@@ -95,8 +101,8 @@ public class GameBoard extends Observable
   {
     for (int i = 0; i < the_piece.blocks().length; i++)
     {
-      final int the_x = the_piece.blocks()[i].x();
-      final int the_y = the_piece.blocks()[i].y();      
+      final int the_x = the_piece.absolutePosition(i).x();
+      final int the_y = the_piece.absolutePosition(i).y();      
       my_rows.get(the_y).setBlockIndex(the_x, new Block());
     }
   }
@@ -107,22 +113,13 @@ public class GameBoard extends Observable
    */
   private void addPiece(final Piece the_piece)
   {
-    try
+    for (int i = 0; i < Piece.NUMBER_OF_BLOCKS; i++)
     {
-      final Piece temp = (Piece) the_piece.clone();
-      for (int i = 0; i < Piece.NUMBER_OF_BLOCKS; i++)
-      {
-        final int the_x = temp.blocks()[i].x();
-        final int the_y = temp.blocks()[i].y();
-        my_rows.get(the_y).setBlockIndex(the_x, 
-                                         new Block(true, temp.color()));
-      }
-    }
-    catch (final CloneNotSupportedException e)
-    {
-      // This should never happen.
-      assert false;
-    }    
+      final int the_x = the_piece.absolutePosition(i).x();
+      final int the_y = the_piece.absolutePosition(i).y();
+      my_rows.get(the_y).setBlockIndex(the_x, 
+                                       new Block(true, the_piece.color()));
+    }   
   }
   
   /**
@@ -133,15 +130,7 @@ public class GameBoard extends Observable
   private void startNewPiece(final Piece the_piece)
   {
     final Point the_origin = new Point(MIDDLE, VISIBLE_HEIGHT);
-    try
-    {
-      my_falling_piece = ((Piece) the_piece.clone()).setOrigin(the_origin);
-    }
-    catch (final CloneNotSupportedException e)
-    {
-      // This should never happen.
-      assert false;
-    }
+    my_falling_piece = the_piece.setOrigin(the_origin);
     addPiece(my_falling_piece);
   }
   
@@ -152,28 +141,19 @@ public class GameBoard extends Observable
    */
   private boolean isLegalPosition(final Piece the_piece)
   {
-    boolean result = true;
-    try
+    boolean result = true;      
+    for (int i = 0; i < Piece.NUMBER_OF_BLOCKS; i++)
     {
-      final Piece temp = (Piece) the_piece.clone();      
-      for (int i = 0; i < Piece.NUMBER_OF_BLOCKS; i++)
+      final int the_x = the_piece.absolutePosition(i).x();
+      final int the_y = the_piece.absolutePosition(i).y();
+      result = result && 0 <= the_x && the_x < WIDTH && 
+               0 <= the_y && the_y < TOTAL_HEIGHT;
+      result = result && !(my_rows.get(the_y).getBlockIndex(the_x).isFilled());        
+      if (!result)
       {
-        final int the_x = temp.blocks()[i].x();
-        final int the_y = temp.blocks()[i].y();
-        result = result && 0 <= the_x && the_x < WIDTH && 
-                 0 <= the_y && the_y < VISIBLE_HEIGHT;
-        result = result && !(my_rows.get(the_y).getBlockIndex(the_x).isFilled());        
-        if (!result)
-        {
-          return result;
-        }
+        return result;
       }
-    }
-    catch (final CloneNotSupportedException e)
-    {
-      //This should never happen
-      assert false;
-    }    
+    }  
     return result;
   }
   
@@ -208,17 +188,25 @@ public class GameBoard extends Observable
   //Instance methods.
   
   /**
+   * @return The list of rows in the game board.
+   */
+  public List<Row> rows()
+  {
+    return my_rows;
+  }
+  
+  /**
    * Move the current falling piece to the left by one column.
    */
   public void moveLeft()
   {
     final Piece temp = my_falling_piece.moveLeft();
+    erasePiece(my_falling_piece);
     if (isLegalPosition(temp))
-    {
-      erasePiece(my_falling_piece);
+    {      
       my_falling_piece = temp;
-      addPiece(my_falling_piece);
     }
+    addPiece(my_falling_piece);
   }
   
   /**
@@ -227,12 +215,12 @@ public class GameBoard extends Observable
   public void moveRight()
   {
     final Piece temp = my_falling_piece.moveRight();
+    erasePiece(my_falling_piece);
     if (isLegalPosition(temp))
-    {
-      erasePiece(my_falling_piece);
-      my_falling_piece = temp;
-      addPiece(my_falling_piece);
+    {      
+      my_falling_piece = temp;      
     }
+    addPiece(my_falling_piece);
   }
   
   /**
@@ -241,12 +229,12 @@ public class GameBoard extends Observable
   public void moveDown()
   {
     final Piece temp = my_falling_piece.moveDown();
+    erasePiece(my_falling_piece);
     if (isLegalPosition(temp))
-    {
-      erasePiece(my_falling_piece);
-      my_falling_piece = temp;
-      addPiece(my_falling_piece);
+    {      
+      my_falling_piece = temp;      
     }
+    addPiece(my_falling_piece);
   }
   
   /**
@@ -255,12 +243,12 @@ public class GameBoard extends Observable
   public void rotateClockwise()
   {
     final Piece temp = my_falling_piece.rotateClockwise();
+    erasePiece(my_falling_piece);
     if (isLegalPosition(temp))
-    {
-      erasePiece(my_falling_piece);
-      my_falling_piece = temp;
-      addPiece(my_falling_piece);
+    {      
+      my_falling_piece = temp;      
     }
+    addPiece(my_falling_piece);
   }
   
   /**
@@ -269,12 +257,12 @@ public class GameBoard extends Observable
   public void rotateCounterclockwise()
   {
     final Piece temp = my_falling_piece.rotateCounterclockwise();
+    erasePiece(my_falling_piece);
     if (isLegalPosition(temp))
-    {
-      erasePiece(my_falling_piece);
-      my_falling_piece = temp;
-      addPiece(my_falling_piece);
+    {      
+      my_falling_piece = temp;      
     }
+    addPiece(my_falling_piece);
   }
   
   /**
@@ -296,14 +284,15 @@ public class GameBoard extends Observable
   public void update()
   {
     final Piece temp = my_falling_piece.moveDown();
+    erasePiece(my_falling_piece);
     if (isLegalPosition(temp))
-    {
-      erasePiece(my_falling_piece);
+    {      
       my_falling_piece = temp;
       addPiece(my_falling_piece);
     }
     else
     {
+      addPiece(my_falling_piece);
       clearCompletelyFilledLines();
       my_falling_piece = randomPiece();
       startNewPiece(my_falling_piece);
@@ -318,17 +307,20 @@ public class GameBoard extends Observable
   public String toString()
   {
     final StringBuffer sb = new StringBuffer(150);
-    sb.append("Below is a new piece in progress. It appears above the visible board.\n");
-    for (int i = TOTAL_HEIGHT - 1; i >= VISIBLE_HEIGHT; i--)
+    if (!my_rows.get(VISIBLE_HEIGHT).isEmpty())
     {
-      final Row temp_row = my_rows.get(i);
-      sb.append(temp_row.toString());
+      sb.append("Below is a piece in progress on top of the visible board.\n");
+      for (int i = TOTAL_HEIGHT - 1; i >= VISIBLE_HEIGHT; i--)
+      {
+        final Row temp_row = my_rows.get(i);
+        sb.append(BORDER + temp_row.toString() + BORDER + "\n");
+      }
     }
     sb.append("\nBelow is the visible tetris game board.\n");
     for (int i = VISIBLE_HEIGHT - 1; i >= 0; i--)
     {
       final Row temp_row = my_rows.get(i);
-      sb.append(temp_row.toString());
+      sb.append(BORDER + temp_row.toString() + BORDER + "\n");
     }
     return sb.toString();
   }

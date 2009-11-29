@@ -79,8 +79,8 @@ public class Row implements Cloneable
   }
   
   /**
-   * Return whether the block is filled or not.
-   * @return True if the block is filled. False otherwise.
+   * Return whether the row is completely filled or not.
+   * @return True if the block is completely filled. False otherwise.
    */
   public boolean isCompletelyFilled()
   {
@@ -88,6 +88,24 @@ public class Row implements Cloneable
     for (int i = 0; i < my_row_blocks.length; i++)
     {
       result = result && my_row_blocks[i].isFilled();
+      if (!result)
+      {
+        return result;
+      }
+    }
+    return result;
+  }
+  
+  /**
+   * Return whether the row is empty or not.
+   * @return True if the row is empty. False otherwise.
+   */
+  public boolean isEmpty()
+  {
+    boolean result = true;
+    for (int i = 0; i < my_row_blocks.length; i++)
+    {
+      result = result && !my_row_blocks[i].isFilled();
       if (!result)
       {
         return result;

@@ -26,5 +26,14 @@ public class TetrisTest
     final GameBoard board = new GameBoard();
     String board_string = board.toString();
     System.out.println(board_string);
+    for (int i = 0; i < 4; i++)
+    {
+      board.update();
+    }
+    System.out.println("Game after 4 updates: ");
+    System.out.println(board.toString());
+    board.rotateClockwise();
+    System.out.println("Rotate clock wise 1 time");
+    System.out.println(board.toString());
   }
 }
