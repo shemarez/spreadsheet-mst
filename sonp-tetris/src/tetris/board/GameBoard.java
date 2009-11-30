@@ -5,6 +5,7 @@
 package tetris.board;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Random;
@@ -73,7 +74,7 @@ public class GameBoard extends Observable
    */
   private Piece my_falling_piece;
   
-  //Constructor
+  //Constructors
   
   /**
    * Construct an empty game board with the dimension of WIDTH x VISIBLE_HEIGHT. 
@@ -89,6 +90,30 @@ public class GameBoard extends Observable
     }
     startNewPiece(BASIC_PIECES[1]);
     //startNewPiece(randomPiece());
+  }
+  
+  /**
+   * Construct a simulated Tetris game. First, an empty game board is created. 
+   * Then, the first element in the_piece_list is set as a new piece in progress.
+   * The piece then go down until it can't anymore. The process repeats with the
+   * next element in the_piece_list is set as a new piece in progress. 
+   * @param the_piece_list The list of pieces.
+   */
+  public GameBoard(final List<Piece> the_piece_list)
+  {
+    super();
+    my_rows = new ArrayList<Row>(TOTAL_HEIGHT);
+    for (int i = 0; i < TOTAL_HEIGHT; i++)
+    {
+      my_rows.add(i, new Row(WIDTH));
+    }
+    final Iterator<Piece> the_iter = the_piece_list.iterator();
+    while (the_iter.hasNext())
+    {      
+      my_falling_piece = the_iter.next();
+      addPiece(my_falling_piece);
+      updateForTesting();
+    } 
   }
   
   //Private methods
@@ -120,6 +145,30 @@ public class GameBoard extends Observable
       my_rows.get(the_y).setBlockIndex(the_x, 
                                        new Block(true, the_piece.color()));
     }   
+  }
+  
+  /**
+   * Replace the current falling piece by the_piece. Notify the observers if the result
+   * game board is different with before.
+   * @param the_piece The piece.
+   */
+  private void replaceCurrentFallingPiece(final Piece the_piece)
+  {
+    if (!the_piece.equals(my_falling_piece))
+    {
+      erasePiece(my_falling_piece);
+      if (isLegalPosition(the_piece))
+      {      
+        my_falling_piece = the_piece;
+        addPiece(my_falling_piece);
+        setChanged();
+        notifyObservers(my_rows);
+      }
+      else
+      {
+        addPiece(my_falling_piece);
+      }
+    }
   }
   
   /**
@@ -168,6 +217,7 @@ public class GameBoard extends Observable
       {
         my_rows.remove(i);
         my_rows.add(new Row(WIDTH));
+        i = i - 1;
       }
     }
   }
@@ -183,6 +233,36 @@ public class GameBoard extends Observable
     final int i = rand.nextInt(6);
     the_piece = BASIC_PIECES[i];
     return the_piece;
+  }
+  
+  /**
+   * Update the game board by one "time-tick" step until it can't anymore. Update 
+   * causes the current falling piece to move down by one row, and might cause 
+   * addition changes to the game board as follow:
+   * <p>
+   *  _When the current_falling_piece is resting on top of existing filled squares and
+   *  then attempts to move down one more, it freezes and becomes part of the board's
+   *  grid of filled squares.
+   * <p>
+   *  _When the current_falling_piece freezes, if any lines are completely filled, they
+   *  are cleared from the board. All squares above a filled line drop downward by one row.
+   *  (note that up to 4 lines may be cleared at a time).
+   *  
+   */
+  private void updateForTesting()
+  {
+    Piece temp = my_falling_piece.moveDown();
+    erasePiece(my_falling_piece);
+    while (isLegalPosition(temp))
+    {
+      my_falling_piece = temp;
+      addPiece(my_falling_piece);
+      temp = my_falling_piece.moveDown();
+      erasePiece(my_falling_piece);
+    }
+    
+    addPiece(my_falling_piece);
+    clearCompletelyFilledLines();
   }
   
   //Instance methods.
@@ -201,12 +281,7 @@ public class GameBoard extends Observable
   public void moveLeft()
   {
     final Piece temp = my_falling_piece.moveLeft();
-    erasePiece(my_falling_piece);
-    if (isLegalPosition(temp))
-    {      
-      my_falling_piece = temp;
-    }
-    addPiece(my_falling_piece);
+    replaceCurrentFallingPiece(temp);
   }
   
   /**
@@ -215,12 +290,7 @@ public class GameBoard extends Observable
   public void moveRight()
   {
     final Piece temp = my_falling_piece.moveRight();
-    erasePiece(my_falling_piece);
-    if (isLegalPosition(temp))
-    {      
-      my_falling_piece = temp;      
-    }
-    addPiece(my_falling_piece);
+    replaceCurrentFallingPiece(temp);
   }
   
   /**
@@ -229,12 +299,7 @@ public class GameBoard extends Observable
   public void moveDown()
   {
     final Piece temp = my_falling_piece.moveDown();
-    erasePiece(my_falling_piece);
-    if (isLegalPosition(temp))
-    {      
-      my_falling_piece = temp;      
-    }
-    addPiece(my_falling_piece);
+    replaceCurrentFallingPiece(temp);
   }
   
   /**
@@ -243,12 +308,7 @@ public class GameBoard extends Observable
   public void rotateClockwise()
   {
     final Piece temp = my_falling_piece.rotateClockwise();
-    erasePiece(my_falling_piece);
-    if (isLegalPosition(temp))
-    {      
-      my_falling_piece = temp;      
-    }
-    addPiece(my_falling_piece);
+    replaceCurrentFallingPiece(temp);
   }
   
   /**
@@ -257,12 +317,7 @@ public class GameBoard extends Observable
   public void rotateCounterclockwise()
   {
     final Piece temp = my_falling_piece.rotateCounterclockwise();
-    erasePiece(my_falling_piece);
-    if (isLegalPosition(temp))
-    {      
-      my_falling_piece = temp;      
-    }
-    addPiece(my_falling_piece);
+    replaceCurrentFallingPiece(temp);
   }
   
   /**

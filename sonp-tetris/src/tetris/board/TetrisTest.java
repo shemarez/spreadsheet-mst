@@ -1,11 +1,24 @@
 package tetris.board;
 
-import static org.junit.Assert.assertEquals;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import tetris.entities.Point;
+import tetris.entities.pieces.IPiece;
+import tetris.entities.pieces.JPiece;
+import tetris.entities.pieces.LPiece;
+import tetris.entities.pieces.OPiece;
+import tetris.entities.pieces.Piece;
+import tetris.entities.pieces.SPiece;
+import tetris.entities.pieces.TPiece;
+import tetris.entities.pieces.ZPiece;
+
+/**
+ * "Visual" test version of GameBoardTest and some other tests.
+ * @author Son
+ *
+ */
 public class TetrisTest
 {
   private static final Block[] BLOCKS1 = 
@@ -56,26 +69,139 @@ public class TetrisTest
     System.out.println(board.toString());
     
     
-    
-    GameBoard board2 = new GameBoard();
-    List<Row> the_rows = new ArrayList<Row>(GameBoard.TOTAL_HEIGHT);
-
-    for (int i = 0; i < GameBoard.VISIBLE_HEIGHT; i++)
+    List<Piece> piece_list = new ArrayList<Piece>();
+    Piece temp_piece = new SPiece();
+    temp_piece = temp_piece.setOrigin(new Point(2, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new JPiece();
+    temp_piece = temp_piece.setOrigin(new Point(0, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new TPiece();
+    temp_piece = temp_piece.rotateCounterclockwise();
+    temp_piece = temp_piece.setOrigin(new Point(1, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new IPiece();
+    temp_piece = temp_piece.setOrigin(new Point(4, 0));
+    piece_list.add(temp_piece);
+    temp_piece = new LPiece();
+    temp_piece = temp_piece.setOrigin(new Point(7, 0));
+    piece_list.add(temp_piece);
+    temp_piece = new OPiece();
+    temp_piece = temp_piece.setOrigin(new Point(4, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new LPiece();
+    temp_piece = rotateCW_n_times(temp_piece, 2);
+    temp_piece = temp_piece.setOrigin(new Point(8, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new JPiece();
+    temp_piece = rotateCCW_n_times(temp_piece, 2);
+    temp_piece = temp_piece.setOrigin(new Point(-1, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new IPiece();
+    temp_piece = temp_piece.setOrigin(new Point(3, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new IPiece();
+    temp_piece = temp_piece.rotateClockwise();
+    temp_piece = temp_piece.setOrigin(new Point(5, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new ZPiece();
+    temp_piece = temp_piece.rotateClockwise();
+    temp_piece = temp_piece.setOrigin(new Point(3, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new OPiece();
+    temp_piece = temp_piece.setOrigin(new Point(-1, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new ZPiece();
+    temp_piece = temp_piece.rotateCounterclockwise();
+    temp_piece = temp_piece.setOrigin(new Point(2, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new TPiece();
+    temp_piece = temp_piece.rotateCounterclockwise();
+    temp_piece = temp_piece.setOrigin(new Point(5, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new JPiece();
+    temp_piece = temp_piece.setOrigin(new Point(8, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new OPiece();
+    temp_piece = temp_piece.setOrigin(new Point(-1, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new ZPiece();
+    temp_piece = temp_piece.rotateCounterclockwise();
+    temp_piece = temp_piece.setOrigin(new Point(2, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new ZPiece();
+    temp_piece = temp_piece.rotateCounterclockwise();
+    temp_piece = temp_piece.setOrigin(new Point(4, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new SPiece();
+    temp_piece = temp_piece.rotateCounterclockwise();
+    temp_piece = temp_piece.setOrigin(new Point(6, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new LPiece();
+    temp_piece = temp_piece.setOrigin(new Point(7, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new IPiece();
+    temp_piece = temp_piece.rotateClockwise();
+    temp_piece = temp_piece.setOrigin(new Point(0, 20));    
+    piece_list.add(temp_piece);
+    temp_piece = new SPiece();
+    temp_piece = temp_piece.rotateCounterclockwise();
+    temp_piece = temp_piece.setOrigin(new Point(5, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new LPiece();
+    temp_piece = rotateCW_n_times(temp_piece, 2);
+    temp_piece = temp_piece.setOrigin(new Point(8, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new IPiece();
+    temp_piece = temp_piece.rotateClockwise();
+    temp_piece = temp_piece.setOrigin(new Point(3, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new OPiece();
+    temp_piece = temp_piece.setOrigin(new Point(-1, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new OPiece();
+    temp_piece = temp_piece.setOrigin(new Point(1, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new LPiece();
+    temp_piece = rotateCW_n_times(temp_piece, 2);
+    temp_piece = temp_piece.setOrigin(new Point(3, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new JPiece();
+    temp_piece = temp_piece.rotateClockwise();
+    temp_piece = temp_piece.setOrigin(new Point(0, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new IPiece();
+    temp_piece = temp_piece.setOrigin(new Point(1, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new LPiece();
+    temp_piece = temp_piece.rotateClockwise();
+    temp_piece = temp_piece.setOrigin(new Point(7, 20));
+    piece_list.add(temp_piece);
+    temp_piece = new TPiece();
+    temp_piece = temp_piece.setOrigin(new Point(5, 20));
+    piece_list.add(temp_piece);
+    GameBoard board2 = new GameBoard(piece_list);
+    System.out.println(board2.toString());    
+    System.out.println("Number of pieces: " + piece_list.size());
+  }
+  
+  private static Piece rotateCW_n_times(final Piece the_piece, final int n)
+  {
+    Piece temp = the_piece;
+    for (int i = 0; i < n; i++)
     {
-      the_rows.add(i, new Row(GameBoard.WIDTH));
+      temp = temp.rotateClockwise();
     }
-    the_rows.add(GameBoard.VISIBLE_HEIGHT, ROW1);
-    the_rows.add(GameBoard.VISIBLE_HEIGHT + 1, ROW2);
-    the_rows.add(GameBoard.VISIBLE_HEIGHT + 2, ROW2);
-    the_rows.add(GameBoard.VISIBLE_HEIGHT + 3, new Row(GameBoard.WIDTH));
-    final List<Row> board_rows = board2.rows();
-    for (int i = 0; i < GameBoard.TOTAL_HEIGHT; i++)
+    return temp;
+  }
+  
+  private static Piece rotateCCW_n_times(final Piece the_piece, final int n)
+  {
+    Piece temp = the_piece;
+    for (int i = 0; i < n; i++)
     {
-      Row the_rows_i = the_rows.get(i);
-      Row board_rows_i = board_rows.get(i);
-      System.out.println(the_rows_i.toString());
-      System.out.println(board_rows_i.toString());
-      System.out.println(the_rows_i.equals(board_rows_i));
+      temp = temp.rotateCounterclockwise();
     }
+    return temp;
   }
 }
