@@ -213,11 +213,10 @@ public class GameBoard extends Observable
   {
     for (int i = 0; i < VISIBLE_HEIGHT; i++)
     {
-      if (my_rows.get(i).isCompletelyFilled())
+      while (my_rows.get(i).isCompletelyFilled())
       {
         my_rows.remove(i);
         my_rows.add(new Row(WIDTH));
-        i = i - 1;
       }
     }
   }

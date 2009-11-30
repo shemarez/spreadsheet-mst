@@ -69,7 +69,8 @@ public class RowTest
     final Row temp_another_row = (Row) ANOTHER_ROW.clone();
     assertNotSame("temp_another_row should not be the same with ANOTHER_ROW", 
                   temp_another_row, ANOTHER_ROW);
-    assertEquals(temp_another_row, ANOTHER_ROW);
+    assertEquals("temp_another_row should be equal to ANOTHER_ROW", 
+                 temp_another_row, ANOTHER_ROW);
     temp_another_row.setBlockIndex(1, new Block(true, Color.GREEN));
     assertEquals("block of index 1 of temp_another_row", 
                  temp_another_row.getBlockIndex(1), new Block(true, Color.GREEN));
