@@ -128,7 +128,7 @@ public class GameBoard extends Observable
     {
       final int the_x = the_piece.absolutePosition(i).x();
       final int the_y = the_piece.absolutePosition(i).y();      
-      my_rows.get(the_y).setBlockIndex(the_x, new Block());
+      my_rows.get(the_y).setColorIndex(the_x, Row.EMPTY_COLOR);
     }
   }
   
@@ -142,8 +142,7 @@ public class GameBoard extends Observable
     {
       final int the_x = the_piece.absolutePosition(i).x();
       final int the_y = the_piece.absolutePosition(i).y();
-      my_rows.get(the_y).setBlockIndex(the_x, 
-                                       new Block(true, the_piece.color()));
+      my_rows.get(the_y).setColorIndex(the_x, the_piece.color());
     }   
   }
   
@@ -197,7 +196,8 @@ public class GameBoard extends Observable
       final int the_y = the_piece.absolutePosition(i).y();
       result = result && 0 <= the_x && the_x < WIDTH && 
                0 <= the_y && the_y < TOTAL_HEIGHT;
-      result = result && !(my_rows.get(the_y).getBlockIndex(the_x).isFilled());        
+      result = result && 
+        my_rows.get(the_y).getColorIndex(the_x).equals(Row.EMPTY_COLOR);        
       if (!result)
       {
         return result;

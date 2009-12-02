@@ -4,21 +4,30 @@
  */
 package tetris.board;
 
+import java.awt.Color;
+
 import tetris.entities.pieces.Piece;
 
 /**
- * Row class for Tetris game board.
+ * Array of colors.
  * @author Son Pham.
  * @version 1.0
  */
 public class Row implements Cloneable
 {
+  // Static fields
+  
+  /**
+   * The color represents empty space.
+   */
+  public static final Color EMPTY_COLOR = Color.WHITE;
+  
   //Instance fields
   
   /**
    * The array of blocks in a row.
    */
-  private Block[] my_row_blocks;
+  private Color[] my_colors;
   
   //Constructors
   
@@ -28,66 +37,66 @@ public class Row implements Cloneable
    */
   public Row(final int the_size)
   {
-    my_row_blocks = new Block[the_size];
+    my_colors = new Color[the_size];
     for (int i = 0; i < the_size; i++)
     {
-      my_row_blocks[i] = new Block();
+      my_colors[i] = EMPTY_COLOR;
     }
   }
   
   /**
-   * Construct a row with specified block array the_blocks.
-   * @param the_blocks The blocks.
+   * Construct a row with specified color array the_colors.
+   * @param the_colors The colors.
    */
-  public Row(final Block[] the_blocks)
+  public Row(final Color[] the_colors)
   {
-    my_row_blocks = the_blocks.clone();
+    my_colors = the_colors.clone();
   }
   
   //Instance methods
   
   /**
-   * @return The block array which forms this row.
+   * @return The color array which forms this row.
    */
-  public Block[] blocks()
+  public Color[] colors()
   {
-    return my_row_blocks.clone();
+    return my_colors.clone();
   }
   
   /**
-   * Set the value of the block that is at the_index.
+   * Set the value of the color that is at the_index.
    * @param the_index The index.
-   * @param the_block The block.
+   * @param the_color The color.
    * @throws ArrayIndexOutOfBoundsException Throw array out of bounds exception.
    */
-  public void setBlockIndex(final int the_index, final Block the_block)
+  public void setColorIndex(final int the_index, final Color the_color)
     throws ArrayIndexOutOfBoundsException
   {
-    my_row_blocks[the_index] = the_block;
+    my_colors[the_index] = the_color;
   }
   
   /**
-   * Return the block at the specific index.
+   * Return the color at the specific index.
    * @param the_index The index.
-   * @return The block at the specific index.
+   * @return The color at the specific index.
    * @throws ArrayIndexOutOfBoundsException Array index out of bounds exception.
    */
-  public Block getBlockIndex(final int the_index)
+  public Color getColorIndex(final int the_index)
     throws ArrayIndexOutOfBoundsException
   {
-    return my_row_blocks[the_index];
+    return my_colors[the_index];
   }
   
   /**
    * Return whether the row is completely filled or not.
-   * @return True if the block is completely filled. False otherwise.
+   * @return True if the row is completely filled. False otherwise.
    */
   public boolean isCompletelyFilled()
   {
     boolean result = true;
-    for (int i = 0; i < my_row_blocks.length; i++)
+    for (int i = 0; i < my_colors.length; i++)
     {
-      result = result && my_row_blocks[i].isFilled();
+      result = result && !my_colors[i].equals(EMPTY_COLOR);
       if (!result)
       {
         return result;
@@ -103,9 +112,9 @@ public class Row implements Cloneable
   public boolean isEmpty()
   {
     boolean result = true;
-    for (int i = 0; i < my_row_blocks.length; i++)
+    for (int i = 0; i < my_colors.length; i++)
     {
-      result = result && !my_row_blocks[i].isFilled();
+      result = result && my_colors[i].equals(EMPTY_COLOR);
       if (!result)
       {
         return result;
@@ -120,15 +129,15 @@ public class Row implements Cloneable
   public String toString()
   {
     final StringBuffer sb = new StringBuffer();
-    for (int i = 0; i < my_row_blocks.length; i++)
+    for (Color c : my_colors)
     {
-      if (getBlockIndex(i).isFilled())
+      if (c.equals(EMPTY_COLOR))
       {
-        sb.append(Piece.FULL_BLOCK_CHAR);
+        sb.append(Piece.EMPTY_BLOCK_CHAR);
       }
       else
       {
-        sb.append(Piece.EMPTY_BLOCK_CHAR);
+        sb.append(Piece.FULL_BLOCK_CHAR);
       }
     }
     return sb.toString();
@@ -140,7 +149,7 @@ public class Row implements Cloneable
   public Object clone() throws CloneNotSupportedException
   {
     final Row result = (Row) super.clone();
-    result.my_row_blocks = my_row_blocks.clone();
+    result.my_colors = my_colors.clone();
     return result;
   }
   
@@ -153,10 +162,10 @@ public class Row implements Cloneable
     if (!result && the_other != null && the_other.getClass() == getClass())
     {
       final Row other_row = (Row) the_other;
-      result = other_row.blocks().length == blocks().length;
-      for (int i = 0; i < blocks().length; i++)
+      result = other_row.colors().length == colors().length;
+      for (int i = 0; i < colors().length; i++)
       {
-        result = result && blocks()[i].equals(other_row.blocks()[i]);
+        result = result && colors()[i].equals(other_row.colors()[i]);
         if (!result)
         {
           return result;
@@ -171,6 +180,6 @@ public class Row implements Cloneable
    */
   public int hashCode()
   {
-    return blocks().length;
+    return colors().length;
   }
 }
