@@ -67,15 +67,21 @@ public class GameBoard extends Observable
   /**
    * My list of rows of the game board.
    */
-  private final List<Row> my_rows;
+  private final List<Row> /* @ non_null */ my_rows;
   
   /**
    * The current falling piece.
    */
-  private Piece my_falling_piece;
+  private Piece /* @ non_null */ my_falling_piece;
   
   //Constructors
   
+  //@ ensures my_rows != null;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
+  //@ ensures forall int i = 0; i < VISIBLE_HEIGHT; i++; my_rows[i] = new Row(WIDTH);
+  //@ ensures my_falling_piece = randomPiece();
+  //@ ensures my_falling_piece starts off at the top of the game board (in the invisible
+  //          area).
   /**
    * Construct an empty game board with the dimension of WIDTH x VISIBLE_HEIGHT. 
    * And also pick randomly a new piece to be the current falling piece.
@@ -88,10 +94,17 @@ public class GameBoard extends Observable
     {
       my_rows.add(i, new Row(WIDTH));
     }
-    startNewPiece(BASIC_PIECES[1]);
-    //startNewPiece(randomPiece());
+    startNewPiece(randomPiece());
   }
   
+  //@ requires the_piece_list != null
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
+  //@ ensures my_falling_piece = the_piece_list.get(the_piece_list.size() - 1);
+  //@ ensures Result is a game board after feeding one piece at a time all of the pieces 
+  //          in the_piece_list in the order they have in the list. For each feeding
+  //          period, the piece is place onto the game board as their specification and
+  //          is letting to drop down until it can't anymore. Then a next piece is loaded
+  //          onto the game board.
   /**
    * Construct a simulated Tetris game. First, an empty game board is created. 
    * Then, the first element in the_piece_list is set as a new piece in progress.
@@ -99,7 +112,7 @@ public class GameBoard extends Observable
    * next element in the_piece_list is set as a new piece in progress. 
    * @param the_piece_list The list of pieces.
    */
-  public GameBoard(final List<Piece> the_piece_list)
+  public GameBoard(final List<Piece> /* @ non_null */ the_piece_list)
   {
     super();
     my_rows = new ArrayList<Row>(TOTAL_HEIGHT);
@@ -118,11 +131,18 @@ public class GameBoard extends Observable
   
   //Private methods
   
+  //@ requires the_piece != null;
+  //@ requies my_rows.size() = TOTAL_HEIGHT;
+  //@ ensures \forall int i = 0; i < the_piece.blocks().length; i++;
+  //          the point the_piece.absolutePosition(i) on the game board
+  //          will have the Row.EMMPTY_COLOR;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
+  //@ ensures my_falling_piece is unchanged;
   /**
    * Erase the_piece in the game board.
    * @param the_piece The piece to be erased.
    */
-  private void erasePiece(final Piece the_piece)
+  private void erasePiece(final Piece /* @ non_null */ the_piece)
   {
     for (int i = 0; i < the_piece.blocks().length; i++)
     {
@@ -132,11 +152,20 @@ public class GameBoard extends Observable
     }
   }
   
+  //@ requires the_piece != null.
+  //@ requires my_rows.size() = TOTAL_HEIGHT;
+  //@ requires \forall int i = 0; i < Piece.NUMBER_OF_BLOCKS; i++;
+  //            the Point the_piece.absolutePosition(i) is inside the 
+  //            boundary of the board.
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
+  //@ ensures \forall int i = 0; i < Piece.NUMBER_OF_BLOCKS; i++;
+  //          the point the_piece.absolutePosition(i) on the game board
+  //          is set to the color of the_piece.color;
   /**
    * Add the_piece to the game board.
    * @param the_piece The piece.
    */
-  private void addPiece(final Piece the_piece)
+  private void addPiece(final Piece /* @ non_null */ the_piece)
   {
     for (int i = 0; i < Piece.NUMBER_OF_BLOCKS; i++)
     {
@@ -146,12 +175,20 @@ public class GameBoard extends Observable
     }   
   }
   
+  //@ requires the_piece != null;
+  //@ requires my_rows.size() = TOTAL_HEIGHT;
+  //@ ensures my_falling_piece = the_piece if the position of the_piece in the game
+  //          board is legal && update my_falling_piece's shape on the game board;
+  //@ ensures The observers are notified if there's change in the game board;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
   /**
-   * Replace the current falling piece by the_piece. Notify the observers if the result
-   * game board is different with before.
+   * Replace my_falling_piece by the_piece if the_piece's position on the game board 
+   * is legal. And update my_falling_piece's new shape on the game board. Otherwise 
+   * my_falling_piece stay the same. Notify the observers if the result game board is 
+   * different with before.
    * @param the_piece The piece.
    */
-  private void replaceCurrentFallingPiece(final Piece the_piece)
+  private void replaceCurrentFallingPiece(final Piece /* @ non_null */the_piece)
   {
     if (!the_piece.equals(my_falling_piece))
     {
@@ -170,24 +207,39 @@ public class GameBoard extends Observable
     }
   }
   
+  //@ requires the_piece != null;
+  //@ requires my_rows.size() = TOTAL_HEIGHT;
+  //@ requires the height of the piece <= TOTAL_HEIGHT - VISIBLE_HEIGHT;
+  //@ ensures my_falling_piece = the_piece.setOrigin(new Point(MIDDLE, VISIBLE_HEIGHT)
+  //          && update my_falling_piece's new shape onto the game board;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
   /**
    * Start a new piece above the visible board. And also set the my_falling_piece
    * to be the new piece.
    * @param the_piece The piece.
    */
-  private void startNewPiece(final Piece the_piece)
+  private void startNewPiece(final Piece /* @ non_null */ the_piece)
   {
     final Point the_origin = new Point(MIDDLE, VISIBLE_HEIGHT);
     my_falling_piece = the_piece.setOrigin(the_origin);
     addPiece(my_falling_piece);
   }
   
+  //@ requires my_rows.size() = TOTAL_HEIGHT;
+  //@ requires the_piece != null;
+  //@ ensures \forall int i = 0; i < Piece.NUMBER_OF_BLOCKS; i++;
+  //          Result = 0 <= the_piece.absolutePosition(i).x() < WIDTH
+  //                   && 0 <= the_piece.absolutePosition(i).y() < TOTAL_HEIGHT
+  //                   && the point the_piece.absolutePosition(i) on the game board
+  //                   has an EMPTY_COLOR;
+  //@ ensures my_rows is unchanged;
+  //@ ensures my_falling_piece is unchanged;
   /**
    * @param the_piece The piece.
    * @return True if the position of the_piece on the game board is
    *         legal. False otherwise.
    */
-  private boolean isLegalPosition(final Piece the_piece)
+  private boolean /* @ pure */ isLegalPosition(final Piece /* @ non_null */ the_piece)
   {
     boolean result = true;      
     for (int i = 0; i < Piece.NUMBER_OF_BLOCKS; i++)
@@ -206,26 +258,39 @@ public class GameBoard extends Observable
     return result;
   }
   
+  //@ requires my_rows != null;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
+  //@ ensures All the completely filled lines will be deleted. All the lines above
+  //          will drop down by that number of lines being deleted.
+  //@ ensures my_falling_piece is unchanged;
+  //@ ensures hasChanged == true if my_rows has been changed;
   /**
    * Clear all completely filled lines and move all above lines down.
    */
   private void clearCompletelyFilledLines()
   {
+    int count = 0;
     for (int i = 0; i < VISIBLE_HEIGHT; i++)
     {
       while (my_rows.get(i).isCompletelyFilled())
       {
+        count = count + 1;
         my_rows.remove(i);
         my_rows.add(new Row(WIDTH));
       }
     }
+    if (count > 0)
+    {
+      setChanged();
+    }
   }
   
+  //@ ensures Result = a piece that is randomly picked from the BASIC_PIECES;
   /**
    * Generate a random piece from the 7 basic pieces.
    * @return A random piece from the 7 basic pieces.
    */
-  private Piece randomPiece()
+  private Piece /* @ pure */ randomPiece()
   {
     final Random rand = new Random();
     final Piece the_piece;
@@ -234,6 +299,10 @@ public class GameBoard extends Observable
     return the_piece;
   }
   
+  //@ requires my_rows.size() = TOTAL_HEIGHT;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
+  //@ ensures my_falling_piece move down until it can't;
+  //@ ensures all completed lines are deleted.
   /**
    * Update the game board by one "time-tick" step until it can't anymore. Update 
    * causes the current falling piece to move down by one row, and might cause 
@@ -266,14 +335,20 @@ public class GameBoard extends Observable
   
   //Instance methods.
   
+  //@ ensures Result = my_rows;
   /**
    * @return The list of rows in the game board.
    */
-  public List<Row> rows()
+  public List<Row> /* @ pure */ rows()
   {
     return my_rows;
   }
   
+  //@ requires my_falling_piece != null;
+  //@ ensures my_falling_piece.moveLeft() if it's not illegal && 
+  //          my_falling_piece = my_falling_piece.moveLeft() &&
+  //          update my_falling_piece's position on the game board;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
   /**
    * Move the current falling piece to the left by one column.
    */
@@ -283,6 +358,11 @@ public class GameBoard extends Observable
     replaceCurrentFallingPiece(temp);
   }
   
+  //@ requires my_falling_piece != null;
+  //@ ensures my_falling_piece.moveRight() if it's not illegal && 
+  //          my_falling_piece = my_falling_piece.moveRight() &&
+  //          update my_falling_piece's position on the game board;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
   /**
    * Move the current falling piece to the right by one column.
    */
@@ -292,6 +372,11 @@ public class GameBoard extends Observable
     replaceCurrentFallingPiece(temp);
   }
   
+  //@ requires my_falling_piece != null;
+  //@ ensures my_falling_piece.moveDown() if it's not illegal && 
+  //          my_falling_piece = my_falling_piece.moveDown() &&
+  //          update my_falling_piece's position on the game board;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
   /**
    * Move the current falling piece down by one row.
    */
@@ -301,6 +386,11 @@ public class GameBoard extends Observable
     replaceCurrentFallingPiece(temp);
   }
   
+  //@ requires my_falling_piece != null;
+  //@ ensures my_falling_piece.rotateClockwise() if it's not illegal && 
+  //          my_falling_piece = my_falling_piece.rotateClockwise() &&
+  //          update my_falling_piece's position on the game board;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
   /**
    * Rotate the current falling piece one step clock-wise.
    */
@@ -310,6 +400,11 @@ public class GameBoard extends Observable
     replaceCurrentFallingPiece(temp);
   }
   
+  //@ requires my_falling_piece != null;
+  //@ ensures my_falling_piece.rotateCounterclockwise() if it's not illegal && 
+  //          my_falling_piece = my_falling_piece.rotateCounterclockwise() &&
+  //          update my_falling_piece's position on the game board;
+  //@ ensures my_rows.size() = TOTAL_HEIGHT;
   /**
    * Rotate the current falling piece one step counter clock-wise.
    */
@@ -319,6 +414,12 @@ public class GameBoard extends Observable
     replaceCurrentFallingPiece(temp);
   }
   
+  //@ requires my_rows != null;
+  //@ requires my_falling_piece != null;
+  //@ ensures my_falling_piece = my_falling_piece.moveDown() if it's legal;
+  //@ ensures my_falling_piece = new random piece from the BASIC_PIECES if it's
+  //          can't move down anymore && any completed lines are deleted;
+  //@ ensures notify observers if my_rows get changed;
   /**
    * Update the game board by one "time-tick" step. Update causes the current falling
    * piece to move down by one row, and might cause addition changes to the game board
@@ -343,6 +444,7 @@ public class GameBoard extends Observable
     {      
       my_falling_piece = temp;
       addPiece(my_falling_piece);
+      setChanged();
     }
     else
     {
@@ -351,14 +453,13 @@ public class GameBoard extends Observable
       my_falling_piece = randomPiece();
       startNewPiece(my_falling_piece);
     }
-    setChanged();
     notifyObservers(my_rows);
   }
   
   /**
    * @return The printable representation of this GameBoard object.
    */
-  public String toString()
+  public /* @ non_null */ String toString()
   {
     final StringBuffer sb = new StringBuffer(150);
     if (!my_rows.get(VISIBLE_HEIGHT).isEmpty())

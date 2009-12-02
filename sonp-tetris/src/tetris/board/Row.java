@@ -27,15 +27,18 @@ public class Row implements Cloneable
   /**
    * The array of blocks in a row.
    */
-  private Color[] my_colors;
+  private Color[] /* @ non_null */my_colors;
   
   //Constructors
   
+  //@ requires the_size >= 0;
+  //@ ensures my_colors != null;
+  //@ ensures my_colors.length >= 0;
   /**
    * Construct an empty row with the specific size for the block array.
    * @param the_size The size.
    */
-  public Row(final int the_size)
+  public Row(final int /* @ non_null */ the_size)
   {
     my_colors = new Color[the_size];
     for (int i = 0; i < the_size; i++)
@@ -44,54 +47,67 @@ public class Row implements Cloneable
     }
   }
   
+  //@ ensures my_colors != null;
+  //@ ensures my_colors.length >= 0;
+  //@ ensures my_colors = the_colors;
   /**
    * Construct a row with specified color array the_colors.
    * @param the_colors The colors.
    */
-  public Row(final Color[] the_colors)
+  public Row(final Color[] /* @ non_null */ the_colors)
   {
     my_colors = the_colors.clone();
   }
   
   //Instance methods
   
+  //@ ensures \result.equals(my_colors);
   /**
    * @return The color array which forms this row.
    */
-  public Color[] colors()
+  public /*@ pure */ Color[] colors()
   {
     return my_colors.clone();
   }
   
+  //@ requires 0 <= the_index < my_colors.length;
+  //@ requires my_colors != null;
+  //@ ensures my_colors[the_index].equals(the_color);
   /**
    * Set the value of the color that is at the_index.
    * @param the_index The index.
    * @param the_color The color.
    * @throws ArrayIndexOutOfBoundsException Throw array out of bounds exception.
    */
-  public void setColorIndex(final int the_index, final Color the_color)
+  public void setColorIndex(final int /* @ non_null */ the_index, 
+                            final Color /* @ non_null */ the_color)
     throws ArrayIndexOutOfBoundsException
   {
     my_colors[the_index] = the_color;
   }
   
+  //@ requires 0 <= the_index < my_colors.length;
+  //@ ensures \result.equals(my_colors[the_index]);
   /**
    * Return the color at the specific index.
    * @param the_index The index.
    * @return The color at the specific index.
    * @throws ArrayIndexOutOfBoundsException Array index out of bounds exception.
    */
-  public Color getColorIndex(final int the_index)
+  public Color getColorIndex(final int /* @ non_null */the_index)
     throws ArrayIndexOutOfBoundsException
   {
     return my_colors[the_index];
   }
   
+  //@ requires my_colors != null;
+  //@ ensures Result is true if the row is completely filled. Result is false if the
+  //          row is not completely filled.
   /**
    * Return whether the row is completely filled or not.
    * @return True if the row is completely filled. False otherwise.
    */
-  public boolean isCompletelyFilled()
+  public boolean /* @ pure */ isCompletelyFilled()
   {
     boolean result = true;
     for (int i = 0; i < my_colors.length; i++)
@@ -105,6 +121,8 @@ public class Row implements Cloneable
     return result;
   }
   
+  //@ requires my_colors != null;
+  //@ ensures Result is true if the row is empty. Result is false if the row is not empty.
   /**
    * Return whether the row is empty or not.
    * @return True if the row is empty. False otherwise.
@@ -126,7 +144,7 @@ public class Row implements Cloneable
   /**
    * @return The printable representation of this Row object.
    */
-  public String toString()
+  public /* @ non_null */ String toString()
   {
     final StringBuffer sb = new StringBuffer();
     for (Color c : my_colors)
@@ -146,17 +164,25 @@ public class Row implements Cloneable
   /**
    * {@inheritDoc}
    */
-  public Object clone() throws CloneNotSupportedException
+  public Object /* @ pure non_null */ clone() throws CloneNotSupportedException
   {
     final Row result = (Row) super.clone();
     result.my_colors = my_colors.clone();
     return result;
   }
   
+  /*
+   * @ requires the_other != null && \typeof(the_other) ==
+   * \typeof(this); 
+   * @ ensures \result <==> ((Row) the_other).colors().length == colors().length
+   * && (\forall int i = 0; i < colors().length; i++; 
+   * colors()[i].equals((Row) the_other).colors()[i]); 
+   */
+  
   /**
    * {@inheritDoc}
    */
-  public boolean equals(final Object the_other)
+  public boolean /* @ pure */ equals(final Object the_other)
   {
     boolean result = this == the_other;
     if (!result && the_other != null && the_other.getClass() == getClass())
@@ -175,6 +201,9 @@ public class Row implements Cloneable
     return result;
   }
   
+  /*
+   * @ public represents theHashCode = colors().length;
+   */
   /**
    * {@inheritDoc}
    */

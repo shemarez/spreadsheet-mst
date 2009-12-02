@@ -63,6 +63,12 @@ public class GameBoardTest
                 new JPiece().rotateCounterclockwise().setOrigin(new Point(7, 20))};
   
   /**
+   * The second piece array for testing.
+   */
+  private final Piece[] my_piece_array_2 = 
+    new Piece[] {new IPiece().rotateClockwise().setOrigin(new Point(7, 4))}; 
+  
+  /**
    * What piece results from rotating the_piece clock-wise n times.
    * @param the_piece The piece.
    * @param the_n Number of times.
@@ -128,6 +134,12 @@ public class GameBoardTest
     final GameBoard new_board = new GameBoard(Arrays.asList(piece_array));
     new_board.moveLeft();
     assertEquals("The new board should be equal to the old board", board.toString(), 
-                 new_board.toString());    
+                 new_board.toString());
+    
+    final GameBoard board2 = new GameBoard(Arrays.asList(my_piece_array_2));
+    final GameBoard new_board_2 = new GameBoard(Arrays.asList(my_piece_array_2));
+    new_board_2.rotateClockwise();
+    assertEquals("The new_board_2 should be equal to the board_2", board2.toString(), 
+                 new_board_2.toString());
   }
 }
