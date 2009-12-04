@@ -74,6 +74,11 @@ public class GameBoard extends Observable
    */
   private Piece /* @ non_null */ my_falling_piece;
   
+  /**
+   * The next piece in progress.
+   */
+  private Piece /* @ non_null */ my_next_piece;
+  
   //Constructors
   
   //@ ensures my_rows != null;
@@ -94,7 +99,8 @@ public class GameBoard extends Observable
     {
       my_rows.add(i, new Row(WIDTH));
     }
-    startNewPiece(randomPiece());
+    my_next_piece = randomPiece();
+    startNewPiece(my_next_piece);
   }
   
   //@ requires the_piece_list != null
@@ -198,7 +204,7 @@ public class GameBoard extends Observable
         my_falling_piece = the_piece;
         addPiece(my_falling_piece);
         setChanged();
-        notifyObservers(my_rows);
+        notifyObservers(this);
       }
       else
       {
@@ -213,15 +219,17 @@ public class GameBoard extends Observable
   //@ ensures my_falling_piece = the_piece.setOrigin(new Point(MIDDLE, VISIBLE_HEIGHT)
   //          && update my_falling_piece's new shape onto the game board;
   //@ ensures my_rows.size() = TOTAL_HEIGHT;
+  //@ ensures my_next_piece = randomPiece();
   /**
    * Start a new piece above the visible board. And also set the my_falling_piece
-   * to be the new piece.
+   * to be the new piece. Pick a random piece to be my_next_piece.
    * @param the_piece The piece.
    */
   private void startNewPiece(final Piece /* @ non_null */ the_piece)
   {
     final Point the_origin = new Point(MIDDLE, VISIBLE_HEIGHT);
     my_falling_piece = the_piece.setOrigin(the_origin);
+    my_next_piece = randomPiece();
     addPiece(my_falling_piece);
   }
   
@@ -333,7 +341,25 @@ public class GameBoard extends Observable
     clearCompletelyFilledLines();
   }
   
+  /**
+   * The game is over when the first invisible row is not empty when a new piece is
+   * about to drop.
+   * @return Whether or not the game is over.
+   */
+  private boolean isGameOver()
+  {
+    return !(rows().get(VISIBLE_HEIGHT).isEmpty());
+  }
+  
   //Instance methods.
+  
+  /**
+   * @return The next piece in progress.
+   */
+  public Piece nextPiece()
+  {
+    return my_next_piece;
+  }
   
   //@ ensures Result = my_rows;
   /**
@@ -449,11 +475,23 @@ public class GameBoard extends Observable
     else
     {
       addPiece(my_falling_piece);
-      clearCompletelyFilledLines();
-      my_falling_piece = randomPiece();
-      startNewPiece(my_falling_piece);
+      if (isGameOver())
+      {
+        gameOver();
+        return;
+      }
+      else
+      {
+        clearCompletelyFilledLines();
+        startNewPiece(my_next_piece);
+      }
     }
-    notifyObservers(my_rows);
+    notifyObservers(this);
+  }
+  
+  public void gameOver()
+  {
+    
   }
   
   /**
