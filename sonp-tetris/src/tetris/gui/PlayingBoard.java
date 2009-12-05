@@ -11,12 +11,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import tetris.board.GameBoard;
@@ -31,9 +30,14 @@ import tetris.board.Row;
 public class PlayingBoard extends JPanel implements Observer
 {
   /**
+   * The stroke of the border.
+   */
+  private static final int BORDER = 5;
+  
+  /**
    * The width of the playing board.
    */
-  private static final int WIDTH = 400;
+  private static final int WIDTH = 300;
   
   /**
    * The height of the playing board.
@@ -44,11 +48,6 @@ public class PlayingBoard extends JPanel implements Observer
    * The width of the cell block.
    */
   private static final double BLOCK = (double) WIDTH / GameBoard.WIDTH;
-  
-  /**
-   * The stroke of the border.
-   */
-  private static final int BORDER = 5;
   
   /**
    * The Tetris game.
@@ -62,11 +61,12 @@ public class PlayingBoard extends JPanel implements Observer
   public PlayingBoard(final GameBoard the_game)
   {
     super();
+    //setFocusable(true);
     my_game = the_game;
     my_game.addObserver(this);
     setBackground(Color.WHITE);
     setPreferredSize(new Dimension(WIDTH, HEIGHT));
-    addKeyListener(new PBListener());
+    setBorder(BorderFactory.createLineBorder(Color.RED, BORDER));
   }
   
   /**
@@ -79,14 +79,15 @@ public class PlayingBoard extends JPanel implements Observer
     final Graphics2D g2d = (Graphics2D) the_graphics;
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     
-    g2d.setStroke(new BasicStroke(BORDER));
-    g2d.setColor(Color.RED);
-    final Shape container = new Rectangle2D.Double(0, 0, WIDTH, HEIGHT);
-    g2d.draw(container);
+    //g2d.setStroke(new BasicStroke(BORDER));
+    //g2d.setColor(Color.RED);
+    //final Shape container = new Rectangle2D.Double(0, 0, 100, 200);
+    //g2d.draw(container);
+    g2d.setStroke(new BasicStroke(1));
     
     for (int i = 0; i < GameBoard.VISIBLE_HEIGHT; i++)
     {
-      drawRow(g2d, my_game.rows().get(i), i * BLOCK);
+      drawRow(g2d, my_game.rows().get(i), HEIGHT - ((i + 1) * BLOCK));
     }
   }
   
@@ -98,46 +99,59 @@ public class PlayingBoard extends JPanel implements Observer
    */
   public void drawRow(final Graphics the_graphics, final Row the_row, final double the_height)
   {
-    final Graphics2D g2d = (Graphics2D) the_graphics;
     for (int i = 0; i < GameBoard.WIDTH; i++)
     {
-      final Shape block = new Rectangle2D.Double((GameBoard.WIDTH - i) * BLOCK, 
-                                                 the_height, BLOCK, BLOCK);
-      g2d.setColor(the_row.getColorIndex(i));
-      g2d.fill(block);
+      drawSquare(the_graphics, (int) (i * BLOCK), 
+                 (int) the_height, the_row.getColorIndex(i));
     }
   }
   
+  /**
+   * Paint a single square on the board at the start point (the_x, the_y) and color is
+   * the_color.
+   * @param the_graphics The graphics.
+   * @param the_x The x coordinate of the starting point.
+   * @param the_y The y coordinate of the starting point.
+   * @param the_color The color.
+   */
+  public void drawSquare(final Graphics the_graphics, final int the_x, 
+                         final int the_y, final Color the_color)
+  {
+    final Graphics2D g2d = (Graphics2D) the_graphics;
+    g2d.setColor(the_color);
+    if (the_color.equals(Color.WHITE))
+    {
+      final Shape empty_square = new Rectangle2D.Double(the_x, the_y, BLOCK, BLOCK);
+      g2d.fill(empty_square);
+    }
+    else
+    {
+      final Shape inner_square = new Rectangle2D.Double(the_x + 1, the_y + 1, 
+                                                        BLOCK - 2, BLOCK - 2);
+      g2d.fill(inner_square);
+      
+      //Draw the border of the square.
+      
+      //Draw the top and left borders.
+      g2d.setColor(the_color.brighter());
+      g2d.drawLine(the_x, the_y, the_x, (int) (the_y + BLOCK - 1));
+      g2d.drawLine(the_x, the_y, (int) (the_x + BLOCK - 1), the_y);
+      
+      //Draw the right and bottom borders.
+      g2d.setColor(the_color.darker());
+      g2d.drawLine((int) (the_x + BLOCK - 1), the_y, (int) (the_x + BLOCK - 1), 
+                   (int) (the_y + BLOCK - 1));
+      g2d.drawLine(the_x, (int) (the_y + BLOCK - 1), (int) (the_x + BLOCK - 1), 
+                   (int) (the_y + BLOCK - 1));    
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
   public void update(final Observable the_obj, final Object the_arg)
   {
     my_game = (GameBoard) the_arg;
     repaint();
-  }
-  
-  private class PBListener extends KeyAdapter
-  {
-    public void keyTyped(final KeyEvent the_event)
-    {
-      if (the_event.getKeyChar() == 'x')
-      {
-        my_game.rotateClockwise();
-      }
-      else if (the_event.getKeyChar() == 'z')
-      {
-        my_game.rotateCounterclockwise();
-      }
-      else if (the_event.getKeyChar() == KeyEvent.VK_LEFT)
-      {
-        my_game.moveLeft();
-      }
-      else if (the_event.getKeyChar() == KeyEvent.VK_RIGHT)
-      {
-        my_game.moveRight();
-      }
-      else if (the_event.getKeyChar() == KeyEvent.VK_DOWN)
-      {
-        my_game.moveDown();
-      }
-    }
   }
 }

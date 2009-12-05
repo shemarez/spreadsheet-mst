@@ -55,6 +55,11 @@ public class GameBoard extends Observable
   public static final String BORDER = "|";
   
   /**
+   * The new line character.
+   */
+  public static final String NEW_LINE = "\n";
+  
+  /**
    * 7 basic pieces.
    */
   private static final Piece[] BASIC_PIECES = new Piece[]{new IPiece(), new JPiece(),
@@ -79,6 +84,11 @@ public class GameBoard extends Observable
    */
   private Piece /* @ non_null */ my_next_piece;
   
+  /**
+   * Is the game over?
+   */
+  private boolean my_game_over;
+  
   //Constructors
   
   //@ ensures my_rows != null;
@@ -94,6 +104,7 @@ public class GameBoard extends Observable
   public GameBoard()
   {
     super();
+    my_game_over = false;
     my_rows = new ArrayList<Row>(TOTAL_HEIGHT);
     for (int i = 0; i < TOTAL_HEIGHT; i++)
     {
@@ -245,7 +256,8 @@ public class GameBoard extends Observable
   /**
    * @param the_piece The piece.
    * @return True if the position of the_piece on the game board is
-   *         legal. False otherwise.
+   *         legal: 0 <= the_piece.x() < WIDTH && 0 <= the_piece.y < TOTAL_HEIGHT. 
+   *         False otherwise.
    */
   private boolean /* @ pure */ isLegalPosition(final Piece /* @ non_null */ the_piece)
   {
@@ -341,16 +353,6 @@ public class GameBoard extends Observable
     clearCompletelyFilledLines();
   }
   
-  /**
-   * The game is over when the first invisible row is not empty when a new piece is
-   * about to drop.
-   * @return Whether or not the game is over.
-   */
-  private boolean isGameOver()
-  {
-    return !(rows().get(VISIBLE_HEIGHT).isEmpty());
-  }
-  
   //Instance methods.
   
   /**
@@ -412,6 +414,13 @@ public class GameBoard extends Observable
     replaceCurrentFallingPiece(temp);
   }
   
+  public void moveDownToBottom()
+  {
+    updateForTesting();
+    setChanged();
+    notifyObservers(this);
+  }
+  
   //@ requires my_falling_piece != null;
   //@ ensures my_falling_piece.rotateClockwise() if it's not illegal && 
   //          my_falling_piece = my_falling_piece.rotateClockwise() &&
@@ -440,6 +449,16 @@ public class GameBoard extends Observable
     replaceCurrentFallingPiece(temp);
   }
   
+  /**
+   * The game is over when the first invisible row is not empty when a new piece is
+   * about to drop.
+   * @return Whether or not the game is over.
+   */
+  public boolean isGameOver()
+  {
+    return my_game_over;
+  }
+  
   //@ requires my_rows != null;
   //@ requires my_falling_piece != null;
   //@ ensures my_falling_piece = my_falling_piece.moveDown() if it's legal;
@@ -466,32 +485,24 @@ public class GameBoard extends Observable
   {
     final Piece temp = my_falling_piece.moveDown();
     erasePiece(my_falling_piece);
+    setChanged();
     if (isLegalPosition(temp))
     {      
       my_falling_piece = temp;
       addPiece(my_falling_piece);
-      setChanged();
     }
     else
     {
       addPiece(my_falling_piece);
-      if (isGameOver())
+      if (!(rows().get(VISIBLE_HEIGHT).isEmpty()))
       {
-        gameOver();
-        return;
+        my_game_over = true;
+        notifyObservers(this);
       }
-      else
-      {
-        clearCompletelyFilledLines();
-        startNewPiece(my_next_piece);
-      }
+      clearCompletelyFilledLines();
+      startNewPiece(my_next_piece);
     }
     notifyObservers(this);
-  }
-  
-  public void gameOver()
-  {
-    
   }
   
   /**
@@ -506,14 +517,14 @@ public class GameBoard extends Observable
       for (int i = TOTAL_HEIGHT - 1; i >= VISIBLE_HEIGHT; i--)
       {
         final Row temp_row = my_rows.get(i);
-        sb.append(BORDER + temp_row.toString() + BORDER + "\n");
+        sb.append(BORDER + temp_row.toString() + BORDER + NEW_LINE);
       }
     }
-    sb.append("\nBelow is the visible tetris game board.\n");
+    sb.append("\nBelow is the visible tetris game board." + NEW_LINE);
     for (int i = VISIBLE_HEIGHT - 1; i >= 0; i--)
     {
       final Row temp_row = my_rows.get(i);
-      sb.append(BORDER + temp_row.toString() + BORDER + "\n");
+      sb.append(BORDER + temp_row.toString() + BORDER + NEW_LINE);
     }
     return sb.toString();
   }
