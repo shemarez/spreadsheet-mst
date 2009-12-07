@@ -344,9 +344,9 @@ public class GameBoard extends Observable
     while (isLegalPosition(temp))
     {
       my_falling_piece = temp;
-      addPiece(my_falling_piece);
+      //addPiece(my_falling_piece);
       temp = my_falling_piece.moveDown();
-      erasePiece(my_falling_piece);
+      //erasePiece(my_falling_piece);
     }    
     addPiece(my_falling_piece);
     clearCompletelyFilledLines();
@@ -419,12 +419,13 @@ public class GameBoard extends Observable
   }
   
   /**
-   * Move the current falling piece down until it can't anymore.
+   * Move the current falling piece down until it can't anymore. And then, clear all
+   * the completely filled lines. And then, start the next piece.
    */
   public void moveDownToBottom()
   {
     updateForTesting();
-    //setChanged();
+    startNewPiece(my_next_piece);
     notifyObservers(this);
   }
   
