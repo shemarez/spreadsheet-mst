@@ -426,7 +426,6 @@ public class GameBoard extends Observable
   {
     updateForTesting();
     startNewPiece(my_next_piece);
-    notifyObservers(this);
   }
   
   //@ requires my_falling_piece != null;
