@@ -113,10 +113,6 @@ public class Row implements Cloneable
     for (int i = 0; i < my_colors.length; i++)
     {
       result = result && !my_colors[i].equals(EMPTY_COLOR);
-      if (!result)
-      {
-        return result;
-      }
     }
     return result;
   }
@@ -133,10 +129,6 @@ public class Row implements Cloneable
     for (int i = 0; i < my_colors.length; i++)
     {
       result = result && my_colors[i].equals(EMPTY_COLOR);
-      if (!result)
-      {
-        return result;
-      }
     }
     return result;
   }

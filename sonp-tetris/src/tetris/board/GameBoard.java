@@ -347,8 +347,7 @@ public class GameBoard extends Observable
       addPiece(my_falling_piece);
       temp = my_falling_piece.moveDown();
       erasePiece(my_falling_piece);
-    }
-    
+    }    
     addPiece(my_falling_piece);
     clearCompletelyFilledLines();
   }
@@ -369,7 +368,12 @@ public class GameBoard extends Observable
    */
   public List<Row> /* @ pure */ rows()
   {
-    return my_rows;
+    final List<Row> result = new ArrayList<Row>(TOTAL_HEIGHT);
+    for (Row r : my_rows)
+    {
+      result.add(r);
+    }    
+    return result;
   }
   
   //@ requires my_falling_piece != null;
@@ -414,10 +418,13 @@ public class GameBoard extends Observable
     replaceCurrentFallingPiece(temp);
   }
   
+  /**
+   * Move the current falling piece down until it can't anymore.
+   */
   public void moveDownToBottom()
   {
     updateForTesting();
-    setChanged();
+    //setChanged();
     notifyObservers(this);
   }
   

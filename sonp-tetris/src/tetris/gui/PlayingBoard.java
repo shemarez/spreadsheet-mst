@@ -35,19 +35,29 @@ public class PlayingBoard extends JPanel implements Observer
   private static final int BORDER = 5;
   
   /**
+   * The default width of the playing board.
+   */
+  private static final int DEFAULT_WIDTH = 300;
+  
+  /**
    * The width of the playing board.
    */
-  private static final int WIDTH = 300;
+  private int my_width;
   
   /**
    * The height of the playing board.
    */
-  private static final int HEIGHT = WIDTH * 2;
+  private int my_height;
   
   /**
    * The width of the cell block.
    */
-  private static final double BLOCK = (double) WIDTH / GameBoard.WIDTH;
+  private double my_block_width;
+  
+  /**
+   * The height of the cell block.
+   */
+  private double my_block_height;
   
   /**
    * The Tetris game.
@@ -62,11 +72,25 @@ public class PlayingBoard extends JPanel implements Observer
   {
     super();
     //setFocusable(true);
+    setupDimensions(DEFAULT_WIDTH, DEFAULT_WIDTH * 2);
     my_game = the_game;
     my_game.addObserver(this);
     setBackground(Color.WHITE);
-    setPreferredSize(new Dimension(WIDTH, HEIGHT));
+    setPreferredSize(new Dimension(my_width, my_height));
     setBorder(BorderFactory.createLineBorder(Color.RED, BORDER));
+  }
+  
+  /**
+   * Setup my_width, my_height, my_block_width, my_block_height.
+   * @param the_width The width.
+   * @param the_height The height.
+   */
+  private void setupDimensions(final int the_width, final int the_height)
+  {
+    my_width = the_width;
+    my_height = the_height;
+    my_block_width = (double) my_width / GameBoard.WIDTH;
+    my_block_height = (double) my_height / GameBoard.VISIBLE_HEIGHT;
   }
   
   /**
@@ -79,6 +103,13 @@ public class PlayingBoard extends JPanel implements Observer
     final Graphics2D g2d = (Graphics2D) the_graphics;
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     
+    setupDimensions(getSize().width, getSize().height);
+    /*
+    my_width = getSize().width;
+    my_height = getSize().height;
+    my_block_width = (double) my_width / GameBoard.WIDTH;
+    my_block_height = (double) my_height / GameBoard.VISIBLE_HEIGHT; */
+    
     //g2d.setStroke(new BasicStroke(BORDER));
     //g2d.setColor(Color.RED);
     //final Shape container = new Rectangle2D.Double(0, 0, 100, 200);
@@ -87,7 +118,7 @@ public class PlayingBoard extends JPanel implements Observer
     
     for (int i = 0; i < GameBoard.VISIBLE_HEIGHT; i++)
     {
-      drawRow(g2d, my_game.rows().get(i), HEIGHT - ((i + 1) * BLOCK));
+      drawRow(g2d, my_game.rows().get(i), my_height - ((i + 1) * my_block_height));
     }
   }
   
@@ -101,7 +132,7 @@ public class PlayingBoard extends JPanel implements Observer
   {
     for (int i = 0; i < GameBoard.WIDTH; i++)
     {
-      drawSquare(the_graphics, (int) (i * BLOCK), 
+      drawSquare(the_graphics, (int) (i * my_block_width), 
                  (int) the_height, the_row.getColorIndex(i));
     }
   }
@@ -121,28 +152,34 @@ public class PlayingBoard extends JPanel implements Observer
     g2d.setColor(the_color);
     if (the_color.equals(Color.WHITE))
     {
-      final Shape empty_square = new Rectangle2D.Double(the_x, the_y, BLOCK, BLOCK);
+      final Shape empty_square = 
+        new Rectangle2D.Double(the_x, the_y, my_block_width, my_block_height);
       g2d.fill(empty_square);
     }
     else
     {
-      final Shape inner_square = new Rectangle2D.Double(the_x + 1, the_y + 1, 
-                                                        BLOCK - 2, BLOCK - 2);
+      final Shape inner_square = 
+        new Rectangle2D.Double(the_x + 1, the_y + 1,                            
+                               my_block_width - 2, my_block_height - 2);
       g2d.fill(inner_square);
       
       //Draw the border of the square.
       
       //Draw the top and left borders.
       g2d.setColor(the_color.brighter());
-      g2d.drawLine(the_x, the_y, the_x, (int) (the_y + BLOCK - 1));
-      g2d.drawLine(the_x, the_y, (int) (the_x + BLOCK - 1), the_y);
+      g2d.drawLine(the_x, the_y, the_x, (int) (the_y + my_block_height - 1));
+      g2d.drawLine(the_x, the_y, (int) (the_x + my_block_width - 1), the_y);
       
       //Draw the right and bottom borders.
       g2d.setColor(the_color.darker());
-      g2d.drawLine((int) (the_x + BLOCK - 1), the_y, (int) (the_x + BLOCK - 1), 
-                   (int) (the_y + BLOCK - 1));
-      g2d.drawLine(the_x, (int) (the_y + BLOCK - 1), (int) (the_x + BLOCK - 1), 
-                   (int) (the_y + BLOCK - 1));    
+      g2d.drawLine((int) (the_x + my_block_width - 1), 
+                   the_y, 
+                   (int) (the_x + my_block_width - 1), 
+                   (int) (the_y + my_block_height - 1));
+      g2d.drawLine(the_x, 
+                   (int) (the_y + my_block_height - 1), 
+                   (int) (the_x + my_block_width - 1), 
+                   (int) (the_y + my_block_height - 1));    
     }
   }
   
