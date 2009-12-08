@@ -87,8 +87,8 @@ public class PlayingBoard extends JPanel implements Observer
    */
   private void setupDimensions(final int the_width, final int the_height)
   {
-    my_width = the_width + BORDER * 2;
-    my_height = the_height + BORDER * 2;
+    my_width = the_width;
+    my_height = the_height;
     my_block_width = (double) the_width / GameBoard.WIDTH;
     my_block_height = (double) the_height / GameBoard.VISIBLE_HEIGHT;
   }
@@ -108,7 +108,7 @@ public class PlayingBoard extends JPanel implements Observer
     
     for (int i = 0; i < GameBoard.VISIBLE_HEIGHT; i++)
     {
-      drawRow(g2d, my_game.rows().get(i), my_height - (i + 1) * my_block_height - BORDER);
+      drawRow(g2d, my_game.rows().get(i), my_height - (i + 1) * my_block_height);
     }
   }
   
@@ -122,7 +122,7 @@ public class PlayingBoard extends JPanel implements Observer
   {
     for (int i = 0; i < GameBoard.WIDTH; i++)
     {
-      drawSquare(the_graphics, (int) (i * my_block_width + BORDER), 
+      drawSquare(the_graphics, (int) (i * my_block_width), 
                  (int) the_height, the_row.getColorIndex(i));
     }
   }
