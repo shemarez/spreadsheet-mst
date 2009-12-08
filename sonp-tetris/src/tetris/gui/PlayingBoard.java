@@ -76,7 +76,7 @@ public class PlayingBoard extends JPanel implements Observer
     my_game = the_game;
     my_game.addObserver(this);
     setBackground(Color.WHITE);
-    setPreferredSize(new Dimension(my_width, my_height));
+    setPreferredSize(new Dimension(my_width, my_height));    
     setBorder(BorderFactory.createLineBorder(Color.RED, BORDER));
   }
   
@@ -87,10 +87,10 @@ public class PlayingBoard extends JPanel implements Observer
    */
   private void setupDimensions(final int the_width, final int the_height)
   {
-    my_width = the_width;
-    my_height = the_height;
-    my_block_width = (double) my_width / GameBoard.WIDTH;
-    my_block_height = (double) my_height / GameBoard.VISIBLE_HEIGHT;
+    my_width = the_width + BORDER * 2;
+    my_height = the_height + BORDER * 2;
+    my_block_width = (double) the_width / GameBoard.WIDTH;
+    my_block_height = (double) the_height / GameBoard.VISIBLE_HEIGHT;
   }
   
   /**
@@ -102,23 +102,13 @@ public class PlayingBoard extends JPanel implements Observer
     super.paintComponent(the_graphics);
     final Graphics2D g2d = (Graphics2D) the_graphics;
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    
     setupDimensions(getSize().width, getSize().height);
-    /*
-    my_width = getSize().width;
-    my_height = getSize().height;
-    my_block_width = (double) my_width / GameBoard.WIDTH;
-    my_block_height = (double) my_height / GameBoard.VISIBLE_HEIGHT; */
-    
-    //g2d.setStroke(new BasicStroke(BORDER));
-    //g2d.setColor(Color.RED);
-    //final Shape container = new Rectangle2D.Double(0, 0, 100, 200);
-    //g2d.draw(container);
+
     g2d.setStroke(new BasicStroke(1));
     
     for (int i = 0; i < GameBoard.VISIBLE_HEIGHT; i++)
     {
-      drawRow(g2d, my_game.rows().get(i), my_height - ((i + 1) * my_block_height));
+      drawRow(g2d, my_game.rows().get(i), my_height - (i + 1) * my_block_height - BORDER);
     }
   }
   
@@ -132,7 +122,7 @@ public class PlayingBoard extends JPanel implements Observer
   {
     for (int i = 0; i < GameBoard.WIDTH; i++)
     {
-      drawSquare(the_graphics, (int) (i * my_block_width), 
+      drawSquare(the_graphics, (int) (i * my_block_width + BORDER), 
                  (int) the_height, the_row.getColorIndex(i));
     }
   }

@@ -49,47 +49,52 @@ public class TetrisGui extends JFrame
   /**
    * The name of the frame.
    */
-  private static final String FRAME_NAME = "A Tetris Clone";
+  public static final String FRAME_NAME = "A Tetris Clone";
   
   /**
    * The game move left key.
    */
-  private static final int LEFT = 0;
+  public static final int LEFT = 0;
   
   /**
    * The game move left right.
    */
-  private static final int RIGHT = 1;
+  public static final int RIGHT = 1;
   
   /**
    * The game move left down.
    */
-  private static final int DOWN = 2;
+  public static final int DOWN = 2;
   
   /**
    * The game rotate clock_wise key.
    */
-  private static final int ROTATE_CW = 3;
+  public static final int ROTATE_CW = 3;
   
   /**
    * The game rotate counter clock_wise key.
    */
-  private static final int ROTATE_CCW = 4;
+  public static final int ROTATE_CCW = 4;
   
   /**
    * The game move down to bottom key.
    */
-  private static final int DROP_TO_BOTTOM = 5;
+  public static final int DROP_TO_BOTTOM = 5;
   
   /**
    * The game pause key.
    */
-  private static final int PAUSE = 6;
+  public static final int PAUSE = 6;
   
   /**
    * The size of the string buffer.
    */
-  private static final int BUFFER_SIZE = 200;
+  public static final int BUFFER_SIZE = 200;
+  
+  /**
+   * The close bracket char.
+   */
+  public static final String CLOSE_BRACKET = "]";
   
   //Instance fields
   
@@ -157,11 +162,30 @@ public class TetrisGui extends JFrame
     addKeyListener(the_key_listener);
   }
   
+  /**
+   * A class to modify control keys.
+   * @author Son Pham
+   * @version 1.0
+   */
   private class ModifyKey extends AbstractAction
   {
+    /**
+     * The key index in the control key indexes array.
+     */
     private final int my_key_index;
+    
+    /**
+     * The name of the key.
+     */
     private final String my_name;
     
+    //Constructor
+    
+    /**
+     * Construct an object with parameters the_name and the_key_index.
+     * @param the_name The name.
+     * @param the_key_index The key index.
+     */
     public ModifyKey(final String the_name, final int the_key_index)
     {
       super(the_name);
@@ -175,7 +199,7 @@ public class TetrisGui extends JFrame
     public void actionPerformed(final ActionEvent the_event)
     {
       my_is_paused = false;
-      pause();
+      pauseGame();
       JOptionPane.showMessageDialog(null, "Please enter your new key for " + my_name +
                                     ". Press the pause key to quit.");
       replaceKeyListener(new MKeyListener());
@@ -190,8 +214,7 @@ public class TetrisGui extends JFrame
     {                
       /**
        * {@inheritDoc}
-       */
-      
+       */      
       public void keyPressed(final KeyEvent the_key_event)
       {
         final int key_code = the_key_event.getKeyCode();
@@ -215,7 +238,7 @@ public class TetrisGui extends JFrame
                                           ". Press the pause key to resume.");
           }
           my_is_paused = true;
-          pause();          
+          pauseGame();          
           replaceKeyListener(new PBKeyListener());
         }
       }
@@ -228,23 +251,29 @@ public class TetrisGui extends JFrame
   private StringBuffer controlKeyIndex()
   {
     final StringBuffer sb = new StringBuffer(BUFFER_SIZE);
-    sb.append("FUNCTION - KEY" + GameBoard.NEW_LINE);
-    sb.append("Move left - " + KeyEvent.getKeyText(my_keys_array.get(LEFT)) + 
-              GameBoard.NEW_LINE);
-    sb.append("Move right - " + KeyEvent.getKeyText(my_keys_array.get(RIGHT)) + 
-              GameBoard.NEW_LINE);
-    sb.append("Move down - " + KeyEvent.getKeyText(my_keys_array.get(DOWN)) + 
-              GameBoard.NEW_LINE);
-    sb.append("Move down to bottom - " + 
+    sb.append("FUNCTION [KEY]");
+    sb.append(GameBoard.NEW_LINE);
+    sb.append("Move left [" + 
+              KeyEvent.getKeyText(my_keys_array.get(LEFT)) + 
+              CLOSE_BRACKET + GameBoard.NEW_LINE);
+    sb.append("Move right [" + 
+              KeyEvent.getKeyText(my_keys_array.get(RIGHT)) + 
+              CLOSE_BRACKET + GameBoard.NEW_LINE);
+    sb.append("Move down [" + 
+              KeyEvent.getKeyText(my_keys_array.get(DOWN)) + 
+              CLOSE_BRACKET + GameBoard.NEW_LINE);
+    sb.append("Move down to bottom [" + 
               KeyEvent.getKeyText(my_keys_array.get(DROP_TO_BOTTOM)) + 
-              GameBoard.NEW_LINE);
-    sb.append("Rotate clockwise - " + KeyEvent.getKeyText(my_keys_array.get(ROTATE_CW)) + 
-              GameBoard.NEW_LINE);
-    sb.append("Rotate counter clockwise - " + 
+              CLOSE_BRACKET + GameBoard.NEW_LINE);
+    sb.append("Rotate clockwise [" + 
+              KeyEvent.getKeyText(my_keys_array.get(ROTATE_CW)) + 
+              CLOSE_BRACKET + GameBoard.NEW_LINE);
+    sb.append("Rotate counter clockwise [" + 
               KeyEvent.getKeyText(my_keys_array.get(ROTATE_CCW)) + 
-              GameBoard.NEW_LINE);          
-    sb.append("Pause - " + KeyEvent.getKeyText(my_keys_array.get(PAUSE)) + 
-              GameBoard.NEW_LINE);
+              CLOSE_BRACKET + GameBoard.NEW_LINE);          
+    sb.append("Pause [" + 
+              KeyEvent.getKeyText(my_keys_array.get(PAUSE)) + 
+              CLOSE_BRACKET + GameBoard.NEW_LINE);
     return sb;
   }
   
@@ -256,14 +285,16 @@ public class TetrisGui extends JFrame
   public void setup()
   {
     final JPanel master_panel = new JPanel(new BorderLayout());
-    final JPanel center_panel = new JPanel(new BorderLayout());
+    //final JPanel center_panel = new JPanel(new BorderLayout());
     final JPanel play_panel = new PlayingBoard(my_game);
     final JPanel right_panel = new JPanel(new BorderLayout());
     final JPanel next_piece_panel = new NextPieceBoard(my_game);
     right_panel.add(next_piece_panel, BorderLayout.NORTH);
-    center_panel.add(play_panel, BorderLayout.CENTER);
-    center_panel.add(right_panel, BorderLayout.EAST);
-    master_panel.add(center_panel, BorderLayout.CENTER);
+    //center_panel.add(play_panel, BorderLayout.CENTER);
+    //center_panel.add(right_panel, BorderLayout.EAST);
+    //master_panel.add(center_panel, BorderLayout.CENTER);
+    master_panel.add(play_panel, BorderLayout.CENTER);
+    master_panel.add(right_panel, BorderLayout.EAST);
     add(master_panel);
     
     setJMenuBar(setupMenuBar());
@@ -338,7 +369,7 @@ public class TetrisGui extends JFrame
   /**
    * Start the game.
    */
-  public void start()
+  public void startGame()
   {
     my_is_started = true;
     my_timer.start();
@@ -347,7 +378,7 @@ public class TetrisGui extends JFrame
   /**
    * Pause the game.
    */
-  public void pause()
+  public void pauseGame()
   {
     if (!my_is_started || my_game.isGameOver())
     {
@@ -386,7 +417,7 @@ public class TetrisGui extends JFrame
       if (key_code == my_keys_array.get(PAUSE))
       {
         replaceKeyListener(new PBKeyListener());
-        pause();
+        pauseGame();
       }
     }
   }
@@ -409,6 +440,7 @@ public class TetrisGui extends JFrame
       {
         my_timer.stop();
         setTitle(FRAME_NAME + " - GameOver!");
+        removeKeyListener(getKeyListeners()[0]);
       }
       else
       {
@@ -433,7 +465,7 @@ public class TetrisGui extends JFrame
       final int key_code = the_event.getKeyCode();
       if (key_code == my_keys_array.get(PAUSE))
       {
-        pause();
+        pauseGame();
       }
       else if (key_code == my_keys_array.get(LEFT))
       {
@@ -471,6 +503,6 @@ public class TetrisGui extends JFrame
   {
     final TetrisGui the_frame = new TetrisGui();
     the_frame.setup();
-    the_frame.start();
+    the_frame.startGame();
   }
 }
