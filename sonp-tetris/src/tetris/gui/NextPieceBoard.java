@@ -15,7 +15,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import tetris.board.GameBoard;
@@ -43,7 +42,9 @@ public class NextPieceBoard extends JPanel implements Observer
   /**
    * The border of the panel.
    */
-  private static final int BORDER = 5;
+  //private static final int BORDER = 5;
+  
+  private static final Color DEFAULT_BG_COLOR = new Color(12, 200, 100, 106);
 
   /**
    * The Tetris game.
@@ -67,9 +68,9 @@ public class NextPieceBoard extends JPanel implements Observer
     my_game = the_game;
     my_next_piece = my_game.nextPiece();
     my_game.addObserver(this);
-    setBackground(Color.WHITE);
+    //setBackground(Color.WHITE);
     setPreferredSize(new Dimension(WIDTH, WIDTH));
-    setBorder(BorderFactory.createLineBorder(Color.BLACK, BORDER));
+    //setBorder(BorderFactory.createLineBorder(Color.BLACK, BORDER));
   }
 
   /**
@@ -85,6 +86,9 @@ public class NextPieceBoard extends JPanel implements Observer
 
     g2d.setStroke(new BasicStroke(1));
     drawPiece(g2d, my_next_piece);
+    g2d.setColor(DEFAULT_BG_COLOR);
+    final Shape s = new Rectangle2D.Double(0, 0, WIDTH, WIDTH);
+    g2d.fill(s);
   }
 
   /**
