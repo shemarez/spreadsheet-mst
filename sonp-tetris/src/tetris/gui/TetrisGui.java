@@ -122,6 +122,7 @@ public class TetrisGui extends JFrame
    * List of key_code of game control keys.
    */
   private List<Integer> my_keys_array;
+
   
   // Constructor
 
@@ -179,18 +180,26 @@ public class TetrisGui extends JFrame
      */
     private final String my_name;
     
+    /**
+     * The frame contains this class.
+     */
+    private final JFrame my_frame;
+    
     //Constructor
     
     /**
      * Construct an object with parameters the_name and the_key_index.
      * @param the_name The name.
      * @param the_key_index The key index.
+     * @param the_frame The frame.
      */
-    public ModifyKey(final String the_name, final int the_key_index)
+    public ModifyKey(final String the_name, final int the_key_index,
+                     final JFrame the_frame)
     {
       super(the_name);
       my_name = the_name;
       my_key_index = the_key_index;
+      my_frame = the_frame;
     }
     
     /**
@@ -200,7 +209,9 @@ public class TetrisGui extends JFrame
     {
       my_is_paused = false;
       pauseGame();
-      JOptionPane.showMessageDialog(null, "Please enter your new key for " + my_name +
+      JOptionPane.showMessageDialog(my_frame, 
+                                    "Press 'OK' and enter your new key for " + 
+                                    my_name +
                                     ". Press the pause key to quit.");
       replaceKeyListener(new MKeyListener());
     }
@@ -220,7 +231,7 @@ public class TetrisGui extends JFrame
         final int key_code = the_key_event.getKeyCode();
         if (my_keys_array.contains(key_code) && key_code != my_keys_array.get(PAUSE))
         {
-          JOptionPane.showMessageDialog(null, "'" + 
+          JOptionPane.showMessageDialog(my_frame, "'" + 
                                         KeyEvent.getKeyText(key_code).toLowerCase() +
                                         "' is already chosen for other function. " +
                                         "Please type another key, or press the " +
@@ -231,7 +242,7 @@ public class TetrisGui extends JFrame
           if (key_code != my_keys_array.get(PAUSE))
           {
             my_keys_array.set(my_key_index, key_code);
-            JOptionPane.showMessageDialog(null, 
+            JOptionPane.showMessageDialog(my_frame, 
                                           "You picked '" + 
                                           KeyEvent.getKeyText(key_code).toLowerCase() +
                                           "' to be your new key for " + my_name +
@@ -278,7 +289,7 @@ public class TetrisGui extends JFrame
   }
   
   // Instance methods.
-
+  
   /**
    * Setup the components of the master panel.
    */
@@ -311,36 +322,59 @@ public class TetrisGui extends JFrame
   {
     final JMenuBar menu_bar = new JMenuBar();
     
-    menu_bar.add(optionMenu());
-    menu_bar.add(helpMenu());
+    menu_bar.add(optionMenu(this));
+    menu_bar.add(helpMenu(this));
     
     return menu_bar;
   }
   
   /**
    * @return The option menu.
+   * @param the_frame The frame.
    */
-  public JMenu optionMenu()
+  public JMenu optionMenu(final JFrame the_frame)
   {
     final JMenu menu = new JMenu("Options");
     menu.setMnemonic('O');
     final JMenu sub_menu = new JMenu("Modify Keys");
-        
+    
+    /*
     final Action move_left = new ModifyKey("Move left", LEFT);
     final Action move_right = new ModifyKey("Move right", RIGHT);
     final Action move_down = new ModifyKey("Move down", DOWN);
     final Action rotate_cw = new ModifyKey("Rotate clockwise", ROTATE_CW);
     final Action rotate_ccw = new ModifyKey("Rotate counter-clockwise", ROTATE_CCW);
     final Action drop_to_bottom = new ModifyKey("Drop to bottom", DROP_TO_BOTTOM);
-    final Action pause = new ModifyKey("Pause", PAUSE);
+    final Action pause = new ModifyKey("Pause", PAUSE);*/
     
+    final JMenuItem move_left = new JMenuItem(new ModifyKey("Move left", LEFT, the_frame));
+    final JMenuItem move_right = new JMenuItem(new ModifyKey("Move right", RIGHT, the_frame));
+    final JMenuItem move_down = new JMenuItem(new ModifyKey("Move down", DOWN, the_frame));
+    final JMenuItem rotate_cw = new JMenuItem(new ModifyKey("Rotate clockwise", ROTATE_CW, 
+                                                            the_frame));
+    final JMenuItem rotate_ccw = new JMenuItem(new ModifyKey("Rotate counter-clockwise", 
+                                                             ROTATE_CCW, 
+                                                             the_frame));
+    final JMenuItem drop_to_bottom = new JMenuItem(new ModifyKey("Drop to bottom", 
+                                                                 DROP_TO_BOTTOM,
+                                                                 the_frame));
+    final JMenuItem pause = new JMenuItem(new ModifyKey("Pause", PAUSE, the_frame));
+    /*
     sub_menu.add(new JMenuItem(move_left));
     sub_menu.add(new JMenuItem(move_right));
     sub_menu.add(new JMenuItem(move_down));
     sub_menu.add(new JMenuItem(rotate_cw));
     sub_menu.add(new JMenuItem(rotate_ccw));
     sub_menu.add(new JMenuItem(drop_to_bottom));
-    sub_menu.add(new JMenuItem(pause));
+    sub_menu.add(new JMenuItem(pause));*/
+    
+    sub_menu.add(move_left);
+    sub_menu.add(move_right);
+    sub_menu.add(move_down);
+    sub_menu.add(rotate_cw);
+    sub_menu.add(rotate_ccw);
+    sub_menu.add(drop_to_bottom);
+    sub_menu.add(pause);
     
     menu.add(sub_menu);
     return menu;
@@ -348,8 +382,9 @@ public class TetrisGui extends JFrame
   
   /**
    * @return The help menu.
+   * @param the_frame The frame.
    */
-  public JMenu helpMenu()
+  public JMenu helpMenu(final JFrame the_frame)
   {
     final JMenu help_menu = new JMenu("Help");
     help_menu.setMnemonic('H');
@@ -359,7 +394,7 @@ public class TetrisGui extends JFrame
         public void actionPerformed(final ActionEvent the_event)
         {
           final StringBuffer sb = controlKeyIndex();
-          JOptionPane.showMessageDialog(null, sb, "Game Control Keys", 1);
+          JOptionPane.showMessageDialog(the_frame, sb, "Game Control Keys", 1);
         }
       };
     help_menu.add(new JMenuItem(control_keys));

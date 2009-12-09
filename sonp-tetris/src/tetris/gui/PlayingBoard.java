@@ -15,7 +15,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import tetris.board.GameBoard;
@@ -32,12 +31,17 @@ public class PlayingBoard extends JPanel implements Observer
   /**
    * The stroke of the border.
    */
-  private static final int BORDER = 5;
+  //private static final int BORDER = 1;
   
   /**
    * The default width of the playing board.
    */
   private static final int DEFAULT_WIDTH = 300;
+  
+  /**
+   * The default background color.
+   */
+  private static final Color DEFAULT_BG_COLOR = new Color(255, 127, 0, 80);
   
   /**
    * The width of the playing board.
@@ -65,6 +69,11 @@ public class PlayingBoard extends JPanel implements Observer
   private GameBoard my_game;
   
   /**
+   * The background color.
+   */
+  private Color my_bg_color = DEFAULT_BG_COLOR;
+  
+  /**
    * Construct a PlayingBoard panel and passing to it a Tetris game.
    * @param the_game The Tetris game.
    */
@@ -75,9 +84,19 @@ public class PlayingBoard extends JPanel implements Observer
     setupDimensions(DEFAULT_WIDTH, DEFAULT_WIDTH * 2);
     my_game = the_game;
     my_game.addObserver(this);
-    setBackground(Color.WHITE);
     setPreferredSize(new Dimension(my_width, my_height));    
-    setBorder(BorderFactory.createLineBorder(Color.RED, BORDER));
+    //setBorder(BorderFactory.createLineBorder(Color.RED, BORDER));
+  }
+  
+  /**
+   * Construct a PlayingBoard panel and passing to it a Tetris game.
+   * @param the_game The Tetris game.
+   * @param the_color The color.
+   */
+  public PlayingBoard(final GameBoard the_game, final Color the_color)
+  {
+    this(the_game);
+    my_bg_color = the_color;
   }
   
   /**
@@ -110,6 +129,10 @@ public class PlayingBoard extends JPanel implements Observer
     {
       drawRow(g2d, my_game.rows().get(i), my_height - (i + 1) * my_block_height);
     }
+    
+    final Shape s = new Rectangle2D.Double(0, 0, getSize().width, getSize().height);
+    g2d.setColor(my_bg_color);
+    g2d.fill(s);    
   }
   
   /**
