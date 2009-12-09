@@ -299,8 +299,12 @@ public class TetrisGui extends JFrame
     //final JPanel center_panel = new JPanel(new BorderLayout());
     final JPanel play_panel = new PlayingBoard(my_game);
     final JPanel right_panel = new JPanel(new BorderLayout());
+    final JPanel inner_right_panel = new JPanel(new BorderLayout());
     final JPanel next_piece_panel = new NextPieceBoard(my_game);
     right_panel.add(next_piece_panel, BorderLayout.NORTH);
+    final JPanel score_panel = new ScoreBoard(my_game);
+    inner_right_panel.add(score_panel, BorderLayout.NORTH);
+    right_panel.add(inner_right_panel, BorderLayout.CENTER);
     //center_panel.add(play_panel, BorderLayout.CENTER);
     //center_panel.add(right_panel, BorderLayout.EAST);
     //master_panel.add(center_panel, BorderLayout.CENTER);

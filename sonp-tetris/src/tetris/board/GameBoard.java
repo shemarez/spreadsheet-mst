@@ -67,6 +67,11 @@ public class GameBoard extends Observable
                                                           new SPiece(), new TPiece(),
                                                           new ZPiece()};
   
+  /**
+   * The array of score awarded for clearing 1, 2, 3 and 4 lines respectively.
+   */
+  private static final int[] SCORE_AWARDED = new int[] {100, 200, 400, 800};
+  
   //Instance fields
   
   /**
@@ -88,6 +93,11 @@ public class GameBoard extends Observable
    * Is the game over?
    */
   private boolean my_game_over;
+  
+  /**
+   * The score of the game.
+   */
+  private int my_score;
   
   //Constructors
   
@@ -112,6 +122,7 @@ public class GameBoard extends Observable
     }
     my_next_piece = randomPiece();
     startNewPiece(my_next_piece);
+    my_score = 0;
   }
   
   //@ requires the_piece_list != null
@@ -301,6 +312,8 @@ public class GameBoard extends Observable
     }
     if (count > 0)
     {
+      my_score += SCORE_AWARDED[count - 1];
+      //System.err.println(my_score);
       setChanged();
     }
   }
@@ -353,6 +366,14 @@ public class GameBoard extends Observable
   }
   
   //Instance methods.
+  
+  /**
+   * @return The score of the game.
+   */
+  public int gameScore()
+  {
+    return my_score;
+  }
   
   /**
    * @return The next piece in progress.
