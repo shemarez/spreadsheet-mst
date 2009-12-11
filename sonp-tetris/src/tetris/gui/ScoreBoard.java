@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -12,27 +15,83 @@ import javax.swing.JPanel;
 
 import tetris.board.GameBoard;
 
+/**
+ * ScoreBoard panel for Tetris game.
+ * @author Son
+ * @version 1.0
+ */
+@SuppressWarnings("serial")
 public class ScoreBoard extends JPanel implements Observer
 {
+  //Instance fields
+  
+  /**
+   * Starting point of the first line.
+   */
+  private final Point my_first_line = new Point(10, 20);
+  
+  /**
+   * Starting point of the second line.
+   */
+  private final Point my_second_line = new Point(10, 40);
+  
+  /**
+   * My dimension.
+   */
+  private final Dimension my_dimension = new Dimension(100, 50);
+  
+  /**
+   * My border.
+   */
+  private final int my_border = 5;
+  
+  /**
+   * The game Tetris.
+   */
   private GameBoard my_game;
   
+  /**
+   * The score of my_game.
+   */
   private int my_score;
   
+  //Constructor
+  
+  /**
+   * Construct a ScoreBoard object.
+   * @param the_game The Tetris game.
+   */
   public ScoreBoard(final GameBoard the_game)
   {
+    super();
     my_game = the_game;
     my_game.addObserver(this);
     my_score = the_game.gameScore();
-    setPreferredSize(new Dimension(100, 50));
-    setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+    setPreferredSize(my_dimension);
+    setBorder(BorderFactory.createLineBorder(Color.BLACK, my_border));
+    //setBackground(Color.ORANGE);
   }
   
+  //Instance methods
+  
+  /**
+   * {@inheritDoc}
+   */
   public void paintComponent(final Graphics the_graphics)
   {
     final Graphics2D g2d = (Graphics2D) the_graphics;
-    g2d.drawString("Score: ", 10, 30);
-    g2d.drawString(String.valueOf(my_score), 10, 40);
-    System.err.println(my_score);
+    //g2d.setBackground(Color.ORANGE);
+    g2d.setColor(Color.ORANGE);
+    final Shape s = new Rectangle2D.Double(0, 0, getSize().width, getSize().height);
+    g2d.fill(s);
+    g2d.setColor(Color.BLACK);
+    g2d.drawString("POINTS: " + my_score, 
+                   my_first_line.x,
+                   my_first_line.y);
+    g2d.drawString("LEVEL: " + (my_score / GameBoard.NEXT_LEVEL + 1), 
+                   my_second_line.x,
+                   my_second_line.y);
+    //System.err.println(g2d.getBackground().toString());
   }
   
   /**

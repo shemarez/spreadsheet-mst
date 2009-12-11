@@ -1,7 +1,3 @@
-/*
- * PlayingBoard for Tetris game.
- * Fall 09.
- */
 package tetris.gui;
 
 import java.awt.BasicStroke;
@@ -20,29 +16,9 @@ import javax.swing.JPanel;
 import tetris.board.GameBoard;
 import tetris.board.Row;
 
-/**
- * A panel that draws the visible part of the game board.
- * @author Son Pham
- * @version 1.0
- */
 @SuppressWarnings("serial")
-public class PlayingBoard extends JPanel implements Observer
-{
-  /**
-   * The stroke of the border.
-   */
-  //private static final int BORDER = 1;
-  
-  /**
-   * The default width of the playing board.
-   */
-  private static final int DEFAULT_WIDTH = 300;
-  
-  /**
-   * The default background color.
-   */
-  private static final Color DEFAULT_BG_COLOR = new Color(51, 51, 0, 255);
-  
+public class TetrisDrawingBoard extends JPanel implements Observer
+{    
   /**
    * The width of the playing board.
    */
@@ -71,32 +47,24 @@ public class PlayingBoard extends JPanel implements Observer
   /**
    * The background color.
    */
-  private Color my_bg_color = DEFAULT_BG_COLOR;
+  private Color my_bg_color;
+  
+  //Constructor
   
   /**
-   * Construct a PlayingBoard panel and passing to it a Tetris game.
-   * @param the_game The Tetris game.
-   */
-  public PlayingBoard(final GameBoard the_game)
-  {
-    super();
-    //setFocusable(true);
-    setupDimensions(DEFAULT_WIDTH, DEFAULT_WIDTH * 2);
-    setBackground(my_bg_color);
-    my_game = the_game;
-    my_game.addObserver(this);
-    setPreferredSize(new Dimension(my_width, my_height));
-    //setBorder(BorderFactory.createLineBorder(Color.RED, BORDER));
-  }
-  
-  /**
-   * Construct a PlayingBoard panel and passing to it a Tetris game.
+   * Construct a TetrisDrawingBoard panel and passing to it a Tetris game, background
+   * color, the_width and the_height.
    * @param the_game The Tetris game.
    * @param the_color The color.
+   * @param the_width The width.
+   * @param the_height The height.
    */
-  public PlayingBoard(final GameBoard the_game, final Color the_color)
+  public TetrisDrawingBoard(final GameBoard the_game, final Color the_color,
+                            final int the_width, final int the_height)
   {
-    this(the_game);
+    my_game = the_game;
+    my_game.addObserver(this);
+    setPreferredSize(new Dimension(the_width, the_height));
     my_bg_color = the_color;
   }
   

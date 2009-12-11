@@ -44,8 +44,8 @@ public class TetrisGui extends JFrame
   /**
    * The change (in milliseconds) in delay.
    */
-  public static final int DELAY_CHANGE = 10;
-
+  public static final int DELAY_CHANGE = 30;
+  
   /**
    * The name of the frame.
    */
@@ -101,12 +101,12 @@ public class TetrisGui extends JFrame
   /**
    * The timer that controls the movement of the falling piece.
    */
-  private final Timer my_timer;
+  private Timer my_timer;
 
   /**
    * The Tetris game.
    */
-  private final GameBoard my_game;
+  private GameBoard my_game;
 
   /**
    * Has the game been started.
@@ -122,6 +122,16 @@ public class TetrisGui extends JFrame
    * List of key_code of game control keys.
    */
   private List<Integer> my_keys_array;
+  
+  /**
+   * The level of this game.
+   */
+  private int my_level;
+  
+  /**
+   * The delay (in millisecond) of this game.
+   */
+  //private int my_delay;
 
   
   // Constructor
@@ -132,11 +142,15 @@ public class TetrisGui extends JFrame
   public TetrisGui()
   {
     super(FRAME_NAME);
+    startGame();
+    /*
     my_game = new GameBoard();
+    //my_delay = INITIAL_MOVE_DELAY;
     my_timer = new Timer(INITIAL_MOVE_DELAY, new PBMoveListener());
+    my_level = 1;
     addKeyListener(new PBKeyListener());
     setupKeys();
-    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);*/
   }
 
   //Private methods
@@ -296,7 +310,6 @@ public class TetrisGui extends JFrame
   public void setup()
   {
     final JPanel master_panel = new JPanel(new BorderLayout());
-    //final JPanel center_panel = new JPanel(new BorderLayout());
     final JPanel play_panel = new PlayingBoard(my_game);
     final JPanel right_panel = new JPanel(new BorderLayout());
     final JPanel inner_right_panel = new JPanel(new BorderLayout());
@@ -305,9 +318,6 @@ public class TetrisGui extends JFrame
     final JPanel score_panel = new ScoreBoard(my_game);
     inner_right_panel.add(score_panel, BorderLayout.NORTH);
     right_panel.add(inner_right_panel, BorderLayout.CENTER);
-    //center_panel.add(play_panel, BorderLayout.CENTER);
-    //center_panel.add(right_panel, BorderLayout.EAST);
-    //master_panel.add(center_panel, BorderLayout.CENTER);
     master_panel.add(play_panel, BorderLayout.CENTER);
     master_panel.add(right_panel, BorderLayout.EAST);
     add(master_panel);
@@ -411,7 +421,22 @@ public class TetrisGui extends JFrame
   public void startGame()
   {
     my_is_started = true;
+    my_game = new GameBoard();
+    my_timer = new Timer(INITIAL_MOVE_DELAY, new PBMoveListener(this));
+    my_level = 1;
+    addKeyListener(new PBKeyListener());
+    setupKeys();
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
     my_timer.start();
+  }
+  
+  /**
+   * End the game.
+   */
+  public void endGame()
+  {
+    my_is_started = false;
+    my_timer.stop();
   }
 
   /**
@@ -431,6 +456,7 @@ public class TetrisGui extends JFrame
       my_timer.stop();
       setTitle(FRAME_NAME + " - Paused!");
       replaceKeyListener(new PBPauseKeyListener());
+      JOptionPane.showMessageDialog(this, "Game Paused!");
     }
     else
     {
@@ -471,6 +497,23 @@ public class TetrisGui extends JFrame
   private class PBMoveListener implements ActionListener
   {
     /**
+     * The frame of PBMoveListener.
+     */
+    private final JFrame my_frame;
+    
+    //Constructor
+    
+    /**
+     * Construct a PBMoveListener.
+     * @param the_frame The frame.
+     */
+    public PBMoveListener(final JFrame the_frame)
+    {
+      //super();
+      my_frame = the_frame;
+    }
+    
+    /**
      * {@inheritDoc}
      */
     public void actionPerformed(final ActionEvent the_event)
@@ -480,10 +523,17 @@ public class TetrisGui extends JFrame
         my_timer.stop();
         setTitle(FRAME_NAME + " - GameOver!");
         removeKeyListener(getKeyListeners()[0]);
+        JOptionPane.showMessageDialog(my_frame, "Game Over!");
       }
       else
       {
         my_game.update();
+        if (my_game.gameScore() > my_level * GameBoard.NEXT_LEVEL)
+        {
+          //my_delay = my_delay - DELAY_CHANGE;
+          my_level++;
+          my_timer.setDelay(Math.max(my_timer.getDelay() - DELAY_CHANGE, 0));
+        }
       }
     }
   }
@@ -542,6 +592,6 @@ public class TetrisGui extends JFrame
   {
     final TetrisGui the_frame = new TetrisGui();
     the_frame.setup();
-    the_frame.startGame();
+    //the_frame.startGame();
   }
 }

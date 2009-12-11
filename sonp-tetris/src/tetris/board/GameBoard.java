@@ -60,6 +60,11 @@ public class GameBoard extends Observable
   public static final String NEW_LINE = "\n";
   
   /**
+   * Points require to reach next level.
+   */
+  public static final int NEXT_LEVEL = 500;
+  
+  /**
    * 7 basic pieces.
    */
   private static final Piece[] BASIC_PIECES = new Piece[]{new IPiece(), new JPiece(),
