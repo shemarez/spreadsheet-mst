@@ -4,7 +4,6 @@
 
 package tetris.gui;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -18,6 +17,7 @@ import java.util.Observer;
 import javax.swing.JPanel;
 
 import tetris.board.GameBoard;
+import tetris.entities.pieces.EmptyPiece;
 import tetris.entities.pieces.Piece;
 
 /**
@@ -44,7 +44,15 @@ public class NextPieceBoard extends JPanel implements Observer
    */
   //private static final int BORDER = 5;
   
+  /**
+   * The background color of the panel.
+   */
   private static final Color DEFAULT_BG_COLOR = new Color(12, 200, 100, 106);
+  
+  /**
+   * The empty piece.
+   */
+  private static final Piece EMPTY_PIECE = new EmptyPiece();
 
   /**
    * The Tetris game.
@@ -84,11 +92,14 @@ public class NextPieceBoard extends JPanel implements Observer
     final Graphics2D g2d = (Graphics2D) the_graphics;
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-    g2d.setStroke(new BasicStroke(1));
-    drawPiece(g2d, my_next_piece);
     g2d.setColor(DEFAULT_BG_COLOR);
     final Shape s = new Rectangle2D.Double(0, 0, WIDTH, WIDTH);
     g2d.fill(s);
+    //g2d.setStroke(new BasicStroke(1));
+    if (!my_next_piece.equals(EMPTY_PIECE))
+    {
+      drawPiece(g2d, my_next_piece);
+    }    
   }
 
   /**
@@ -126,14 +137,13 @@ public class NextPieceBoard extends JPanel implements Observer
     final Shape inner_square =
         new Rectangle2D.Double(the_x + 1, the_y + 1, BLOCK - 2, BLOCK - 2);
     g2d.fill(inner_square);
-
+  
     // Draw the border of the square.
-
+  
     // Draw the top and left borders.
     g2d.setColor(the_color.brighter());
     g2d.drawLine(the_x, the_y, the_x, (int) (the_y + BLOCK - 1));
     g2d.drawLine(the_x, the_y, (int) (the_x + BLOCK - 1), the_y);
-
     // Draw the right and bottom borders.
     g2d.setColor(the_color.darker());
     g2d.drawLine((int) (the_x + BLOCK - 1), the_y, (int) (the_x + BLOCK - 1),

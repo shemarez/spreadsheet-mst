@@ -22,7 +22,19 @@ import tetris.board.GameBoard;
  */
 @SuppressWarnings("serial")
 public class ScoreBoard extends JPanel implements Observer
-{
+{  
+  //Static field
+  
+  /**
+   * The border.
+   */
+  private static final int BORDER = 5;
+  
+  /**
+   * The background color.
+   */
+  private static final Color BG_COLOR = Color.RED;
+  
   //Instance fields
   
   /**
@@ -39,11 +51,6 @@ public class ScoreBoard extends JPanel implements Observer
    * My dimension.
    */
   private final Dimension my_dimension = new Dimension(100, 50);
-  
-  /**
-   * My border.
-   */
-  private final int my_border = 5;
   
   /**
    * The game Tetris.
@@ -68,7 +75,7 @@ public class ScoreBoard extends JPanel implements Observer
     my_game.addObserver(this);
     my_score = the_game.gameScore();
     setPreferredSize(my_dimension);
-    setBorder(BorderFactory.createLineBorder(Color.BLACK, my_border));
+    setBorder(BorderFactory.createLineBorder(Color.BLACK, BORDER));
     //setBackground(Color.ORANGE);
   }
   
@@ -80,8 +87,7 @@ public class ScoreBoard extends JPanel implements Observer
   public void paintComponent(final Graphics the_graphics)
   {
     final Graphics2D g2d = (Graphics2D) the_graphics;
-    //g2d.setBackground(Color.ORANGE);
-    g2d.setColor(Color.ORANGE);
+    g2d.setColor(BG_COLOR);
     final Shape s = new Rectangle2D.Double(0, 0, getSize().width, getSize().height);
     g2d.fill(s);
     g2d.setColor(Color.BLACK);
@@ -91,7 +97,6 @@ public class ScoreBoard extends JPanel implements Observer
     g2d.drawString("LEVEL: " + (my_score / GameBoard.NEXT_LEVEL + 1), 
                    my_second_line.x,
                    my_second_line.y);
-    //System.err.println(g2d.getBackground().toString());
   }
   
   /**

@@ -11,6 +11,7 @@ import java.util.Observable;
 import java.util.Random;
 
 import tetris.entities.Point;
+import tetris.entities.pieces.EmptyPiece;
 import tetris.entities.pieces.IPiece;
 import tetris.entities.pieces.JPiece;
 import tetris.entities.pieces.LPiece;
@@ -114,7 +115,7 @@ public class GameBoard extends Observable
   //          area).
   /**
    * Construct an empty game board with the dimension of WIDTH x VISIBLE_HEIGHT. 
-   * And also pick randomly a new piece to be the current falling piece.
+   * And also set the next falling piece to be the EmptyPiece.
    */
   public GameBoard()
   {
@@ -125,8 +126,9 @@ public class GameBoard extends Observable
     {
       my_rows.add(i, new Row(WIDTH));
     }
-    my_next_piece = randomPiece();
-    startNewPiece(my_next_piece);
+    //my_next_piece = randomPiece();
+    my_next_piece = new EmptyPiece();
+    //startNewPiece(my_next_piece);
     my_score = 0;
   }
   
@@ -373,6 +375,16 @@ public class GameBoard extends Observable
   //Instance methods.
   
   /**
+   * Start the game by choosing randomly a piece from the 7 basic pieces and set that
+   * to be the next falling piece.
+   */
+  public void start()
+  {
+    my_next_piece = randomPiece();
+    startNewPiece(my_next_piece);
+  }
+  
+  /**
    * @return The score of the game.
    */
   public int gameScore()
@@ -502,16 +514,13 @@ public class GameBoard extends Observable
    * Update the game board by one "time-tick" step. Update causes the current falling
    * piece to move down by one row, and might cause addition changes to the game board
    * as follow:
-   * <p>
-   *  _When the current_falling_piece is resting on top of existing filled squares and
+   * <li> When the current_falling_piece is resting on top of existing filled squares and
    *  then attempts to move down one more, it freezes and becomes part of the board's
    *  grid of filled squares.
-   * <p>
-   *  _When the current_falling_piece freezes, if any lines are completely filled, they
+   * <li> When the current_falling_piece freezes, if any lines are completely filled, they
    *  are cleared from the board. All squares above a filled line drop downward by one row.
    *  (note that up to 4 lines may be cleared at a time).
-   * <p>
-   *  _When the current_falling_piece freezes, a new current_falling_piece is chosen
+   * <li> When the current_falling_piece freezes, a new current_falling_piece is chosen
    *  randomly and appears above the middle of the board.
    */
   public void update()

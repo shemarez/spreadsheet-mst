@@ -101,7 +101,7 @@ public class TetrisGui extends JFrame
   /**
    * The timer that controls the movement of the falling piece.
    */
-  private Timer my_timer;
+  private final Timer my_timer;
 
   /**
    * The Tetris game.
@@ -128,6 +128,12 @@ public class TetrisGui extends JFrame
    */
   private int my_level;
   
+  
+  /**
+   * The master panel of TetrisGui.
+   */
+  private JPanel my_panel;
+  
   /**
    * The delay (in millisecond) of this game.
    */
@@ -142,15 +148,16 @@ public class TetrisGui extends JFrame
   public TetrisGui()
   {
     super(FRAME_NAME);
-    startGame();
-    /*
+    //startGame();
     my_game = new GameBoard();
-    //my_delay = INITIAL_MOVE_DELAY;
-    my_timer = new Timer(INITIAL_MOVE_DELAY, new PBMoveListener());
+    my_timer = new Timer(INITIAL_MOVE_DELAY, new PBMoveListener(this));
     my_level = 1;
-    addKeyListener(new PBKeyListener());
+    my_is_started = false;
+    my_is_paused = false;
+    my_panel = setupMasterPanel();
+    //addKeyListener(new PBKeyListener());
     setupKeys();
-    setDefaultCloseOperation(EXIT_ON_CLOSE);*/
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
   }
 
   //Private methods
@@ -202,7 +209,7 @@ public class TetrisGui extends JFrame
     //Constructor
     
     /**
-     * Construct an object with parameters the_name and the_key_index.
+     * Construct an action with parameters the_name and the_key_index.
      * @param the_name The name.
      * @param the_key_index The key index.
      * @param the_frame The frame.
@@ -271,43 +278,93 @@ public class TetrisGui extends JFrame
   }
   
   /**
+   * NewGame class implements the action of new game key in the menu.
+   * @author Son Pham
+   * @version 1.0
+   */
+  private class NewGame extends AbstractAction
+  {    
+    /**
+     * The frame that contains this action.
+     */
+    private final JFrame my_frame;
+    
+    //Constructor
+    
+    /**
+     * Constructs a NewGame action with the inputs the_name and the_frame.
+     * @param the_name The name.
+     * @param the_frame The frame.
+     */
+    public NewGame(final String the_name, final JFrame the_frame)
+    {
+      super(the_name);
+      my_frame = the_frame;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void actionPerformed(final ActionEvent the_event)
+    {
+      if (my_is_started)
+      {
+        final int answer = 
+          JOptionPane.showConfirmDialog(my_frame, 
+                                        "Do you want to quit the current game?", 
+                                        "Tetris Clone - Confirm", 
+                                        JOptionPane.YES_NO_OPTION);
+        if (answer == 0)
+        {
+          endGame();
+          startGame();
+        }
+      }
+      else
+      {
+        startGame();
+      }
+    }
+  }
+  
+  /**
    * @return The string buffer of the game control keys.
    */
   private StringBuffer controlKeyIndex()
   {
     final StringBuffer sb = new StringBuffer(BUFFER_SIZE);
-    sb.append("FUNCTION [KEY]");
+    sb.append("FUNCTION:  [KEY]");
     sb.append(GameBoard.NEW_LINE);
-    sb.append("Move left [" + 
+    sb.append("Move left:  [" + 
               KeyEvent.getKeyText(my_keys_array.get(LEFT)) + 
               CLOSE_BRACKET + GameBoard.NEW_LINE);
-    sb.append("Move right [" + 
+    sb.append("Move right:  [" + 
               KeyEvent.getKeyText(my_keys_array.get(RIGHT)) + 
               CLOSE_BRACKET + GameBoard.NEW_LINE);
-    sb.append("Move down [" + 
+    sb.append("Move down:  [" + 
               KeyEvent.getKeyText(my_keys_array.get(DOWN)) + 
               CLOSE_BRACKET + GameBoard.NEW_LINE);
-    sb.append("Move down to bottom [" + 
+    sb.append("Move down to bottom:  [" + 
               KeyEvent.getKeyText(my_keys_array.get(DROP_TO_BOTTOM)) + 
               CLOSE_BRACKET + GameBoard.NEW_LINE);
-    sb.append("Rotate clockwise [" + 
+    sb.append("Rotate clockwise:  [" + 
               KeyEvent.getKeyText(my_keys_array.get(ROTATE_CW)) + 
               CLOSE_BRACKET + GameBoard.NEW_LINE);
-    sb.append("Rotate counter clockwise [" + 
+    sb.append("Rotate counter clockwise:  [" + 
               KeyEvent.getKeyText(my_keys_array.get(ROTATE_CCW)) + 
               CLOSE_BRACKET + GameBoard.NEW_LINE);          
-    sb.append("Pause [" + 
+    sb.append("Pause:  [" + 
               KeyEvent.getKeyText(my_keys_array.get(PAUSE)) + 
               CLOSE_BRACKET + GameBoard.NEW_LINE);
     return sb;
   }
   
-  // Instance methods.
-  
   /**
-   * Setup the components of the master panel.
+   * Setup the components of the master panel includes play_panel, next_piece_panel,
+   * and score_panel.
+   * @return The master panel of TetrisGui.
    */
-  public void setup()
+  private JPanel setupMasterPanel()
   {
     final JPanel master_panel = new JPanel(new BorderLayout());
     final JPanel play_panel = new PlayingBoard(my_game);
@@ -320,10 +377,24 @@ public class TetrisGui extends JFrame
     right_panel.add(inner_right_panel, BorderLayout.CENTER);
     master_panel.add(play_panel, BorderLayout.CENTER);
     master_panel.add(right_panel, BorderLayout.EAST);
-    add(master_panel);
+    return master_panel;
+    /*add(master_panel);
     
     setJMenuBar(setupMenuBar());
     
+    pack();
+    setVisible(true);*/
+  }
+  
+  // Instance methods.
+  
+  /**
+   * Set up the components for TetrisGui.
+   */
+  public void setup()
+  {
+    add(my_panel);
+    setJMenuBar(setupMenuBar());    
     pack();
     setVisible(true);
   }
@@ -336,10 +407,26 @@ public class TetrisGui extends JFrame
   {
     final JMenuBar menu_bar = new JMenuBar();
     
+    menu_bar.add(fileMenu(this));
     menu_bar.add(optionMenu(this));
     menu_bar.add(helpMenu(this));
     
     return menu_bar;
+  }
+  
+  /**
+   * @param the_frame The frame.
+   * @return The file menu.
+   */
+  public JMenu fileMenu(final JFrame the_frame)
+  {
+    final JMenu menu =  new JMenu("File");
+    menu.setMnemonic('F');
+    final Action new_game = new NewGame("New Game", the_frame);      
+    final JMenuItem start_new_game = new JMenuItem(new_game);
+    start_new_game.setMnemonic('N');
+    menu.add(start_new_game);
+    return menu;
   }
   
   /**
@@ -351,36 +438,27 @@ public class TetrisGui extends JFrame
     final JMenu menu = new JMenu("Options");
     menu.setMnemonic('O');
     final JMenu sub_menu = new JMenu("Modify Keys");
-    
-    /*
-    final Action move_left = new ModifyKey("Move left", LEFT);
-    final Action move_right = new ModifyKey("Move right", RIGHT);
-    final Action move_down = new ModifyKey("Move down", DOWN);
-    final Action rotate_cw = new ModifyKey("Rotate clockwise", ROTATE_CW);
-    final Action rotate_ccw = new ModifyKey("Rotate counter-clockwise", ROTATE_CCW);
-    final Action drop_to_bottom = new ModifyKey("Drop to bottom", DROP_TO_BOTTOM);
-    final Action pause = new ModifyKey("Pause", PAUSE);*/
+    sub_menu.setMnemonic('M');
     
     final JMenuItem move_left = new JMenuItem(new ModifyKey("Move left", LEFT, the_frame));
+    move_left.setMnemonic('l');
     final JMenuItem move_right = new JMenuItem(new ModifyKey("Move right", RIGHT, the_frame));
+    move_right.setMnemonic('r');
     final JMenuItem move_down = new JMenuItem(new ModifyKey("Move down", DOWN, the_frame));
+    move_down.setMnemonic('d');
     final JMenuItem rotate_cw = new JMenuItem(new ModifyKey("Rotate clockwise", ROTATE_CW, 
                                                             the_frame));
+    rotate_cw.setMnemonic('c');
     final JMenuItem rotate_ccw = new JMenuItem(new ModifyKey("Rotate counter-clockwise", 
                                                              ROTATE_CCW, 
                                                              the_frame));
+    rotate_ccw.setMnemonic('o');
     final JMenuItem drop_to_bottom = new JMenuItem(new ModifyKey("Drop to bottom", 
                                                                  DROP_TO_BOTTOM,
                                                                  the_frame));
+    drop_to_bottom.setMnemonic('b');
     final JMenuItem pause = new JMenuItem(new ModifyKey("Pause", PAUSE, the_frame));
-    /*
-    sub_menu.add(new JMenuItem(move_left));
-    sub_menu.add(new JMenuItem(move_right));
-    sub_menu.add(new JMenuItem(move_down));
-    sub_menu.add(new JMenuItem(rotate_cw));
-    sub_menu.add(new JMenuItem(rotate_ccw));
-    sub_menu.add(new JMenuItem(drop_to_bottom));
-    sub_menu.add(new JMenuItem(pause));*/
+    pause.setMnemonic('p');
     
     sub_menu.add(move_left);
     sub_menu.add(move_right);
@@ -411,32 +489,44 @@ public class TetrisGui extends JFrame
           JOptionPane.showMessageDialog(the_frame, sb, "Game Control Keys", 1);
         }
       };
-    help_menu.add(new JMenuItem(control_keys));
+    final JMenuItem keys_info = new JMenuItem(control_keys);
+    keys_info.setMnemonic('C');
+    help_menu.add(keys_info);
     return help_menu;
   }
 
   /**
-   * Start the game.
+   * Start the game. 
+   * <li> Re-initialize the level. 
+   * <li> Add the key listener to the frame. 
+   * <li> Start the timer. 
+   * <li> Set up the components of the frame.
    */
   public void startGame()
   {
+    my_game.start();
     my_is_started = true;
-    my_game = new GameBoard();
-    my_timer = new Timer(INITIAL_MOVE_DELAY, new PBMoveListener(this));
     my_level = 1;
     addKeyListener(new PBKeyListener());
-    setupKeys();
-    setDefaultCloseOperation(EXIT_ON_CLOSE);
     my_timer.start();
+    setup();
   }
   
   /**
-   * End the game.
+   * End the game. 
+   * <li> Re-initialize a new game. 
+   * <li> Stop the timer. 
+   * <li> Remove the key listener and the old panel of the frame.  
    */
   public void endGame()
   {
+    my_game = new GameBoard();
     my_is_started = false;
+    my_is_paused = false;
     my_timer.stop();
+    removeKeyListener(getKeyListeners()[0]);
+    remove(my_panel);
+    my_panel = setupMasterPanel();
   }
 
   /**
@@ -592,6 +682,5 @@ public class TetrisGui extends JFrame
   {
     final TetrisGui the_frame = new TetrisGui();
     the_frame.setup();
-    //the_frame.startGame();
   }
 }
