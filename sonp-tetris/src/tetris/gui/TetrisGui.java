@@ -343,15 +343,24 @@ public class TetrisGui extends JFrame
     {
       if (my_is_started)
       {
-        final int answer = 
-          JOptionPane.showConfirmDialog(my_frame, 
-                                        "Do you want to quit the current game?", 
-                                        "Tetris Clone - Confirm", 
-                                        JOptionPane.YES_NO_OPTION);
-        if (answer == 0)
+        if (my_game.isGameOver())
         {
-          endGame();
+          initialize();
           startGame();
+        }
+        else
+        {
+          final int answer = 
+            JOptionPane.showConfirmDialog(my_frame, 
+                                          "Do you want to quit the current game?", 
+                                          "Tetris Clone - Confirm", 
+                                          JOptionPane.YES_NO_OPTION);
+          if (answer == 0)
+          {
+            endGame();
+            initialize();
+            startGame();
+          }
         }
       }
       else
@@ -596,6 +605,19 @@ public class TetrisGui extends JFrame
   }
 
   /**
+   * Initialize a new game.
+   * <li> Remove the old panel.
+   * <li> Initialize a new Tetris game.
+   * <li> Initialize a new panel.
+   */
+  public void initialize()
+  {
+    remove(my_panel);
+    my_game = new GameBoard();
+    my_panel = setupMasterPanel();
+  }
+  
+  /**
    * Start the game. 
    * <li> Re-initialize the level. 
    * <li> Add the key listener to the frame. 
@@ -617,20 +639,19 @@ public class TetrisGui extends JFrame
   }
   
   /**
-   * End the game. 
-   * <li> Re-initialize a new game. 
+   * End the game.  
    * <li> Stop the timer. 
-   * <li> Remove the key listener and the old panel of the frame.  
+   * <li> Remove the key listener. 
    */
   public void endGame()
   {
-    my_game = new GameBoard();
-    my_is_started = false;
-    my_is_paused = false;
+    //my_game = new GameBoard();
+    //my_is_started = false;
+    //my_is_paused = false;
     my_timer.stop();
     removeKeyListener(getKeyListeners()[0]);
-    remove(my_panel);
-    my_panel = setupMasterPanel();
+    //remove(my_panel);
+    //my_panel = setupMasterPanel();
   }
 
   /**
@@ -719,12 +740,12 @@ public class TetrisGui extends JFrame
       }
       if (my_game.isGameOver())
       {
-        my_timer.stop();
+        //my_timer.stop();
         setTitle(FRAME_NAME + " - GameOver!");
-        removeKeyListener(getKeyListeners()[0]);
+        //removeKeyListener(getKeyListeners()[0]);
         playMusic("tetris/audio/isthatit.wav");
-        //my_sound_player.play("tetris/audio/isthatit.wav");
         JOptionPane.showMessageDialog(my_frame, "Game Over!");
+        endGame();
       }
       else
       {
