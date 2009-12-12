@@ -14,7 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -96,7 +98,19 @@ public class TetrisGui extends JFrame
    */
   public static final String CLOSE_BRACKET = "]";
   
-  //Instance fields
+  /**
+   * Array of clear line sounds' address.
+   */
+  private static final String[] CLEAR_LINE_SOUND = 
+    new String[] {"tetris/audio/explo1.wav", "tetris/audio/explo2.wav",
+                  "tetris/audio/explo3.wav", "tetris/audio/explo4.wav"};
+  
+  /**
+   * Theme music of Tetris game.
+   */
+  private static final String THEME = "tetris/audio/theme2.wav";
+  
+  //Instance fields  
   
   /**
    * The timer that controls the movement of the falling piece.
@@ -119,6 +133,11 @@ public class TetrisGui extends JFrame
   private boolean my_is_paused;  
   
   /**
+   * Can the game play music?
+   */
+  private boolean my_is_music_played;
+  
+  /**
    * List of key_code of game control keys.
    */
   private List<Integer> my_keys_array;
@@ -133,6 +152,11 @@ public class TetrisGui extends JFrame
    * The master panel of TetrisGui.
    */
   private JPanel my_panel;
+  
+  /**
+   * The sound player.
+   */
+  private final SoundPlayer my_sound_player;
   
   /**
    * The delay (in millisecond) of this game.
@@ -152,9 +176,9 @@ public class TetrisGui extends JFrame
     my_game = new GameBoard();
     my_timer = new Timer(INITIAL_MOVE_DELAY, new PBMoveListener(this));
     my_level = 1;
-    my_is_started = false;
-    my_is_paused = false;
     my_panel = setupMasterPanel();
+    my_sound_player = new SoundPlayer();
+    my_is_music_played = true;
     //addKeyListener(new PBKeyListener());
     setupKeys();
     setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -180,7 +204,10 @@ public class TetrisGui extends JFrame
    */
   private void replaceKeyListener(final KeyListener the_key_listener)
   {
-    removeKeyListener(getKeyListeners()[0]);
+    if (getKeyListeners().length > 0)
+    {
+      removeKeyListener(getKeyListeners()[0]);
+    }
     addKeyListener(the_key_listener);
   }
   
@@ -270,8 +297,15 @@ public class TetrisGui extends JFrame
                                           ". Press the pause key to resume.");
           }
           my_is_paused = true;
-          pauseGame();          
-          replaceKeyListener(new PBKeyListener());
+          pauseGame(); 
+          if (my_is_started)
+          {
+            replaceKeyListener(new PBKeyListener());
+          }
+          else
+          {
+            my_frame.removeKeyListener(getKeyListeners()[0]);            
+          }
         }
       }
     }
@@ -378,12 +412,18 @@ public class TetrisGui extends JFrame
     master_panel.add(play_panel, BorderLayout.CENTER);
     master_panel.add(right_panel, BorderLayout.EAST);
     return master_panel;
-    /*add(master_panel);
-    
-    setJMenuBar(setupMenuBar());
-    
-    pack();
-    setVisible(true);*/
+  }
+  
+  /**
+   * Play the input music file if it is allowed to play.
+   * @param the_address The address of the music file.
+   */
+  private void playMusic(final String the_address)
+  {
+    if (my_is_music_played)
+    {
+      my_sound_player.play(the_address);
+    }
   }
   
   // Instance methods.
@@ -409,6 +449,7 @@ public class TetrisGui extends JFrame
     
     menu_bar.add(fileMenu(this));
     menu_bar.add(optionMenu(this));
+    menu_bar.add(musicMenu(this));
     menu_bar.add(helpMenu(this));
     
     return menu_bar;
@@ -426,6 +467,17 @@ public class TetrisGui extends JFrame
     final JMenuItem start_new_game = new JMenuItem(new_game);
     start_new_game.setMnemonic('N');
     menu.add(start_new_game);
+    final Action close = 
+      new AbstractAction("Quit")
+      {
+        public void actionPerformed(final ActionEvent the_event)
+        {
+          dispose();
+        }
+      };
+    final JMenuItem quit = new JMenuItem(close);
+    quit.setMnemonic('Q');
+    menu.add(quit);
     return menu;
   }
   
@@ -438,8 +490,7 @@ public class TetrisGui extends JFrame
     final JMenu menu = new JMenu("Options");
     menu.setMnemonic('O');
     final JMenu sub_menu = new JMenu("Modify Keys");
-    sub_menu.setMnemonic('M');
-    
+    sub_menu.setMnemonic('M');    
     final JMenuItem move_left = new JMenuItem(new ModifyKey("Move left", LEFT, the_frame));
     move_left.setMnemonic('l');
     final JMenuItem move_right = new JMenuItem(new ModifyKey("Move right", RIGHT, the_frame));
@@ -458,18 +509,52 @@ public class TetrisGui extends JFrame
                                                                  the_frame));
     drop_to_bottom.setMnemonic('b');
     final JMenuItem pause = new JMenuItem(new ModifyKey("Pause", PAUSE, the_frame));
-    pause.setMnemonic('p');
-    
+    pause.setMnemonic('p');    
     sub_menu.add(move_left);
     sub_menu.add(move_right);
     sub_menu.add(move_down);
     sub_menu.add(rotate_cw);
     sub_menu.add(rotate_ccw);
     sub_menu.add(drop_to_bottom);
-    sub_menu.add(pause);
-    
+    sub_menu.add(pause);    
     menu.add(sub_menu);
     return menu;
+  }
+  
+  /**
+   * @param the_frame The frame.
+   * @return The music menu.
+   */
+  public JMenu musicMenu(final JFrame the_frame)
+  {
+    final JMenu music_menu = new JMenu("Music");
+    music_menu.setMnemonic('M');
+    final Action music =
+      new AbstractAction("Turn off music")
+      {
+        public void actionPerformed(final ActionEvent the_event)
+        {
+          final AbstractButton off_button = (AbstractButton) the_event.getSource();
+          final boolean selected = off_button.getModel().isSelected();
+          if (selected)
+          {
+            my_sound_player.stopAll();
+            my_is_music_played = false;
+          }
+          else
+          {
+            my_is_music_played = true;
+            if (my_is_started)
+            {
+              my_sound_player.loop(THEME);              
+            }
+          }
+        }
+      };
+    final JCheckBoxMenuItem cb_menu_item = new JCheckBoxMenuItem(music);
+    cb_menu_item.setMnemonic('T');
+    music_menu.add(cb_menu_item);
+    return music_menu;
   }
   
   /**
@@ -489,9 +574,24 @@ public class TetrisGui extends JFrame
           JOptionPane.showMessageDialog(the_frame, sb, "Game Control Keys", 1);
         }
       };
-    final JMenuItem keys_info = new JMenuItem(control_keys);
-    keys_info.setMnemonic('C');
-    help_menu.add(keys_info);
+    JMenuItem menu_item = new JMenuItem(control_keys);
+    menu_item.setMnemonic('C');
+    help_menu.add(menu_item);
+    
+    final StringBuffer sb = new StringBuffer(BUFFER_SIZE);
+    sb.append("A Tetris Clone by Son Pham.\nMusic: Theme - Scorponok(Transformer)\n" +
+              "Sound effects: Starcraft Broodwar - Blizzard");
+    final Action about =
+      new AbstractAction("About...")
+      {
+        public void actionPerformed(final ActionEvent the_event)
+        {
+          JOptionPane.showMessageDialog(the_frame, sb, "About Tetris Clone", 1);
+        }
+      };
+    menu_item = new JMenuItem(about);
+    menu_item.setMnemonic('A');
+    help_menu.add(menu_item);
     return help_menu;
   }
 
@@ -509,6 +609,10 @@ public class TetrisGui extends JFrame
     my_level = 1;
     addKeyListener(new PBKeyListener());
     my_timer.start();
+    if (my_is_music_played)
+    {
+      my_sound_player.loop(THEME);
+    }
     setup();
   }
   
@@ -608,19 +712,25 @@ public class TetrisGui extends JFrame
      */
     public void actionPerformed(final ActionEvent the_event)
     {
+      final int num_line_clear = my_game.lineCleared();
+      if (num_line_clear != 0)
+      {
+        playMusic(CLEAR_LINE_SOUND[num_line_clear - 1]);
+      }
       if (my_game.isGameOver())
       {
         my_timer.stop();
         setTitle(FRAME_NAME + " - GameOver!");
         removeKeyListener(getKeyListeners()[0]);
+        playMusic("tetris/audio/isthatit.wav");
+        //my_sound_player.play("tetris/audio/isthatit.wav");
         JOptionPane.showMessageDialog(my_frame, "Game Over!");
       }
       else
       {
         my_game.update();
-        if (my_game.gameScore() > my_level * GameBoard.NEXT_LEVEL)
+        while (my_game.gameScore() > my_level * GameBoard.NEXT_LEVEL)
         {
-          //my_delay = my_delay - DELAY_CHANGE;
           my_level++;
           my_timer.setDelay(Math.max(my_timer.getDelay() - DELAY_CHANGE, 0));
         }

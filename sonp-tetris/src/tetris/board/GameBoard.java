@@ -63,7 +63,7 @@ public class GameBoard extends Observable
   /**
    * Points require to reach next level.
    */
-  public static final int NEXT_LEVEL = 500;
+  public static final int NEXT_LEVEL = 1000;
   
   /**
    * 7 basic pieces.
@@ -104,6 +104,16 @@ public class GameBoard extends Observable
    * The score of the game.
    */
   private int my_score;
+  
+  /**
+   * The last number of lines are cleared.
+   */
+  private int my_num_line_clear;
+  
+  /**
+   * The boolean value of combo.
+   */
+  private boolean my_is_combo;
   
   //Constructors
   
@@ -319,10 +329,21 @@ public class GameBoard extends Observable
     }
     if (count > 0)
     {
-      my_score += SCORE_AWARDED[count - 1];
-      //System.err.println(my_score);
+      if (my_is_combo)
+      {
+        my_score += SCORE_AWARDED[count - 1] * 2;
+      }
+      else
+      {
+        my_score += SCORE_AWARDED[count - 1];
+      }
       setChanged();
     }
+    else
+    {
+      my_is_combo = false;
+    }
+    my_num_line_clear = count;
   }
   
   //@ ensures Result = a piece that is randomly picked from the BASIC_PIECES;
@@ -390,6 +411,17 @@ public class GameBoard extends Observable
   public int gameScore()
   {
     return my_score;
+  }
+  
+  /**
+   * Return the last number of lines are cleared and reset that value to be 0.
+   * @return The last number of lines are cleared. 
+   */
+  public int lineCleared()
+  {
+    final int temp = my_num_line_clear;
+    my_num_line_clear = 0;
+    return temp;
   }
   
   /**
