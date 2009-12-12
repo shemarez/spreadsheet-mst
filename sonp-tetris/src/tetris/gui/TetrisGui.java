@@ -108,7 +108,7 @@ public class TetrisGui extends JFrame
   /**
    * Theme music of Tetris game.
    */
-  private static final String THEME = "tetris/audio/theme2.wav";
+  private static final String THEME = "tetris/audio/theme1.wav";
   
   //Instance fields  
   
@@ -346,6 +346,7 @@ public class TetrisGui extends JFrame
         if (my_game.isGameOver())
         {
           initialize();
+          setup();
           startGame();
         }
         else
@@ -359,6 +360,7 @@ public class TetrisGui extends JFrame
           {
             endGame();
             initialize();
+            setup();
             startGame();
           }
         }
@@ -431,7 +433,7 @@ public class TetrisGui extends JFrame
   {
     if (my_is_music_played)
     {
-      my_sound_player.play(the_address);
+      my_sound_player.playAndWait(the_address);
     }
   }
   
@@ -561,6 +563,7 @@ public class TetrisGui extends JFrame
         }
       };
     final JCheckBoxMenuItem cb_menu_item = new JCheckBoxMenuItem(music);
+    cb_menu_item.setSelected(!my_is_music_played);
     cb_menu_item.setMnemonic('T');
     music_menu.add(cb_menu_item);
     return music_menu;
@@ -635,7 +638,7 @@ public class TetrisGui extends JFrame
     {
       my_sound_player.loop(THEME);
     }
-    setup();
+    //setup();
   }
   
   /**
@@ -736,7 +739,9 @@ public class TetrisGui extends JFrame
       final int num_line_clear = my_game.lineCleared();
       if (num_line_clear != 0)
       {
+        //my_sound_player.pause(THEME);
         playMusic(CLEAR_LINE_SOUND[num_line_clear - 1]);
+        //my_sound_player.loop(THEME);
       }
       if (my_game.isGameOver())
       {
