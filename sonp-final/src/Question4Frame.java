@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.DecimalFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
@@ -134,19 +135,30 @@ public class Question4Frame extends JFrame
    */
   private void computeBill()
   {
-    System.err.println(my_tip_percent);
     final String text = my_field.getText();
     try
     {
       final double amount = Double.parseDouble(text);
       final double tip = amount * my_tip_percent;
       final double bill = amount + tip;
-      my_amount.setText("tip = " + tip + ", bill = " + bill);
+      my_amount.setText("tip = " + roundTo2Decimal(tip) + ", bill = " + 
+                        roundTo2Decimal(bill));
     }
     catch (final NumberFormatException nfe)
     {
       my_amount.setText("error");
     }
+  }
+  
+  /**
+   * Round a double to 2 decimal places.
+   * @param the_double The double.
+   * @return A double is rounded to 2 decimal places.
+   */
+  private double roundTo2Decimal(final double the_double)
+  {
+    final DecimalFormat twoDecimal = new DecimalFormat("#.##");
+    return Double.valueOf(twoDecimal.format(the_double));   
   }
   
   /**

@@ -68,7 +68,11 @@ public class ShoppingCart
     {
       if (my_orders.get(i).getItem().equals(the_order.getItem()))
       {
-        my_orders.add(i, the_order);
+        //Wrong code.
+        //my_orders.add(i, the_order);
+        
+        //A fix version of the wrong code.
+        my_orders.set(i, the_order);
         return;
       }
     }
