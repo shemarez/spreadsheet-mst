@@ -292,6 +292,10 @@ public class Polynomial
     return result;
   }
   
+  /**
+   * @param expo The exponent
+   * @return The string representation of the exponent.
+   */
   private String printExponent(final int expo)
   {
     String result = "";
@@ -313,6 +317,11 @@ public class Polynomial
     return result;
   }
   
+  /**
+   * @param coeff The coefficient.
+   * @param expo The exponent.
+   * @return The representation of the term.
+   */
   private String printTerm(final int coeff, final int expo)
   {
     String result = null;
@@ -366,169 +375,40 @@ public class Polynomial
       final StringBuffer buff = new StringBuffer(BUFFER);
       Literal lit = (Literal) iter.getElement();
       iter.next();
-      //if (iter.hasNext())
-      //{
-        if (lit.getCoefficient() > 0)
-        {
-          if (lit.getCoefficient() != 1)
-          {
-            buff.append(lit.getCoefficient());            
-          }
-          buff.append(printExponent(lit.getExponent()));
-        }
-        else
-        {
-          if (lit.getCoefficient() != -1)
-          {
-            buff.append(lit.getCoefficient());
-          }
-          else
-          {
-            buff.append("-");
-          }
-          buff.append(printExponent(lit.getExponent()));
-        }
-        //buff.append(printTerm(lit.getCoefficient(), lit.getExponent()));
-        while (iter.hasNext())
-        {
-          lit = (Literal) iter.next();
-          buff.append(printTerm(lit.getCoefficient(), lit.getExponent()));
-          //buff.append(printExponent(lit.getExponent()));
-          //lit = (Literal) iter.next();
-        } 
-      /*}
-      else  // There is only one term in the polynomial
+
+      // Print the first (highest) term of the polynomial.
+      if (lit.getCoefficient() > 0)
       {
-        if (lit.getCoefficient() > 0)
-        {
-          if (lit.getCoefficient() != 1)
-          {
-            buff.append(lit.getCoefficient());            
-          }
-          buff.append(printExponent(lit.getExponent()));
-        }
-        else
-        {
-          if (lit.getCoefficient() != -1)
-          {
-            buff.append(lit.getCoefficient());
-          }
-          else
-          {
-            buff.append("-");
-          }
-          buff.append(printExponent(lit.getExponent()));
-        }
-      }*/
-      return buff.toString();
-    }
-    else
-    {
-      return "0";
-    }
-    /*
-    if (!my_terms.isEmpty())
-    {
-      final LinkedList.Iterator iter = my_terms.iterator();
-      final StringBuffer buff = new StringBuffer(BUFFER);
-      Literal lit = (Literal) iter.getElement();
-      if (lit.getCoefficient() != 0)
-      {
-        if (lit.getExponent() == 0)
+        if (lit.getCoefficient() != 1)
         {
           buff.append(lit.getCoefficient());
         }
-        else  // lit.getExponent() != 0
-        {
-          if (lit.getCoefficient() == -1)
-          {
-            buff.append("-");
-          }
-          else if (lit.getCoefficient() != 1)
-          {
-            buff.append(lit.getCoefficient());
-          }
-          
-          if (lit.getExponent() < 0)
-          {
-            buff.append("x^(" + lit.getExponent() + ")");
-          }
-          else if (lit.getExponent() == 1)
-          {
-            buff.append("x");            
-          }
-          else
-          {
-            buff.append("x^" + lit.getExponent());
-          }
-        }
-        iter.next();
+        buff.append(printExponent(lit.getExponent()));
       }
-      else 
+      else
       {
-        iter.next();
-        if (iter.hasNext())
+        if (lit.getCoefficient() != -1)
         {
-          buff.append("0");
+          buff.append(lit.getCoefficient());
         }
-      }      
-      while (iter.hasNext())
-      {        
-        lit = (Literal) iter.getElement();
-        iter.next();
-        
-        if (lit.getCoefficient() != 0)
+        else
         {
-          if (lit.getExponent() == 0)
-          {
-            if (lit.getCoefficient() > 0)
-            {
-              buff.append(" +" + lit.getCoefficient());
-            }
-            else 
-            {
-              buff.append(" " + lit.getCoefficient());
-            }
-          }
-          else  // lit.getExponent() != 0
-          {
-            if (lit.getCoefficient() > 1)
-            {
-              buff.append(" +" + lit.getCoefficient());
-            }
-            else if (lit.getCoefficient() == -1)
-            {
-              buff.append(" -");
-            }
-            else if (lit.getCoefficient() == 1)
-            {
-              buff.append(" +");
-            }
-            else
-            {
-              buff.append(lit.getCoefficient());
-            }
-            
-            if (lit.getExponent() < 0)
-            {
-              buff.append("x^(" + lit.getExponent() + ")");
-            }
-            else if (lit.getExponent() == 1)
-            {
-              buff.append("x");              
-            }
-            else
-            {
-              buff.append("x^" + lit.getExponent());
-            }
-          }
-        }               
-      } 
+          buff.append("-");
+        }
+        buff.append(printExponent(lit.getExponent()));
+      }
+
+      // Print the rest of the polynomial.
+      while (iter.hasNext())
+      {
+        lit = (Literal) iter.next();
+        buff.append(printTerm(lit.getCoefficient(), lit.getExponent()));
+      }
       return buff.toString();
     }
-    else
+    else  // If polynomial is empty.
     {
       return "0";
-    }*/
+    }
   }
 }
