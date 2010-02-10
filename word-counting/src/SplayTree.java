@@ -65,7 +65,7 @@ public class SplayTree {
                 root.right = nullNode;
                 root = newNode;
             } else {
-                return;
+                root.counter++;
             }
         }
         newNode = null;   // So next insert will call new

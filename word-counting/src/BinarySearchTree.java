@@ -147,7 +147,7 @@ public class BinarySearchTree {
                 treeNode = treeNode.right;
                 direction = 'r';
             } else {
-                // Duplicate; do nothing
+                t.counter++;
                 return t;
             }
         }

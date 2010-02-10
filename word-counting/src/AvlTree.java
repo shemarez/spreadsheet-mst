@@ -23,6 +23,8 @@ public class AvlTree {
     
     /** The tree root. */
     private AvlNode root;
+    
+    private int numStringMostFreq = 10;
 
     /**
      * Construct the tree.
@@ -130,7 +132,7 @@ public class AvlTree {
                 else
                     t = doubleWithRightChild( t );
         } else {
-            ;  // Duplicate; do nothing
+            t.counter++;
         }
         t.height = max( height( t.left ), height( t.right ) ) + 1;
         return t;
@@ -277,8 +279,31 @@ public class AvlTree {
      * Print the most frequently occurring words in the tree,
      * along with their frequency.
      */
-    public void PrintMostFrequent() {
-        System.out.println("PrintMostFrequent: Not implemented yet.");
+    public void PrintMostFrequent() 
+    {
+      //AvlNode[] mostFreqNodes = GetMostFrequent(numStringMostFreq);
+      System.out.println("PrintMostFrequent: Not implemented yet.");
+    }
+    
+    private static void GetMostFrequent(AvlNode[] the_nodes, AvlNode t)
+    {
+      //AvlNode[] result = new AvlNode[numStrings];
+      while (t != null)
+      {
+	
+      }
+      //return result;
+    }
+    
+    private static AvlNode postOrderTraversal(AvlNode t)
+    {
+      if (t != null)
+      {
+	postOrderTraversal(t.left);
+	postOrderTraversal(t.right);
+	return t;
+      }
+      return null;
     }
     
     

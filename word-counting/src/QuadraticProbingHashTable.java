@@ -43,7 +43,10 @@ public class QuadraticProbingHashTable {
         // Insert x as active
         int currentPos = findPos( x );
         if( isActive( currentPos ) )
+        {
+            array[ currentPos ].counter++;
             return;
+        }
 
         array[ currentPos ] = new HashEntry( x, true );
 

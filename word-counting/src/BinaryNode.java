@@ -12,10 +12,12 @@ class BinaryNode {
         element  = theElement;
         left     = lt;
         right    = rt;
+        counter  = 0;
     }
 
     // Friendly data; accessible by other package routines
     Comparable element;      // The data in the node
     BinaryNode left;         // Left child
     BinaryNode right;        // Right child
+    int counter;	     // Counter
 }

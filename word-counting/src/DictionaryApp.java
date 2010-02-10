@@ -199,9 +199,14 @@ public class DictionaryApp {
                     case useJavaTreeMap:
                         numTimes = javaTreeMap.get(currentWord);
                         // Increment the word count
-                        /**
-                         * YOUR CODE GOES HERE
-                         */
+                        if (numTimes != null)
+                        {
+                          numTimes++;
+                        }
+                        else
+                        {
+                          numTimes = 1;
+                        }
                         javaTreeMap.put(currentWord, numTimes);
                         numInsertions++;
                         break;
@@ -209,9 +214,14 @@ public class DictionaryApp {
                     case useJavaHashMap:
                         numTimes = javaHashMap.get(currentWord);
                         // Increment the word count
-                        /**
-                         * YOUR CODE GOES HERE
-                         */
+                        if (numTimes != null)
+                        {
+                          numTimes++;
+                        }
+                        else
+                        {
+                          numTimes = 1;
+                        }
                         javaHashMap.put(currentWord, numTimes);
                         numInsertions++;
                         break;

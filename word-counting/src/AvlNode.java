@@ -13,6 +13,7 @@ class AvlNode {
         left     = lt;
         right    = rt;
         height   = 0;
+        counter  = 0;
     }
 
     // Friendly data; accessible by other package routines
@@ -20,4 +21,5 @@ class AvlNode {
     AvlNode    left;         // Left child
     AvlNode    right;        // Right child
     int        height;       // Height
+    int	       counter;	     // Counter
 }
