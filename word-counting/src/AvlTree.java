@@ -1,4 +1,5 @@
 import java.lang.Comparable;
+import java.util.Arrays;
 
 // AvlTree class
 //
@@ -281,29 +282,71 @@ public class AvlTree {
      */
     public void PrintMostFrequent() 
     {
-      //AvlNode[] mostFreqNodes = GetMostFrequent(numStringMostFreq);
-      System.out.println("PrintMostFrequent: Not implemented yet.");
+      AvlNode[] mostFreqNodes = new AvlNode[numStringMostFreq];
+      GetMostFrequent(mostFreqNodes, root);
+      //System.out.println("PrintMostFrequent: Not implemented yet.");
+      int i = 0;
+      while (i < mostFreqNodes.length && mostFreqNodes[i] != null)
+      {
+	//System.out.println("Number of most freq strings: " + mostFreqNodes.length);
+	System.out.println(mostFreqNodes[i].element + ": " + mostFreqNodes[i].counter);
+	i++;
+      }
     }
     
-    private static void GetMostFrequent(AvlNode[] the_nodes, AvlNode t)
+    /**
+     * Insert a node to the correct place in the node array that is sorted in
+     * ascending order of counter.
+     * @param a The node array.
+     * @param node The node needs to be inserted.
+     */
+    private static void insertNodeIntoResultArray(AvlNode[] a, AvlNode node)
     {
-      //AvlNode[] result = new AvlNode[numStrings];
-      while (t != null)
+      // If the array is not full, we need to fill it with this node.
+      if (a[a.length - 1] == null)
       {
+	int i = 0;
+	while (i < a.length && a[i] != null && a[i].counter <= node.counter)
+	{
+	  i++;
+	}
+	if (a[i] != null)
+	{
+	  System.arraycopy(a, i, a, i + 1, a.length - i - 1);
+	}
+	a[i] = node;
+      }
+      // Else the array is full
+      else if (a[0].counter <= node.counter)
+      {
+	int i = 1;
+	while (i < a.length && a[i] != null && a[i].counter <= node.counter)
+	{
+	  i++;
+	}
+
+	i--; // Minus 1 from i because i is the index that either i == a.length
+	     // or a[i] == null or a[i].counter > node.counter.
+	     // Therefore, i-1 is the index that we want to insert our node.
 	
-      }
-      //return result;
+	System.arraycopy(a, 1, a, 0, i);
+	a[i] = node;
+      }	  
     }
     
-    private static AvlNode postOrderTraversal(AvlNode t)
-    {
-      if (t != null)
+    /**
+     * Insert the most frequent nodes of an AVL tree in the node array.
+     * @param a The node array.
+     * @param t The root of the AVL tree.
+     */
+    private static void GetMostFrequent(AvlNode[] a, AvlNode t)
+    {     
+      if (t != null) 
       {
-	postOrderTraversal(t.left);
-	postOrderTraversal(t.right);
-	return t;
+        insertNodeIntoResultArray(a, t);
+        GetMostFrequent(a, t.left);
+        GetMostFrequent(a, t.right);
       }
-      return null;
     }
     
     

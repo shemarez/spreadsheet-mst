@@ -13,7 +13,7 @@ class AvlNode {
         left     = lt;
         right    = rt;
         height   = 0;
-        counter  = 0;
+        counter  = 1;
     }
 
     // Friendly data; accessible by other package routines

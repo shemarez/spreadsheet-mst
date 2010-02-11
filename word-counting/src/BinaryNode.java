@@ -12,7 +12,7 @@ class BinaryNode {
         element  = theElement;
         left     = lt;
         right    = rt;
-        counter  = 0;
+        counter  = 1;
     }
 
     // Friendly data; accessible by other package routines
