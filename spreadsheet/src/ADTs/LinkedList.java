@@ -11,7 +11,7 @@ public class LinkedList {
 
     private ListNode head;    // the first (empty) node of the list
 
-    public class Iterator implements java.util.Iterator {
+    public class Iterator implements java.util.Iterator<Object> {
 
         private ListNode node;
 

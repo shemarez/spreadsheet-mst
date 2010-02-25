@@ -18,25 +18,54 @@ import ADTs.Stack;
  */
 public class Cell
 {
-
+  //Instance fields
+  
+  /**
+   * The bad cell tag.
+   */
   private static final int BadCell = -1;
+  
+  /**
+   * The formula of this cell.
+   */
   private String formula;
+  
+  /**
+   * The value of this cell.
+   */
   private int value;
+  
   // the expression tree below represents the formula
+  /**
+   * The expression tree represents the formula.
+   */
   private ExpressionTree expressionTree;
+  
   /**
    * Cells that depend on this cell.
    */
   LinkedList dependents;
+  
   /**
-   * Cells this cell depend on.
+   * Cells that this cell depends on.
    */
   private LinkedList dependencies;
 
+  /**
+   * The indegree of this cell.
+   */
   int indegree;
 
+  /**
+   * The temporary indegree of this cell.
+   */
   int indegreeTemp;
 
+  //Constructor
+  
+  /**
+   * Construct an "empty" cell with all values are set to the initial values.
+   */
   public Cell()
   {
     formula = "";
@@ -49,8 +78,10 @@ public class Cell
 
   }
 
+  //Instance methods
+  
   /**
-   * Returns the evaluated value of this cell
+   * Returns the evaluated value of this cell.
    * 
    * @return this cell's value
    */
@@ -142,8 +173,7 @@ public class Cell
   /**
    * Remove the cell out of the list of dependents.
    * 
-   * @param cell
-   *          The cell.
+   * @param cell The cell.
    */
   private void removeDependent(Cell cell) {
     LinkedList.Iterator iter = dependents.iterator();
@@ -178,9 +208,8 @@ public class Cell
    * Recursively adds nodes to an expression tree from stack of tokens.
    * 
    * @author from homework hand-out
-   * @param s
-   *          Stack to pop tokens from
-   * @return root of expression tree
+   * @param s Stack to pop tokens from
+   * @return The root of the expression tree.
    */
   private ExpressionTreeNode GetExpressionTree(Stack s) {
     ExpressionTreeNode returnTree;
@@ -341,8 +370,7 @@ public class Cell
    * <p>
    * This algorithm follows the algorithm described in Weiss, pages 105-108.
    * 
-   * @param formula
-   *          The formula.
+   * @param formula The formula.
    * @return A stack of Tokens so that the expression, when read from the bottom
    *         of the stack to the top of the stack, is a postfix expression.
    */
@@ -355,8 +383,6 @@ public class Cell
     int literalValue = 0;
 
     CellToken cellToken;
-    int column = 0;
-    int row = 0;
 
     int index = 0; // index into formula
     Stack operatorStack = new Stack(); // stack of operators
