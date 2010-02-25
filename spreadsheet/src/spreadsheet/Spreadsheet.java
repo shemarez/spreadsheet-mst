@@ -1,4 +1,7 @@
 package spreadsheet;
+import ADTs.LinkedList;
+import ADTs.Overflow;
+import ADTs.QueueAr;
 import tokens.CellToken;
 
 
@@ -47,14 +50,66 @@ public class Spreadsheet {
 		cellData[cellToken.getRow()]
 		         [cellToken.getColumn()].setFormula(inputFormula, this);
 		
-		for ( int row = 0; row < this.rows; row++){
+		try {
+			topSort();
+		} catch (CycleFound e) {
+			System.out.println("A Cycle was found, " +
+					"you computer will now blow up");
+			
+			e.printStackTrace();
+			System.exit(0);
+		}
+		
+		/*for ( int row = 0; row < this.rows; row++){
 			for (int col = 0; col < this.columns; col++){
 				cellData[row][col].Evaluate(this);
 			}
-		}
+		}*/
 		
 		
 		
+	}
+	
+	/**
+	 * Does a topological sort of the cells and evaluates the cells 
+	 * @throws CycleFound
+	 */
+	private void topSort() throws CycleFound{
+		int numVertices = this.rows * this.columns;
+		QueueAr q = new QueueAr(numVertices);
+		int counter = 0;
+		Cell cellV, cellW;
+		try
+        {
+			for ( int row = 0; row < this.rows; row++){
+				for (int col = 0; col < this.columns; col++){
+					cellV = cellData[row][col];
+					//reset temp indegree to original.
+					cellV.indegreeTemp = cellV.indegree;
+					if ( cellV.indegreeTemp == 0 ){
+						q.enqueue(cellV);
+					}
+				}
+			}
+			
+			while( !q.isEmpty() ){
+				cellV = ( Cell )q.dequeue();
+				cellV.Evaluate(this);
+				counter++;
+				LinkedList.Iterator iter = cellV.dependents.iterator();
+				while( iter.hasNext() ){
+					cellW = ( Cell )iter.next();
+					if( --cellW.indegreeTemp == 0){
+						q.enqueue(cellW);
+					}
+				}
+			}
+			if( counter != numVertices){
+				throw new CycleFound();
+			}
+		}catch( Overflow e ) { 
+			System.out.println( "Unexpected overflow" ); 
+			}
 	}
 	
 	/**
@@ -101,9 +156,14 @@ public class Spreadsheet {
 		                            [cellToken.getColumn()].printFormula());
 	}
 	
+	public String cellformulaToString(CellToken cellToken){
+		return cellData[cellToken.getRow()]
+                        [cellToken.getColumn()].printFormula();
+	}
+	
 	public String cellValueToString(CellToken cellToken){
-		return Integer.toString(cellData[cellToken.getRow()]
-                        [cellToken.getColumn()].getValue());
+		return cellData[cellToken.getRow()]
+                        [cellToken.getColumn()].printValue();
 	}
 	public int getNumRows(){
 		return this.rows;
@@ -112,6 +172,4 @@ public class Spreadsheet {
 		return this.columns;
 	}
 
-
-	
 }
