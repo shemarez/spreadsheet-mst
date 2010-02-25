@@ -72,7 +72,7 @@ public class Cell {
 	
 	/**
 	 * Returns a infix ordered String of this cells formula.
-	 * @return formula
+	 * @return The formula of this cell.
 	 * @author Teddy Doll
 	 */
 	public String printFormula(){
@@ -80,7 +80,8 @@ public class Cell {
 	}
 	
 	/**
-	 * Returns the evaluation of this cells formula.
+	 * Returns the evaluation of this cells formula. Return 0 if this cell is
+	 * empty.
 	 * @return cell value
 	 * @author Teddy Doll
 	 */
@@ -93,17 +94,21 @@ public class Cell {
 	
 	/**
 	 * Sets this cells formula to the given input string
-	 * @param formula cells new formula
+	 * @param formula The cells new formula.
+	 * @param spreadsheet The spreadsheet.	
 	 */
 	public void setFormula(String formula, Spreadsheet spreadsheet){
 		this.formula = formula;
+		
+		//Create a temporary dependencies list
 		LinkedList tempDependencies = new LinkedList();
 		LinkedList.Iterator iter1 = dependencies.iterator();
 		while(iter1.hasNext()){
 			tempDependencies.insert(iter1.next(), tempDependencies.zeroth());
 		}
+		
 		//Build expression and get dependencies
-		//and reset indegree
+		//and the indegree number.
 		dependencies.makeEmpty();
 		indegree = 0;
 		BuildExpressionTree(getFormula(formula));
@@ -113,7 +118,7 @@ public class Cell {
 		while(iter2.hasNext()){
 			CellToken cellToken = (CellToken)iter2.next();
 			spreadsheet.getCell(cellToken.getRow(), 
-					cellToken.getColumn()).removeDependent(this);
+					    cellToken.getColumn()).removeDependent(this);
 		}
 		while(iter1.hasNext()){
 			CellToken cellToken = (CellToken)iter1.next();
@@ -125,6 +130,11 @@ public class Cell {
 		
 		
 	}
+	
+	/**
+	 * Remove the cell out of the list of dependents.
+	 * @param cell The cell.
+	 */
 	private void removeDependent(Cell cell){
 		LinkedList.Iterator iter = dependents.iterator();
 		LinkedList.Iterator prev = dependents.zeroth();
@@ -134,11 +144,10 @@ public class Cell {
 				dependents.remove(prev);
 				found = true;
 			}
-			else
+			else {
 				prev.next();
-		}
-		
-		
+			}
+		}		
 	}
 	
 	
@@ -154,6 +163,7 @@ public class Cell {
 			System.out.println("Error in BuildExpressionTree.");
 		}
 	}
+	
 	/**
 	 * Recursively adds nodes to an expression tree from stack of tokens.
 	 * @author from homework hand-out
@@ -296,24 +306,27 @@ public class Cell {
 	}
 	
 	/**
-	 * getFormula
-	 * 
 	 * Given a string that represents a formula that is an infix
 	 * expression, return a stack of Tokens so that the expression,
 	 * when read from the bottom of the stack to the top of the stack,
 	 * is a postfix expression.
 	 * 
-	 * A formula is defined as a sequence of tokens that represents
+	 * <p>A formula is defined as a sequence of tokens that represents
 	 * a legal infix expression.
 	 * 
-	 * A token can consist of a numeric literal, a cell reference, or an
+	 * <p>A token can consist of a numeric literal, a cell reference, or an
 	 * operator (+, -, *, /).
 	 * 
-	 * Multiplication (*) and division (/) have higher precedence than
+	 * <p>Multiplication (*) and division (/) have higher precedence than
 	 * addition (+) and subtraction (-).  Among operations within the same
 	 * level of precedence, grouping is from left to right.
 	 * 
-	 * This algorithm follows the algorithm described in Weiss, pages 105-108.
+	 * <p>This algorithm follows the algorithm described in Weiss, pages 105-108.
+	 * 
+	 * @param formula The formula
+	 * @return A stack of tokens from the formular such that the expression,
+	 * when read from the bottom of the stack to the top of the stack, is a
+	 * postfix expression.
 	 */
 	public static Stack getFormula(String formula) {
 	    Stack returnStack = new Stack();  // stack of Tokens (representing a postfix expression)
