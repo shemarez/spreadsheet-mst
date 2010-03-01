@@ -94,7 +94,7 @@ public class Spreadsheet
       System.out.println("A Cycle was found, "
 	  + "you computer will now blow up");
       /**
-       * @TODO: In GUI, should give user a chance to fix his/her mistake.
+       * TODO: In GUI, should give user a chance to fix his/her mistake.
        */
       e.printStackTrace();
       System.exit(0);

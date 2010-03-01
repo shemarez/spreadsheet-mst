@@ -17,7 +17,7 @@ public class CellToken extends Token
    */
   private int my_row;
   
-  //Constructor
+  //Constructors
   
   /**
    * Construct an default cell with the row and column are both 0. 
@@ -26,6 +26,15 @@ public class CellToken extends Token
   {
     my_column = 0;
     my_row = 0;
+  }
+  
+  /**
+   * Construct a cell with number of rows and columns from the inputs. 
+   */
+  public CellToken(final int the_rows, int the_columns)
+  {
+    my_row = the_rows;
+    my_column = the_columns;    
   }
   
   //Instance methods
