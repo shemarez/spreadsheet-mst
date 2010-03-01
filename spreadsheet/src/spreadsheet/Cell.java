@@ -237,12 +237,13 @@ public class Cell
       // Literals and Cells are leaves in the expression tree
       returnTree = new ExpressionTreeNode(token, null, null);
 
-    } else { // if (token instanceof OperatorToken) {
-      // Continue finding tokens that will form the
-      // right subtree and left subtree.
-      ExpressionTreeNode rightSubtree = GetExpressionTree(s);
-      ExpressionTreeNode leftSubtree = GetExpressionTree(s);
-      returnTree = new ExpressionTreeNode(token, leftSubtree, rightSubtree);
+    } else { 
+    	//token instance of OperatorToken
+    	// Continue finding tokens that will form the
+    	// right subtree and left subtree.
+    	ExpressionTreeNode rightSubtree = GetExpressionTree(s);
+    	ExpressionTreeNode leftSubtree = GetExpressionTree(s);
+    	returnTree = new ExpressionTreeNode(token, leftSubtree, rightSubtree);
 
     }
     return returnTree;

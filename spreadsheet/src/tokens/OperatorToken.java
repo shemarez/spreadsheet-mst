@@ -99,15 +99,15 @@ public class OperatorToken extends Token
     switch (my_operator_token) 
     {
       case PLUS:
-        priority = 0;
+        priority = 0; break;
       case MINUS:
-        priority = 0;
+        priority = 0; break;
       case MULT:
-        priority = 1;
+        priority = 1; break;
       case DIV:
-        priority = 1;
+        priority = 1; break;
       case LEFT_PAREN:
-        priority = 2;
+        priority = 2; break;
   
       default:
         // This case should NEVER happen
