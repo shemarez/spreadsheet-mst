@@ -93,11 +93,6 @@ public class Spreadsheet
     try {
       topSort();
     } catch (CycleFound e) {
-      System.out.println("A Cycle was found, "
-	  + "you computer will now blow up");
-      /**
-       * TODO: In GUI, should give user a chance to fix his/her mistake.
-       */
       throw e;
     }
   }

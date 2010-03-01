@@ -7,7 +7,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -52,7 +55,7 @@ public class SpreadSheetBoard extends JPanel
    */
   public SpreadSheetBoard(final Spreadsheet the_spreadsheet)
   {
-    super(new GridLayout(the_spreadsheet.getNumRows(), the_spreadsheet.getNumColumns()));
+    super(new GridLayout(the_spreadsheet.getNumRows() + 1, the_spreadsheet.getNumColumns() + 1));
     my_spreadsheet = the_spreadsheet;
     my_rows = the_spreadsheet.getNumRows();
     my_columns = the_spreadsheet.getNumColumns();
@@ -65,16 +68,27 @@ public class SpreadSheetBoard extends JPanel
    */
   private void init()
   {
-    for (int i = 0; i < my_rows; i++)
+    for (int i = -1; i < my_rows; i++)
     {
-      for (int j = 0; j < my_columns; j++)
+      for (int j = -1; j < my_columns; j++)
       {
-	my_cell_array[i][j] = new CellGui(new CellToken(i, j));
-	my_cell_array[i][j].setText(my_spreadsheet.cellValueToString(my_cell_array[i][j].getCellToken()));
-	my_cell_array[i][j].addMouseListener(new CellMouseListener());
-	my_cell_array[i][j].addKeyListener(new CellKeyListener());
-	my_cell_array[i][j].addFocusListener(new CellFocusListener());
-	add(my_cell_array[i][j]);
+    	  CellToken cellToken = new CellToken(i, j);
+	
+	if ( i == -1){
+		if (j == -1 )
+			add(new JLabel("", null, JLabel.CENTER));
+		else
+			add(new JLabel(cellToken.columnToString(), null, JLabel.CENTER));	
+	}else if ( j == -1 ){  
+		add(new JLabel(Integer.toString(i), null, JLabel.CENTER));
+	}else{
+		my_cell_array[i][j] = new CellGui(cellToken);
+		my_cell_array[i][j].setText(my_spreadsheet.cellValueToString(my_cell_array[i][j].getCellToken()));
+		my_cell_array[i][j].addMouseListener(new CellMouseListener());
+		my_cell_array[i][j].addKeyListener(new CellKeyListener());
+		my_cell_array[i][j].addFocusListener(new CellFocusListener());
+		add(my_cell_array[i][j]);
+		}
       }
     }
   }

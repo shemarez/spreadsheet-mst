@@ -70,4 +70,19 @@ public class CellToken extends Token
   {
     my_row = row;
   }
+  
+  public String columnToString(){
+	  StringBuffer sb = new StringBuffer();
+	  int colDiv = my_column / 26;
+	  int colRem = my_column % 26;
+	  char ch = (char) (colRem + 'A');
+	  sb.append(ch);
+	  while ( colDiv > 0 ){
+		  colRem = (colDiv - 1) % 26;
+		  colDiv = colDiv / 26;
+		  ch = (char) (colRem + 'A');
+		  sb.insert(0, ch);
+	  }
+	  return sb.toString();
+  }
 }
