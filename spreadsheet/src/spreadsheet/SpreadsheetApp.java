@@ -101,7 +101,12 @@ public class SpreadsheetApp {
         System.out.println("Enter the cell's new formula: ");
         inputFormula = readString();
          //modified code to input a string parameter instead of a stack (Teddy)
-        theSpreadsheet.changeCellFormulaAndRecalculate(cellToken, inputFormula);
+        try {
+			theSpreadsheet.changeCellFormulaAndRecalculate(cellToken, inputFormula);
+		} catch (CycleFound e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         System.out.println();
         /*
         // This code prints out the expression stack from

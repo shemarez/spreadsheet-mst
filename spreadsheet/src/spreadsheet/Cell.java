@@ -31,6 +31,11 @@ public class Cell
   private String formula;
   
   /**
+   * Last good formula of this cell, in case a cycle is found.
+   */
+  private String lastFormula;
+  
+  /**
    * The value of this cell.
    */
   private int value;
@@ -126,6 +131,14 @@ public class Cell
     else*/
       return Integer.toString(value);
   }
+  
+  /**
+   * The reinstates this cells old formula 
+   * @param spreadsheet the spreadsheet this cell belongs to
+   */
+  public void revert(Spreadsheet spreadsheet){
+	  this.setFormula(lastFormula, spreadsheet);
+  }
 
   /**
    * Sets this cells formula to the given input string
@@ -133,10 +146,11 @@ public class Cell
    * @param formula
    *          The cells new formula.
    * @param spreadsheet
-   *          The spreadsheet.
+   *          The spreadsheet this cell belongs to.
    */
   public void setFormula(String formula, Spreadsheet spreadsheet) {
-    this.formula = formula;
+	  this.lastFormula = this.formula;
+	  this.formula = formula;
 
     // Create a temporary dependencies list
     LinkedList tempDependencies = new LinkedList();

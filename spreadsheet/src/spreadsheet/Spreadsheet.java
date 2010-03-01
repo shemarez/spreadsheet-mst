@@ -84,8 +84,10 @@ public class Spreadsheet
    * Update a cell formula and recalculate Spreadsheet. 
    * @param cellToken The cell to update.
    * @param inputFormula The new formula for cell.
+ * @throws CycleFound 
    */
-  public void changeCellFormulaAndRecalculate(CellToken cellToken, String inputFormula) {
+  public void changeCellFormulaAndRecalculate(CellToken cellToken, 
+		  String inputFormula) throws CycleFound {
     cellData[cellToken.getRow()][cellToken.getColumn()].setFormula(inputFormula, this);
 
     try {
@@ -96,15 +98,21 @@ public class Spreadsheet
       /**
        * TODO: In GUI, should give user a chance to fix his/her mistake.
        */
-      e.printStackTrace();
-      System.exit(0);
+      throw e;
     }
-
-    /*
-     * for ( int row = 0; row < this.rows; row++){ for (int col = 0; col <
-     * this.columns; col++){ cellData[row][col].Evaluate(this); } }
-     */
-
+  }
+  /**
+   * Revert cells formula and recalculate.
+   * Should only be used when a cycle is found.
+   * @param cellToken the cell to revert.
+   */
+  public void revert(CellToken cellToken){
+	  cellData[cellToken.getRow()][cellToken.getColumn()].revert(this);
+	  try {
+	      topSort();
+	    } catch (CycleFound e) {
+	      System.err.println("Cycle found in reverting (Should never Happen!");
+	    }
   }
 
   /**

@@ -8,8 +8,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import spreadsheet.CycleFound;
 import spreadsheet.Spreadsheet;
 import tokens.CellToken;
 
@@ -140,9 +142,23 @@ public class SpreadSheetBoard extends JPanel
       {
 	//System.err.println("Entered");
 	final CellGui cell_gui = (CellGui) the_event.getComponent();
-	my_spreadsheet.changeCellFormulaAndRecalculate(cell_gui.getCellToken(), cell_gui.getText());
-	cell_gui.setText(my_spreadsheet.cellValueToString(cell_gui.getCellToken()));
-	System.err.println(my_spreadsheet.cellValueToString(cell_gui.getCellToken()));
+	try {
+		my_spreadsheet.changeCellFormulaAndRecalculate(cell_gui.getCellToken(), cell_gui.getText());
+		cell_gui.setText(my_spreadsheet.cellValueToString(cell_gui.getCellToken()));
+		System.err.println(my_spreadsheet.cellValueToString(cell_gui.getCellToken()));
+	} catch (CycleFound e) {
+		
+		JOptionPane.showMessageDialog(null,
+		    "Cycle Found Please re-enter formula",
+		    "Cycle error",
+		    JOptionPane.ERROR_MESSAGE);
+		my_spreadsheet.revert(cell_gui.getCellToken());
+
+
+
+		
+	}
+	
       }
     }
 
