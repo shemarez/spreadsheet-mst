@@ -205,7 +205,7 @@ public class Spreadsheet
    * @param cellToken The cell token.
    * @return The cell formula.
    */
-  public String cellformulaToString(CellToken cellToken) {
+  public String cellFormulaToString(CellToken cellToken) {
     return cellData[cellToken.getRow()][cellToken.getColumn()].printFormula();
   }
 

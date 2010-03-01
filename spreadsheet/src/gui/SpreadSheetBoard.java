@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.GridLayout;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -69,6 +71,7 @@ public class SpreadSheetBoard extends JPanel
 	my_cell_array[i][j].setText(my_spreadsheet.cellValueToString(my_cell_array[i][j].getCellToken()));
 	my_cell_array[i][j].addMouseListener(new CellMouseListener());
 	my_cell_array[i][j].addKeyListener(new CellKeyListener());
+	my_cell_array[i][j].addFocusListener(new CellFocusListener());
 	add(my_cell_array[i][j]);
       }
     }
@@ -81,36 +84,37 @@ public class SpreadSheetBoard extends JPanel
    */
   private class CellMouseListener implements MouseListener
   {
+    /**
+     * Double click to edit the formula of the cell.
+     */
     @Override
     public void mouseClicked(MouseEvent the_event) {
-      // TODO Auto-generated method stub
-      final CellGui cell_gui = (CellGui) the_event.getComponent();
-      cell_gui.setText(my_spreadsheet.cellformulaToString(cell_gui.getCellToken()));
-      cell_gui.setCaretPosition(cell_gui.getDocument().getLength());
+      if (the_event.getClickCount() == 2)
+      {
+        final CellGui cell_gui = (CellGui) the_event.getComponent();
+        cell_gui.setText(my_spreadsheet.cellFormulaToString(cell_gui.getCellToken()));
+        cell_gui.setCaretPosition(cell_gui.getDocument().getLength());
+      }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-      // TODO Auto-generated method stub
-      
+      // TODO Auto-generated method stub      
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent the_event) {
       // TODO Auto-generated method stub
-      
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-      // TODO Auto-generated method stub
-      
+      // TODO Auto-generated method stub      
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      // TODO Auto-generated method stub
-      
+      // TODO Auto-generated method stub      
     } 
   }
   
@@ -123,25 +127,47 @@ public class SpreadSheetBoard extends JPanel
   {
     @Override
     public void keyTyped(KeyEvent the_event) {
+      // TODO Auto-generated method stub      
+    }
+
+    /**
+     * Press enter to commit change to the cell.
+     */
+    @Override
+    public void keyPressed(KeyEvent the_event) {
       // TODO Auto-generated method stub
       if (the_event.getKeyCode() == KeyEvent.VK_ENTER)
       {
+	//System.err.println("Entered");
 	final CellGui cell_gui = (CellGui) the_event.getComponent();
 	my_spreadsheet.changeCellFormulaAndRecalculate(cell_gui.getCellToken(), cell_gui.getText());
 	cell_gui.setText(my_spreadsheet.cellValueToString(cell_gui.getCellToken()));
+	System.err.println(my_spreadsheet.cellValueToString(cell_gui.getCellToken()));
       }
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
-      // TODO Auto-generated method stub
-      
-    }
+    public void keyReleased(KeyEvent e) {
+      // TODO Auto-generated method stub      
+    }    
+  }
+  
+  private class CellFocusListener implements FocusListener
+  {
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void focusGained(FocusEvent the_event) {
       // TODO Auto-generated method stub
-      
+    }
+
+    /**
+     * Show the value of the cell when losing focus.
+     */
+    @Override
+    public void focusLost(FocusEvent the_event) {
+      // TODO Auto-generated method stub
+      final CellGui cell_gui = (CellGui) the_event.getComponent();
+      cell_gui.setText(my_spreadsheet.cellValueToString(cell_gui.getCellToken()));
     }
     
   }
