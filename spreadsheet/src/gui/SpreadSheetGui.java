@@ -120,7 +120,7 @@ public class SpreadSheetGui extends JFrame
       {
         public void actionPerformed(final ActionEvent the_event)
         {
-          JOptionPane.showMessageDialog(null, sb, "About Tetris Clone", 1);
+          JOptionPane.showMessageDialog(null, sb, "About Simple Spreadsheet", 1);
         }
       };
     JMenuItem menu_item = new JMenuItem(about);
