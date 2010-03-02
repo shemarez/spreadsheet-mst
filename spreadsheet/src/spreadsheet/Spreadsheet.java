@@ -77,7 +77,14 @@ public class Spreadsheet
    * @return A cell at row and column.
    */
   public Cell getCell(int row, int column) {
-    return cellData[row][column];
+    try
+    {
+      return cellData[row][column];
+    }
+    catch (ArrayIndexOutOfBoundsException e)
+    {
+      throw e;
+    }
   }
 
   /**
