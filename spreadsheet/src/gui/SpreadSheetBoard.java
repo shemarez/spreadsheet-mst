@@ -210,28 +210,29 @@ public class SpreadSheetBoard extends JPanel
       // TODO Auto-generated method stub
       if (the_event.getKeyCode() == KeyEvent.VK_ENTER)
       {
-	//System.err.println("Entered");
-	final CellGui cell_gui = (CellGui) the_event.getComponent();
-	try 
-	{
-	  my_spreadsheet.changeCellFormulaAndRecalculate(cell_gui.getCellToken(), 
+    	  //System.err.println("Entered");
+    	  final CellGui cell_gui = (CellGui) the_event.getComponent();
+    	  try 
+    	  {
+    		  my_spreadsheet.changeCellFormulaAndRecalculate(cell_gui.getCellToken(), 
 	      						cell_gui.getText());
-	  cell_gui.setText(my_spreadsheet.cellValueToString(cell_gui.getCellToken()));
-	} 
-	catch (CycleFound e) 
-	{
-	  JOptionPane.showMessageDialog(null,
-	      "Cycle Found! Please re-enter formula", "Cycle error",
-	      JOptionPane.ERROR_MESSAGE);
-	  my_spreadsheet.revert(cell_gui.getCellToken());
-	}
-	catch (ArrayIndexOutOfBoundsException e)
-	{
-	  JOptionPane.showMessageDialog(null, 
+    		  cell_gui.setText(my_spreadsheet.cellValueToString(cell_gui.getCellToken()));
+    	  } 
+    	  catch (CycleFound e) 
+    	  {
+    		  JOptionPane.showMessageDialog(null,
+    				  "Cycle Found! Please re-enter formula", "Cycle error",
+    				  JOptionPane.ERROR_MESSAGE);
+    		  my_spreadsheet.revert(cell_gui.getCellToken());
+    	  }
+    	  catch (ArrayIndexOutOfBoundsException e)
+    	  {
+    		  JOptionPane.showMessageDialog(null, 
 	      				"Cell's index out of bound! Please re-enter formula", 
 	      				"Cell's out of bound", JOptionPane.ERROR_MESSAGE);
-	  my_spreadsheet.revert(cell_gui.getCellToken());
-	}
+    		  my_spreadsheet.revert(cell_gui.getCellToken());
+    	  }
+    	  update();
       }
     }  
   }
