@@ -97,17 +97,16 @@ public class Spreadsheet {
 	 * @param inputFormula
 	 *            The new formula for cell.
 	 * @throws CycleFound
+	 * @throws UnpairedParenthesesException 
 	 */
 	public void changeCellFormulaAndRecalculate(CellToken cellToken,
-			String inputFormula) throws CycleFound {
+			String inputFormula) throws CycleFound, UnpairedParenthesesException {
 		cellData[cellToken.getRow()][cellToken.getColumn()].setFormula(
 				inputFormula, this);
 
-		try {
+		
 			topSort();
-		} catch (CycleFound e) {
-			throw e;
-		}
+		
 	}
 
 	/**
@@ -118,7 +117,13 @@ public class Spreadsheet {
 	 *            the cell to revert.
 	 */
 	public void revert(CellToken cellToken) {
-		cellData[cellToken.getRow()][cellToken.getColumn()].revert(this);
+		try {
+			cellData[cellToken.getRow()][cellToken.getColumn()].revert(this);
+		} catch (UnpairedParenthesesException e1) {
+			
+			System.err
+			.println("Parentheses error in reverting (Should never Happen!");
+		}
 		try {
 			topSort();
 		} catch (CycleFound e) {

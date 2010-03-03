@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import spreadsheet.CycleFound;
 import spreadsheet.Spreadsheet;
+import spreadsheet.UnpairedParenthesesException;
 import tokens.CellToken;
 
 /**
@@ -243,7 +244,13 @@ public class SpreadSheetBoard extends JPanel
 	      "Cell's index out of bound! Please re-enter formula",
 	      "Cell's out of bound", JOptionPane.ERROR_MESSAGE);
 	  my_spreadsheet.revert(cell_gui.getCellToken());
-	}
+	} catch (UnpairedParenthesesException e) {
+		  JOptionPane.showMessageDialog(null,
+			      "Error in formula: Parentheses do not match",
+			      "Formula Error", JOptionPane.ERROR_MESSAGE);
+			  my_spreadsheet.revert(cell_gui.getCellToken());
+			}
+	
 	update();
       }
     }

@@ -93,6 +93,7 @@ public class SpreadSheetGui extends JFrame {
 		return file_menu;
 	}
 
+	@SuppressWarnings("unused")
 	private JMenu editMenu() {
 		final JMenu edit_menu = new JMenu("Edit");
 		edit_menu.setMnemonic('E');

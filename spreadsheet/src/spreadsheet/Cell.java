@@ -136,8 +136,9 @@ public class Cell {
 	 * 
 	 * @param spreadsheet
 	 *            the spreadsheet this cell belongs to
+	 * @throws UnpairedParenthesesException 
 	 */
-	public void revert(Spreadsheet spreadsheet) {
+	public void revert(Spreadsheet spreadsheet) throws UnpairedParenthesesException {
 		this.setFormula(lastFormula, spreadsheet);
 	}
 
@@ -148,8 +149,9 @@ public class Cell {
 	 *            The cells new formula.
 	 * @param spreadsheet
 	 *            The spreadsheet this cell belongs to.
+	 * @throws UnpairedParenthesesException 
 	 */
-	public void setFormula(String formula, Spreadsheet spreadsheet) {
+	public void setFormula(String formula, Spreadsheet spreadsheet) throws UnpairedParenthesesException {
 		this.lastFormula = this.formula;
 		this.formula = formula;
 
@@ -165,6 +167,7 @@ public class Cell {
 		dependencies.makeEmpty();
 		indegree = 0;
 		indegreeTemp = 0;
+		
 		BuildExpressionTree(getFormula(formula));
 
 		iter1 = dependencies.iterator();
@@ -216,9 +219,6 @@ public class Cell {
 	 */
 	private void BuildExpressionTree(Stack s) {
 		this.expressionTree.setRoot(GetExpressionTree(s));
-		if (!s.isEmpty()) {
-			System.out.println("Error in BuildExpressionTree.");
-		}
 	}
 
 	/**
@@ -418,8 +418,9 @@ public class Cell {
 	 * @return A stack of Tokens so that the expression, when read from the
 	 *         bottom of the stack to the top of the stack, is a postfix
 	 *         expression.
+	 * @throws UnpairedParenthesesException 
 	 */
-	public static Stack getFormula(String formula) {
+	public static Stack getFormula(String formula) throws UnpairedParenthesesException {
 		Stack returnStack = new Stack(); // stack of Tokens (representing a
 		// postfix
 		// expression)
@@ -478,15 +479,21 @@ public class Cell {
 
 			} else if (ch == ')') {
 				OperatorToken stackOperator;
+				if(operatorStack.isEmpty())
+					throw new UnpairedParenthesesException();
+				
 				stackOperator = (OperatorToken) operatorStack.topAndPop();
 				
-				while (stackOperator.getOperatorToken() != OperatorToken.LEFT_PAREN) {
+				while (!operatorStack.isEmpty() && 
+						stackOperator.getOperatorToken() != 
+							OperatorToken.LEFT_PAREN) {
 					// pop operators off the stack until a LeftParen appears and
 					// place the operators on the output stack
 					returnStack.push(stackOperator);
 					stackOperator = (OperatorToken) operatorStack.topAndPop();
 				}
-
+				if (stackOperator.getOperatorToken() != OperatorToken.LEFT_PAREN)
+					throw new UnpairedParenthesesException();
 				index++;
 			} else if (Character.isDigit(ch)) {
 				// We found a literal token
@@ -524,7 +531,11 @@ public class Cell {
 
 		// pop all remaining operators off the operator stack
 		while (!operatorStack.isEmpty()) {
-			returnStack.push(operatorStack.topAndPop());
+			OperatorToken stackOperator = (OperatorToken) operatorStack.topAndPop();
+			if(stackOperator.getOperatorToken() == OperatorToken.LEFT_PAREN)
+				throw new UnpairedParenthesesException();
+			else
+				returnStack.push(stackOperator);
 		}
 
 		if (error) {
