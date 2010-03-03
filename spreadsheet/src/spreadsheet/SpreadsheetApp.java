@@ -100,6 +100,9 @@ public class SpreadsheetApp {
 		} catch (CycleFound e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (UnpairedParenthesesException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		System.out.println();
 		/*
