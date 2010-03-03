@@ -77,7 +77,8 @@ public class ExpressionTree {
 	}
 
 	/**
-	 * Recursively evaluate this ExpressionTree and return the value. 
+	 * Recursively evaluate this ExpressionTree and return the value.
+	 * 
 	 * @param spreadsheet
 	 *            The spreadsheet.
 	 * @param the_root

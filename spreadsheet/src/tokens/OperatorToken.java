@@ -90,9 +90,8 @@ public class OperatorToken extends Token {
 	 * @return whether ch is an operator
 	 */
 	public static boolean isOperator(char ch) {
-		return ((ch == PLUS) || (ch == MINUS) || (ch == MULT) || 
-				(ch == DIV) || (ch == EXP) || 
-				(ch == LEFT_PAREN) || (ch == U_MINUS));
+		return ((ch == PLUS) || (ch == MINUS) || (ch == MULT) || (ch == DIV)
+				|| (ch == EXP) || (ch == LEFT_PAREN) || (ch == U_MINUS));
 	}
 
 	/**
@@ -100,7 +99,7 @@ public class OperatorToken extends Token {
 	 * <p>
 	 * priorities: <br>
 	 * +, - : 0 <br>
-	 * *, / : 1 <br>
+	 * , / : 1 <br>
 	 * ( : 2
 	 * 
 	 * @return the priority of operatorToken

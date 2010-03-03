@@ -1,16 +1,13 @@
-    package spreadsheet;
+package spreadsheet;
 
-    
 /**
-     
-* Exception class for spreadsheet class
-     
-*     
-* @author Teddy Doll     
-**/
-    
+ * 
+ * Exception class for spreadsheet class
+ * 
+ * 
+ * @author Teddy Doll
+ **/
 
 @SuppressWarnings("serial")
-public class CycleFound extends Exception
-    {
-    }
+public class CycleFound extends Exception {
+}

@@ -221,11 +221,9 @@ public class Cell {
 	}
 
 	/**
-	 * Recursively adds nodes to an expression tree from stack of tokens.
-	 * There are three separate recursive cases:
-	 * 1)Token is a cell or literal
-	 * 2)Token is an unary minus
-	 * 3)Token is operator but not unary minus
+	 * Recursively adds nodes to an expression tree from stack of tokens. There
+	 * are three separate recursive cases: 1)Token is a cell or literal 2)Token
+	 * is an unary minus 3)Token is operator but not unary minus
 	 * 
 	 * @author from homework hand-out
 	 * @param s
@@ -235,33 +233,32 @@ public class Cell {
 	private ExpressionTreeNode GetExpressionTree(Stack s) {
 		ExpressionTreeNode returnTree;
 		Token token;
-		//first base case stack is empty.
+		// first base case stack is empty.
 		if (s.isEmpty())
 			return null;
-		token = (Token) s.topAndPop(); 
-		//populate dependencies list.
+		token = (Token) s.topAndPop();
+		// populate dependencies list.
 		if (token instanceof CellToken)
 			dependencies.insert(token, dependencies.zeroth());
-		
-		//second base case: token is literal or cell.
+
+		// second base case: token is literal or cell.
 		if ((token instanceof LiteralToken) || (token instanceof CellToken)) {
 			// Literals and Cells are leaves in the expression tree
 			returnTree = new ExpressionTreeNode(token, null, null);
 		}
-		//recursive case were token is unary minus 
-		//continue finding tokens for for the right subtree.
+		// recursive case were token is unary minus
+		// continue finding tokens for for the right subtree.
 		else if (token instanceof OperatorToken
 				&& ((OperatorToken) token).getOperatorToken() == OperatorToken.U_MINUS) {
 			ExpressionTreeNode rightSubtree = GetExpressionTree(s);
 			returnTree = new ExpressionTreeNode(token, null, rightSubtree);
 
-		} 
-		//recursive case were token is any other operator
+		}
+		// recursive case were token is any other operator
 		// Continue finding tokens that will form the
 		// right subtree and left subtree.
 		else {
-			
-			
+
 			ExpressionTreeNode rightSubtree = GetExpressionTree(s);
 			ExpressionTreeNode leftSubtree = GetExpressionTree(s);
 			returnTree = new ExpressionTreeNode(token, leftSubtree,
@@ -454,8 +451,7 @@ public class Cell {
 				// We found an operator token
 				OperatorToken newOperator;
 				if (ch == '-'
-						&& !(lastToken instanceof CellToken || 
-								lastToken instanceof LiteralToken)) {
+						&& !(lastToken instanceof CellToken || lastToken instanceof LiteralToken)) {
 					newOperator = new OperatorToken(OperatorToken.U_MINUS);
 				} else {
 					newOperator = new OperatorToken(ch);
@@ -464,8 +460,7 @@ public class Cell {
 				while (!operatorStack.isEmpty()) {
 					stackOperator = (OperatorToken) operatorStack.top();
 					if ((stackOperator.priority() > newOperator.priority())
-							&& (stackOperator.getOperatorToken() != 
-								OperatorToken.LEFT_PAREN)) {
+							&& (stackOperator.getOperatorToken() != OperatorToken.LEFT_PAREN)) {
 
 						// output the operator to the return stack
 						operatorStack.pop();
