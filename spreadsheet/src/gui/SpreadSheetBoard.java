@@ -24,9 +24,9 @@ import tokens.CellToken;
  * @author Son Pham
  * @version 1.0
  */
+@SuppressWarnings("serial")
 public class SpreadSheetBoard extends JPanel {
 	// Instance fields
-
 	public static final int DEFAULT_CELL_WIDTH = 80;
 
 	public static final int DEFAULT_CELL_HEIGHT = 30;

@@ -3,10 +3,8 @@ package spreadsheet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import tokens.CellToken;
 
-import ADTs.Stack;
 
 /**
  * Driver program of a spreadsheet application. Text-based user interface.
@@ -26,8 +24,6 @@ public class SpreadsheetApp {
 	public static String readString() {
 		BufferedReader inputReader;
 		String returnString = "";
-		char ch;
-
 		inputReader = new BufferedReader(new InputStreamReader(System.in));
 
 		// read all characters up to a carriage return and append them
@@ -79,9 +75,6 @@ public class SpreadsheetApp {
 		String inputCell;
 		String inputFormula;
 		CellToken cellToken = new CellToken();
-		Stack expTreeTokenStack;
-		// ExpressionTreeToken expTreeToken;
-
 		System.out.println("Enter the cell to change: ");
 		inputCell = readString();
 		Cell.getCellToken(inputCell, 0, cellToken); // modified code to call

@@ -6,6 +6,7 @@ package ADTs;
  * 
  * @author Mark Allen Weiss
  */
+@SuppressWarnings("serial")
 public class UnderflowException extends RuntimeException {
 	/**
 	 * Construct this exception object.

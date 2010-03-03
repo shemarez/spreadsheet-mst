@@ -6,5 +6,6 @@ package ADTs;
  * 
  * @author Mark Allen Weiss
  */
+@SuppressWarnings("serial")
 public class Overflow extends Exception {
 }
