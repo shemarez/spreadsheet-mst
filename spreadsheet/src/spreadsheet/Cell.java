@@ -208,10 +208,11 @@ public class Cell {
 	// Build an expression tree from a stack of ExpressionTreeTokens
 	/**
 	 * Builds an expression tree from a stack of tokens
+	 * Note: Possibly should be moved to ExpressionTree Class.
 	 * 
 	 * @author from homework hand-out
-	 * @param s
-	 *            Stack to pop tokens from
+	 * @param s Stack to pop tokens from
+	 *            
 	 */
 	private void BuildExpressionTree(Stack s) {
 		this.expressionTree.setRoot(GetExpressionTree(s));
@@ -224,10 +225,11 @@ public class Cell {
 	 * Recursively adds nodes to an expression tree from stack of tokens. There
 	 * are three separate recursive cases: 1)Token is a cell or literal 2)Token
 	 * is an unary minus 3)Token is operator but not unary minus
-	 * 
-	 * @author from homework hand-out
-	 * @param s
-	 *            Stack to pop tokens from
+ 	 * Note: Possibly should be moved to ExpressionTree Class.
+
+	 * @author from homework hand-out/Teddy Doll
+	 * @param s Stack to pop tokens from
+	 *            
 	 * @return The root of the expression tree.
 	 */
 	private ExpressionTreeNode GetExpressionTree(Stack s) {
@@ -289,12 +291,12 @@ public class Cell {
 	 * ..., ZA = 676, ..., ZZ = 701, AAA = 702. The digits represent the row
 	 * number.
 	 * 
-	 * @param inputString
-	 *            the input string
-	 * @param startIndex
-	 *            the index of the first char to process
-	 * @param cellToken
-	 *            a cellToken (essentially a return value)
+	 * @param inputString the input string
+	 *            
+	 * @param startIndex the index of the first char to process
+	 *            
+	 * @param cellToken a cellToken (essentially a return value)
+	 *            
 	 * @return index corresponding to the position in the string just after the
 	 *         cell reference
 	 */
@@ -458,6 +460,8 @@ public class Cell {
 				}
 				OperatorToken stackOperator;
 				while (!operatorStack.isEmpty()) {
+					//Push Operators from operator stack on return stack until
+					//find operator with less priority or a left paren.
 					stackOperator = (OperatorToken) operatorStack.top();
 					if ((stackOperator.priority() > newOperator.priority())
 							&& (stackOperator.getOperatorToken() != OperatorToken.LEFT_PAREN)) {
@@ -475,7 +479,7 @@ public class Cell {
 			} else if (ch == ')') {
 				OperatorToken stackOperator;
 				stackOperator = (OperatorToken) operatorStack.topAndPop();
-				// This code does not handle operatorStack underflow.
+				
 				while (stackOperator.getOperatorToken() != OperatorToken.LEFT_PAREN) {
 					// pop operators off the stack until a LeftParen appears and
 					// place the operators on the output stack
