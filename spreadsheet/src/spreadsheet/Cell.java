@@ -459,7 +459,9 @@ public class Cell {
 				} else {
 					newOperator = new OperatorToken(ch);
 				}
+				lastToken = newOperator;
 				OperatorToken stackOperator;
+				
 				while (!operatorStack.isEmpty()) {
 					//Push Operators from operator stack on return stack until
 					//find operator with less priority or a left paren.
@@ -475,6 +477,7 @@ public class Cell {
 					}
 				}
 				operatorStack.push(newOperator);
+				
 				index++;
 
 			} else if (ch == ')') {
@@ -509,7 +512,7 @@ public class Cell {
 					}
 				}
 				// place the literal on the output stack
-				returnStack.push(new LiteralToken(literalValue));
+				returnStack.push( lastToken = new LiteralToken(literalValue));
 
 			} else if (Character.isUpperCase(ch)) {
 				// We found a cell reference token
@@ -521,6 +524,7 @@ public class Cell {
 				} else {
 					// place the cell reference on the output stack
 					returnStack.push(cellToken);
+					lastToken = cellToken;
 				}
 
 			} else {
