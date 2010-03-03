@@ -64,7 +64,7 @@ public class SpreadSheetGui extends JFrame {
 	private JMenuBar menuBar() {
 		final JMenuBar menu_bar = new JMenuBar();
 		menu_bar.add(fileMenu());
-		menu_bar.add(editMenu());
+		//menu_bar.add(editMenu());
 		menu_bar.add(helpMenu());
 		return menu_bar;
 	}
@@ -104,7 +104,8 @@ public class SpreadSheetGui extends JFrame {
 		help_menu.setMnemonic('H');
 		final StringBuffer sb = new StringBuffer();
 		sb.append("Authors: \n");
-		sb.append("Miles Raymond - Teddy Doll - Son Pham");
+		sb.append("Miles Raymond - Teddy Doll - Son Pham\n");
+		sb.append("Documentation: http://code.google.com/p/spreadsheet-mst/wiki/HowToUseTheSpreadsheet");
 		final Action about = new AbstractAction("About...") {
 			public void actionPerformed(final ActionEvent the_event) {
 				JOptionPane.showMessageDialog(null, sb,
