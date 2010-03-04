@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
@@ -33,6 +32,9 @@ public class SpreadSheetGui extends JFrame {
 	 */
 	public static final int NUM_COLS = 12;
 
+	/**
+	 * Default number of rows in the spreadsheet.
+	 */
 	public static final int NUM_ROWS = 10;
 
 	/**
@@ -64,13 +66,6 @@ public class SpreadSheetGui extends JFrame {
 		super(FRAME_NAME);
 		my_board = new SpreadSheetBoard(the_spreadsheet);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-	}
-
-	@SuppressWarnings("unused")
-	private JMenu editMenu() {
-		final JMenu edit_menu = new JMenu("Edit");
-		edit_menu.setMnemonic('E');
-		return edit_menu;
 	}
 
 	/**
@@ -134,10 +129,23 @@ public class SpreadSheetGui extends JFrame {
 		return file_menu;
 	}
 	
+	/**
+	 * File filter class for simple spreadsheet extension (.mst)
+	 * @author Son Pham
+	 * @version 1.0
+	 */
 	public class SpreadsheetFileFilter extends FileFilter
 	{
+	  /**
+	   * Extension .mst
+	   */
 	  public final static String mst = "mst";
 	  
+	  /**
+	   * Whether the given file is accepted by this filter.
+	   * @param f The file.
+	   * @return True if the file's extension is "mst". False otherwise.
+	   */
 	  public boolean accept(final File f)
 	  {
 	    if (f.isDirectory())
@@ -160,8 +168,9 @@ public class SpreadSheetGui extends JFrame {
 	    return false;
 	  }
 	  
-	  /*
+	  /**
 	   * Get the extension of a file.
+	   * @param f The file.
 	   */  
 	  public String getExtension(File f) {
 	      String ext = null;
@@ -180,6 +189,10 @@ public class SpreadSheetGui extends JFrame {
 	  }
 	}
 	
+	/**
+	 * 
+	 * @return Help menu.
+	 */
 	private JMenu helpMenu() {
 		final JMenu help_menu = new JMenu("Help");
 		help_menu.setMnemonic('H');

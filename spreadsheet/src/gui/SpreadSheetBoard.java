@@ -121,9 +121,14 @@ public class SpreadSheetBoard extends JPanel {
 		}
 	}
 
+	/**
+	 * The default height of a cell.
+	 */
 	public static final int DEFAULT_CELL_HEIGHT = 30;
 
-	// Instance fields
+	/**
+	 * The default width of a cell.
+	 */
 	public static final int DEFAULT_CELL_WIDTH = 80;
 
 	/**

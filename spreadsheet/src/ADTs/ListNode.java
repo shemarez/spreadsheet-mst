@@ -9,8 +9,14 @@ package ADTs;
  */
 
 public class ListNode {
-
+  	/**
+  	 * The element of the node.
+  	 */
 	private Object element;
+	
+	/**
+	 * The next node.
+	 */
 	private ListNode next;
 
 	/**

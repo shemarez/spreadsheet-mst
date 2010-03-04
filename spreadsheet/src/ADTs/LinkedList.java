@@ -9,17 +9,34 @@ import java.util.*;
  * @version 1.0
  */
 public class LinkedList {
+  	/**
+  	 * The first (empty) node of the list.
+  	 */
+	private ListNode head;
 
-	private ListNode head; // the first (empty) node of the list
-
+	/**
+	 * Iterator class for this linked list.
+	 * @author Teddy Doll
+	 * @version 1.0
+	 */
 	public class Iterator implements java.util.Iterator<Object> {
-
+	  	/**
+	  	 * The node.
+	  	 */
 		private ListNode node;
 
+		/**
+		 * Construct a default iterator which set the node to point to the
+		 * first "real" element.
+		 */
 		public Iterator() {
-			node = head.getNext(); // point to the first "real" element
+			node = head.getNext();
 		}
 
+		/**
+		 * Construct an iterator by setting the node to be the input node.
+		 * @param node The node.
+		 */
 		public Iterator(ListNode node) {
 			this.node = node;
 		}
@@ -49,14 +66,25 @@ public class LinkedList {
 			}
 		}
 
+		/**
+		 * Remove the node from the linked list. Unsupported!
+		 */
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
 
+		/**
+		 * 
+		 * @return The node.
+		 */
 		public ListNode getNode() {
 			return node;
 		}
 
+		/**
+		 * 
+		 * @return The element of the node.
+		 */
 		public Object getElement() {
 			if (node != null) {
 				Object returnElement = node.getElement();
