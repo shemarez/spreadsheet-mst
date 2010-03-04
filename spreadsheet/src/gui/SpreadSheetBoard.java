@@ -236,19 +236,29 @@ public class SpreadSheetBoard extends JPanel {
 	public void load(String canonicalPath) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader(canonicalPath));
 		String line = in.readLine();
+		String str_in = new String();
+		final String blank = new String(" ");
 		StringTokenizer st;
 		int lineNum = 0, tokenNum = 0;
-		if (line != null)
+		
+		if (line != null) {
 			reset();
+		}
 		do {
 			tokenNum = 0;
 			st = new StringTokenizer(line, ",");
 			while(st.hasMoreTokens()) {
-				my_spreadsheet.changeCellFormulaAndRecalculate(my_cell_array[lineNum][tokenNum].getCellToken(), st.nextToken());
-				tokenNum++;
+			  str_in = st.nextToken();
+			  if (str_in.equals(blank)) {
+			    tokenNum++;
+			  } else {
+			    my_spreadsheet.changeCellFormulaAndRecalculate(
+				my_cell_array[lineNum][tokenNum].getCellToken(), str_in);
+			    tokenNum++;
+			  }				
 			}
 			lineNum++;
-		} while ((line = in.readLine()) != null);
+		} while ((line = in.readLine()) != null);		
 		in.close();
 	}
 
@@ -316,15 +326,23 @@ public class SpreadSheetBoard extends JPanel {
 
 
 	/**
-	 * Save to a file
-	 * @param canonicalPath
+	 * Save to a file.
+	 * @param canonicalPath The path.
 	 */
 	public void save(String canonicalPath) throws Exception {
 		BufferedWriter out = new BufferedWriter(new FileWriter(canonicalPath));
+		String str_out = new String();
 		for(CellGui[] cells : my_cell_array) {
 			for(CellGui cell : cells) {
-				out.write(my_spreadsheet.cellFormulaToString(cell.getCellToken()));
+			  if (my_spreadsheet.cellFormulaToString(cell.getCellToken()).isEmpty()) {
+			    str_out = " ";
+			  }
+			  else {
+			    str_out = my_spreadsheet.cellFormulaToString(cell.getCellToken());
+			  }
+				out.write(str_out);
 				out.append(',');
+			  
 			}
 			out.newLine();
 			out.flush();
