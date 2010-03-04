@@ -1,6 +1,8 @@
 package gui;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
@@ -9,6 +11,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import spreadsheet.Spreadsheet;
 
@@ -25,6 +28,9 @@ public class SpreadSheetGui extends JFrame {
 	 */
 	public static final String FRAME_NAME = "TCSS-342 Simple SpreadSheet";
 
+	/**
+	 * Default number of columns in the spreadsheet.
+	 */
 	public static final int NUM_COLS = 12;
 
 	public static final int NUM_ROWS = 10;
@@ -67,6 +73,10 @@ public class SpreadSheetGui extends JFrame {
 		return edit_menu;
 	}
 
+	/**
+	 * 
+	 * @return The file menu.
+	 */
 	private JMenu fileMenu() {
 		final JMenu file_menu = new JMenu("File");
 		file_menu.setMnemonic('F');
@@ -83,6 +93,8 @@ public class SpreadSheetGui extends JFrame {
 			@Override
 			public void actionPerformed(final ActionEvent the_event) {
 				JFileChooser fc = new JFileChooser();
+				fc.addChoosableFileFilter(new SpreadsheetFileFilter());
+				fc.setAcceptAllFileFilterUsed(false);
 				int returnVal = fc.showOpenDialog(SpreadSheetGui.this);
 				if (returnVal == JFileChooser.APPROVE_OPTION)
 					try {
@@ -98,6 +110,8 @@ public class SpreadSheetGui extends JFrame {
 			@Override
 			public void actionPerformed(final ActionEvent the_event) {
 				JFileChooser fc = new JFileChooser();
+				fc.addChoosableFileFilter(new SpreadsheetFileFilter());
+				fc.setAcceptAllFileFilterUsed(false);
 				int returnVal = fc.showSaveDialog(SpreadSheetGui.this);
 				if (returnVal == JFileChooser.APPROVE_OPTION)
 					try {
@@ -119,7 +133,53 @@ public class SpreadSheetGui extends JFrame {
 		file_menu.add(quit);
 		return file_menu;
 	}
+	
+	public class SpreadsheetFileFilter extends FileFilter
+	{
+	  public final static String mst = "mst";
+	  
+	  public boolean accept(final File f)
+	  {
+	    if (f.isDirectory())
+	    {
+	      return true;
+	    }
+	    
+	    String extension = getExtension(f);
+	    if (extension != null)
+	    {
+	      if (extension.equals(mst))
+	      {
+		return true;
+	      }
+	      else
+	      {
+		return false;
+	      }
+	    }
+	    return false;
+	  }
+	  
+	  /*
+	   * Get the extension of a file.
+	   */  
+	  public String getExtension(File f) {
+	      String ext = null;
+	      String s = f.getName();
+	      int i = s.lastIndexOf('.');
 
+	      if (i > 0 &&  i < s.length() - 1) {
+	          ext = s.substring(i+1).toLowerCase();
+	      }
+	      return ext;
+	  }
+
+	  @Override
+	  public String getDescription() {
+	    return "Simple Spreadsheet";
+	  }
+	}
+	
 	private JMenu helpMenu() {
 		final JMenu help_menu = new JMenu("Help");
 		help_menu.setMnemonic('H');

@@ -71,8 +71,6 @@ public class SpreadSheetBoard extends JPanel {
 				try {
 					my_spreadsheet.changeCellFormulaAndRecalculate(cell_gui
 							.getCellToken(), cell_gui.getText());
-					cell_gui.setText(my_spreadsheet.cellValueToString(cell_gui
-							.getCellToken()));
 				} catch (CycleFound e) {
 					JOptionPane.showMessageDialog(null,
 							"Cycle Found! Please re-enter formula",
