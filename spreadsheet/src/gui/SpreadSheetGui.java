@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
@@ -106,11 +107,18 @@ public class SpreadSheetGui extends JFrame {
 			public void actionPerformed(final ActionEvent the_event) {
 				JFileChooser fc = new JFileChooser();
 				fc.addChoosableFileFilter(new SpreadsheetFileFilter());
-				fc.setAcceptAllFileFilterUsed(false);
+				fc.setAcceptAllFileFilterUsed(false);				
 				int returnVal = fc.showSaveDialog(SpreadSheetGui.this);
 				if (returnVal == JFileChooser.APPROVE_OPTION)
 					try {
-						my_board.save(fc.getSelectedFile().getCanonicalPath());
+					  String file_path = fc.getSelectedFile().getCanonicalPath();
+					  String extension = file_path.substring(file_path.length() - 4);
+					  String mst = ".mst";
+					  if (!extension.equals(mst))
+					  {
+					    file_path = file_path.concat(mst);
+					  }
+					  my_board.save(file_path);
 					} catch (Exception e) { }
 				my_board.update();
 			}
@@ -185,7 +193,7 @@ public class SpreadSheetGui extends JFrame {
 
 	  @Override
 	  public String getDescription() {
-	    return "Simple Spreadsheet";
+	    return "Simple Spreadsheet (.mst)";
 	  }
 	}
 	
