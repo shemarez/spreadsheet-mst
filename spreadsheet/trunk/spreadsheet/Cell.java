@@ -1,5 +1,8 @@
 package spreadsheet;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import tokens.CellToken;
 import tokens.LiteralToken;
 import tokens.OperatorToken;
@@ -7,7 +10,6 @@ import tokens.Token;
 
 import ADTs.ExpressionTree;
 import ADTs.ExpressionTreeNode;
-import ADTs.LinkedList;
 import ADTs.Stack;
 
 /**
@@ -176,22 +178,22 @@ public class Cell
 
 		// Create a temporary dependencies list
 		LinkedList tempDependencies = new LinkedList();
-		LinkedList.Iterator iter1 = dependencies.iterator();
+		Iterator iter1 = dependencies.iterator();
 		while (iter1.hasNext())
 		{
-			tempDependencies.insert(iter1.next(), tempDependencies.zeroth());
+			tempDependencies.addFirst(iter1.next());
 		}
 
 		// Build expression and get dependencies
 		// and reset indegree
-		dependencies.makeEmpty();
+		dependencies.clear();
 		indegree = 0;
 		indegreeTemp = 0;
 
 		buildExpressionTree(getFormula(formula));
 
 		iter1 = dependencies.iterator();
-		LinkedList.Iterator iter2 = tempDependencies.iterator();
+		Iterator iter2 = tempDependencies.iterator();
 		while (iter2.hasNext())
 		{
 			CellToken cellToken = (CellToken) iter2.next();
@@ -203,7 +205,7 @@ public class Cell
 			CellToken cellToken = (CellToken) iter1.next();
 			Cell cell = spreadsheet
 					.getCell(cellToken.getRow(), cellToken.getColumn());
-			cell.dependents.insert(this, cell.dependents.zeroth());
+			cell.dependents.addFirst(this);
 			indegree++;
 
 		}
@@ -218,8 +220,8 @@ public class Cell
 	 */
 	private void removeDependent(Cell cell)
 	{
-		LinkedList.Iterator iter = dependents.iterator();
-		LinkedList.Iterator prev = dependents.zeroth();
+		Iterator iter = dependents.iterator();
+		Iterator prev = dependents.iterator();
 		boolean found = false;
 		while (!found && iter.hasNext())
 		{
@@ -272,7 +274,7 @@ public class Cell
 		token = (Token) s.topAndPop();
 		// populate dependencies list.
 		if (token instanceof CellToken)
-			dependencies.insert(token, dependencies.zeroth());
+			dependencies.addFirst(token);
 
 		// second base case: token is literal or cell.
 		if ((token instanceof LiteralToken) || (token instanceof CellToken))

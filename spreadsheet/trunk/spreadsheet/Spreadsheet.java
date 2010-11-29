@@ -1,9 +1,10 @@
 package spreadsheet;
 
-import ADTs.LinkedList;
+import java.util.Iterator;
+
+import tokens.CellToken;
 import ADTs.Overflow;
 import ADTs.QueueAr;
-import tokens.CellToken;
 
 /**
  * Spreadsheet class.
@@ -199,7 +200,7 @@ public class Spreadsheet
 				cellV = (Cell) q.dequeue();
 				cellV.evaluate(this);
 				counter++;
-				LinkedList.Iterator iter = cellV.dependents.iterator();
+				Iterator iter = cellV.dependents.iterator();
 				while (iter.hasNext())
 				{
 					cellW = (Cell) iter.next();
